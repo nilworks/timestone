@@ -12,13 +12,25 @@ import SwiftUI
 struct ContentView: View {
 
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            ShowCalendarView()
+                .tabItem {
+                    Image(systemName: "calendar")
+                    Text("일정")
+                }
+            // 맞는 View로 바꿔서 적용하시면 됩니다.
+            ShowCalendarView()
+                .tabItem {
+                    Image(systemName: "plus.square")
+                    Text("일정 추가")
+                }
+            // 맞는 View로 바꿔서 적용하시면 됩니다.
+            ShowCalendarView()
+                .tabItem {
+                    Image(systemName: "gear")
+                    Text("설정")
+                }
         }
-        .padding()
     }
     
 }
