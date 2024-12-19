@@ -12,6 +12,7 @@ struct timestoneApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+            
         }
     }
 }
