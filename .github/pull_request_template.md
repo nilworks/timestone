@@ -34,3 +34,7 @@ ex)
 ex)
 -  LoginView AutoLayout 관련 수정사항 발생 시 피드백 주시면 수정하겠습니다.
 -  AuthService, PostService 와 같이 Singleton 패턴으로 각 객체의 책임을 부여하고, 관리 하려고 하는데 괜찮을지 확인 부탁드립니다.
+
+
+## ⚠️ 추가 전달사항
+ex) 살려주세요..
