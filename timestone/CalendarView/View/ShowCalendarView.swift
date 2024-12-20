@@ -8,10 +8,42 @@
 import SwiftUI
 
 struct ShowCalendarView: View {
+    @State var selectYearMonthBtn = "2024년 12월"
     
     var body: some View {
         NavigationView {
-            Text("hi2")
+            VStack {
+                HStack {
+                    Button {
+                        // action
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 24))
+                    }
+                    
+                    Spacer()
+                    
+                    Button {
+                        // action
+                    } label: {
+                        Text(selectYearMonthBtn)
+                            .font(.system(size: 27))
+                            .fontWeight(.semibold)
+                            .padding(.bottom)
+                    }
+
+                    Spacer()
+                    
+                    Button {
+                        // action
+                    } label: {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 24))
+                    }
+
+                }
+                .padding(.horizontal, 20)
+            }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading, content: {
                         Button {
@@ -24,12 +56,13 @@ struct ShowCalendarView: View {
                                 .background(.red)
                         }
                     })
+                    
                     ToolbarItem(placement: .topBarTrailing, content: {
                         Button {
                             // action
                         } label: {
                             Image(systemName: "bell")
-                                .font(.system(size: 21))
+                                .font(.system(size: 22))
                         }
                     })
                 }
