@@ -8,8 +8,32 @@
 import SwiftUI
 
 struct ShowCalendarView: View {
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            Text("hi2")
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading, content: {
+                        Button {
+                            // action
+                        } label: {
+                            Image("CalendarIcon")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 35, height: 35)
+                                .background(.red)
+                        }
+                    })
+                    ToolbarItem(placement: .topBarTrailing, content: {
+                        Button {
+                            // action
+                        } label: {
+                            Image(systemName: "bell")
+                                .font(.system(size: 21))
+                        }
+                    })
+                }
+        }
     }
 }
 
