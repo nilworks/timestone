@@ -13,6 +13,7 @@ struct ShowCalendarView: View {
     var body: some View {
         NavigationView {
             VStack {
+                // 달력 상단 <, > 버튼 스택
                 HStack {
                     Button {
                         // action
@@ -43,6 +44,7 @@ struct ShowCalendarView: View {
 
                 }
                 .padding(.horizontal, 20)
+                CalendarGrid()
             }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading, content: {
