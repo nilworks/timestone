@@ -39,6 +39,7 @@ struct SetEventView: View {
             Image(systemName: "map")
             Text("장소")
             TextField("위치를 입력해 주세요.", text: $addLocation)
+            //sourcetree 테스트용 주석
         }
         
     }
