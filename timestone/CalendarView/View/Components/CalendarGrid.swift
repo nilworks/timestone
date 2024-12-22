@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct CalendarGrid: View {
+    @EnvironmentObject var calendarVM: CalendarFuncVM
+    
     var body: some View {
-        // LazyVGrid, LazyHGrid 사용해서 만들어보자~
         LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-            
+            ForEach(calendarVM.weekDays, id: \.self) { day in
+                Text(day)
+            }
         }
         .background(.green)
     }
@@ -19,4 +22,5 @@ struct CalendarGrid: View {
 
 #Preview {
     CalendarGrid()
+        .environmentObject(CalendarFuncVM())
 }

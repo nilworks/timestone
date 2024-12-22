@@ -45,8 +45,12 @@ struct ShowCalendarView: View {
                     }
 
                 }
-                .padding(.horizontal, 20)
-                
+                .padding(.horizontal, 17)
+                .background(.red)
+                .padding(.top)
+                .padding(.bottom, 5)
+                CalendarGrid()
+                Spacer()
             }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading, content: {
@@ -76,4 +80,5 @@ struct ShowCalendarView: View {
 
 #Preview {
     ShowCalendarView()
+        .environmentObject(CalendarFuncVM())
 }
