@@ -11,12 +11,9 @@ struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarFuncVM
     
     var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-            ForEach(calendarVM.weekDays, id: \.self) { day in
-                Text(day)
-            }
+        VStack {
+            Text("hi")
         }
-        .background(.green)
     }
 }
 

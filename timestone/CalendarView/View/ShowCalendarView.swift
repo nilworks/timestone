@@ -49,6 +49,12 @@ struct ShowCalendarView: View {
                 .background(.red)
                 .padding(.top)
                 .padding(.bottom, 5)
+                LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
+                    ForEach(calendarVM.weekDays, id: \.self) { day in
+                        Text(day)
+                    }
+                }
+                .background(.green)
                 CalendarGrid()
                 Spacer()
             }
