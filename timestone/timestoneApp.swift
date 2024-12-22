@@ -9,10 +9,12 @@ import SwiftUI
 
 @main
 struct timestoneApp: App {
+    @StateObject private var calendarVM = CalendarFuncVM()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-            
+                .environmentObject(calendarVM)
         }
     }
 }

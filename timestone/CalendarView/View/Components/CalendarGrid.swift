@@ -10,7 +10,10 @@ import SwiftUI
 struct CalendarGrid: View {
     var body: some View {
         // LazyVGrid, LazyHGrid 사용해서 만들어보자~
-        
+        LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
+            
+        }
+        .background(.green)
     }
 }
 

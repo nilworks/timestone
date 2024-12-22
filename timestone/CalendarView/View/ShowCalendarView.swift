@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ShowCalendarView: View {
+    @EnvironmentObject var calendarVM: CalendarFuncVM
+    
     @State var selectYearMonthBtn = "2024년 12월"
     
     var body: some View {
@@ -44,7 +46,7 @@ struct ShowCalendarView: View {
 
                 }
                 .padding(.horizontal, 20)
-                CalendarGrid()
+                
             }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading, content: {
