@@ -20,17 +20,17 @@ struct CalendarGrid: View {
                 let countMonthDays: Int = todayDate.numberOfDays()
                 if prevDaysCount >= 1 {
                     ForEach((0..<prevDaysCount).reversed(), id: \.self) { i in
-                        CalendarCellView(cellTitle: i)
+                        CalendarCellView(cellTitle: i, currentMonthDay: false)
                     }
                 }
                 ForEach(0..<countMonthDays, id: \.self) { day in
-                    CalendarCellView(cellTitle: day + 1)
+                    CalendarCellView(cellTitle: day + 1, currentMonthDay: true)
                 }
                 
                 if (prevDaysCount + countMonthDays) < 35 {
                     let remainNextMonthDays: Int = 35 - (prevDaysCount + countMonthDays)
                     ForEach(0..<remainNextMonthDays, id: \.self) { day in
-                        CalendarCellView(cellTitle: day + 1)
+                        CalendarCellView(cellTitle: day + 1, currentMonthDay: false)
                     }
                 }
             }
@@ -42,10 +42,12 @@ struct CalendarGrid: View {
 
 struct CalendarCellView: View {
     @State var cellTitle: Int = 0
+    @State var currentMonthDay: Bool = true
     
     var body: some View {
         VStack {
             Text("\(cellTitle)")
+                .foregroundStyle(currentMonthDay ? Color.black : Color.gray)
         }
     }
 }
