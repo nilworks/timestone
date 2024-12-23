@@ -10,7 +10,7 @@ import SwiftUI
 struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarFuncVM
     
-    let todayDate: Date = Date()
+    @Binding var todayDate: Date
     
     var body: some View {
         VStack {
@@ -20,15 +20,22 @@ struct CalendarGrid: View {
                 let countMonthDays: Int = todayDate.numberOfDays()
                 if prevDaysCount >= 1 {
                     ForEach((0..<prevDaysCount).reversed(), id: \.self) { i in
-                        CalendarCellView(cellTitle: i, currentMonthDay: false)
+                        CalendarCellView(cellTitle: countPrevMonthDays - (i + 1), currentMonthDay: false)
                     }
                 }
                 ForEach(0..<countMonthDays, id: \.self) { day in
                     CalendarCellView(cellTitle: day + 1, currentMonthDay: true)
                 }
                 
-                if (prevDaysCount + countMonthDays) < 35 {
+                if (prevDaysCount + countMonthDays) <= 35 {
                     let remainNextMonthDays: Int = 35 - (prevDaysCount + countMonthDays)
+                    ForEach(0..<remainNextMonthDays, id: \.self) { day in
+                        CalendarCellView(cellTitle: day + 1, currentMonthDay: false)
+                    }
+                }
+                
+                if (prevDaysCount + countMonthDays) > 35 {
+                    let remainNextMonthDays: Int = 42 - (prevDaysCount + countMonthDays)
                     ForEach(0..<remainNextMonthDays, id: \.self) { day in
                         CalendarCellView(cellTitle: day + 1, currentMonthDay: false)
                     }
@@ -53,6 +60,7 @@ struct CalendarCellView: View {
 }
 
 #Preview {
-    CalendarGrid()
+    @State var previewDate: Date = Date()
+    CalendarGrid(todayDate: $previewDate)
         .environmentObject(CalendarFuncVM())
 }

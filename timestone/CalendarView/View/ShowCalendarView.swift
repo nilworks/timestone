@@ -10,15 +10,13 @@ import SwiftUI
 struct ShowCalendarView: View {
     @EnvironmentObject var calendarVM: CalendarFuncVM
     
-    @State var selectYearMonthBtn = "2024년 12월"
-    
     var body: some View {
         NavigationView {
             VStack {
                 // 달력 상단 <, > 버튼 스택
                 HStack {
                     Button {
-                        // action
+                        calendarVM.changeMonth(value: -1)
                     } label: {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 24))
@@ -29,7 +27,7 @@ struct ShowCalendarView: View {
                     Button {
                         // action
                     } label: {
-                        Text(selectYearMonthBtn)
+                        Text(calendarVM.dateToStringYearMonth())
                             .font(.system(size: 27))
                             .fontWeight(.semibold)
                             .padding(.bottom)
@@ -38,7 +36,7 @@ struct ShowCalendarView: View {
                     Spacer()
                     
                     Button {
-                        // action
+                        calendarVM.changeMonth(value: 1)
                     } label: {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 24))
@@ -55,7 +53,7 @@ struct ShowCalendarView: View {
                     }
                 }
                 .background(.green)
-                CalendarGrid()
+                CalendarGrid(todayDate: $calendarVM.month)
                 Spacer()
             }
                 .toolbar {
