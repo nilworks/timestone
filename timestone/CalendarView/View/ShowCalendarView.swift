@@ -53,7 +53,7 @@ struct ShowCalendarView: View {
                     }
                 }
                 .background(.green)
-                CalendarGrid(todayDate: $calendarVM.month)
+                CalendarGrid()
                 Spacer()
             }
                 .toolbar {

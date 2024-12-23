@@ -10,17 +10,16 @@ import SwiftUI
 struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarFuncVM
     
-    @Binding var todayDate: Date
     
     var body: some View {
         VStack {
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-                let prevDaysCount: Int = todayDate.firstWeekdayOfMonth() - 1
-                let countPrevMonthDays: Int = todayDate.numberOfDaysPrevMonth() // 지난 달 총 몇일
-                let countMonthDays: Int = todayDate.numberOfDays()
+                let prevDaysCount: Int = calendarVM.firstWeekdayOfMonth() - 1
+                let countPrevMonthDays: Int = calendarVM.numberOfDaysPrevMonth() // 지난 달 총 몇일
+                let countMonthDays: Int = calendarVM.numberOfDays()
                 if prevDaysCount >= 1 {
                     ForEach((0..<prevDaysCount).reversed(), id: \.self) { i in
-                        CalendarCellView(cellTitle: countPrevMonthDays - (i + 1), currentMonthDay: false)
+                        CalendarCellView(cellTitle: countPrevMonthDays - (i), currentMonthDay: false)
                     }
                 }
                 ForEach(0..<countMonthDays, id: \.self) { day in
@@ -48,8 +47,8 @@ struct CalendarGrid: View {
 
 
 struct CalendarCellView: View {
-    @State var cellTitle: Int = 0
-    @State var currentMonthDay: Bool = true
+    var cellTitle: Int = 0
+    var currentMonthDay: Bool = true
     
     var body: some View {
         VStack {
@@ -60,7 +59,6 @@ struct CalendarCellView: View {
 }
 
 #Preview {
-    @State var previewDate: Date = Date()
-    CalendarGrid(todayDate: $previewDate)
+    CalendarGrid()
         .environmentObject(CalendarFuncVM())
 }
