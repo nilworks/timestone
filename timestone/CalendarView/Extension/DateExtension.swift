@@ -17,13 +17,19 @@ extension Date {
     }
     
     // 특정 월에 존재하는 일 개수
-    func numberOfDays(date: Date) -> Int {
-        return Calendar.current.range(of: .day, in: .month, for: date)?.count ?? 0
+    func numberOfDays() -> Int {
+        return Calendar.current.range(of: .day, in: .month, for: self)?.count ?? 0
+    }
+    
+    // 특정 월의 이전 달 일 개수
+    func numberOfDaysPrevMonth() -> Int {
+        let prevMonth = Calendar.current.date(byAdding: .month, value: -1, to: self)!
+        return Calendar.current.range(of: .day, in: .month, for: prevMonth)?.count ?? 0
     }
     
     // 특정 월/1일의 요일
-    func firstWeekdayOfMonth(date: Date) -> Int {
-        let components = Calendar.current.dateComponents([.year, .month], from: date)
+    func firstWeekdayOfMonth() -> Int {
+        let components = Calendar.current.dateComponents([.year, .month], from: self)
         let firstDayOfMonth = Calendar.current.date(from: components)!
         
         return Calendar.current.component(.weekday, from: firstDayOfMonth)
