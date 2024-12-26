@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct ShowCalendarView: View {
-    @State var selectYearMonthBtn = "2024년 12월"
+    @EnvironmentObject var calendarVM: CalendarVM
     
-     var body: some View {
+    var body: some View {
         NavigationView {
             VStack {
+                // 달력 상단 <, > 버튼 스택
                 HStack {
                     Button {
-                        // action
+                        calendarVM.changeMonth(value: -1)
                     } label: {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 24))
@@ -26,7 +27,7 @@ struct ShowCalendarView: View {
                     Button {
                         // action
                     } label: {
-                        Text(selectYearMonthBtn)
+                        Text(calendarVM.dateToStringYearMonth())
                             .font(.system(size: 27))
                             .fontWeight(.semibold)
                             .padding(.bottom)
@@ -35,14 +36,25 @@ struct ShowCalendarView: View {
                     Spacer()
                     
                     Button {
-                        // action
+                        calendarVM.changeMonth(value: 1)
                     } label: {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 24))
                     }
 
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, 17)
+                .background(.red)
+                .padding(.top)
+                .padding(.bottom, 5)
+                LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
+                    ForEach(calendarVM.weekDays, id: \.self) { day in
+                        Text(day)
+                    }
+                }
+                .background(.green)
+                CalendarGrid()
+                Spacer()
             }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading, content: {
@@ -72,4 +84,5 @@ struct ShowCalendarView: View {
 
 #Preview {
     ShowCalendarView()
+        .environmentObject(CalendarVM())
 }
