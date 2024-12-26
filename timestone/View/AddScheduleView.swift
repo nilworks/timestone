@@ -25,6 +25,7 @@ struct TestView: View {
 struct AddScheduleView: View {
     @StateObject var viewModel = AddScheduleViewModel()
     @State private var scheduleTitle: String = ""
+    @State private var clockIsOn: Bool = false
     
     var body: some View {
         ScrollView {
@@ -74,11 +75,31 @@ struct AddScheduleView: View {
                 Divider()
                     .frame(height: 1.5) // 높이 값을 사용해서 Divider 두께 조절
                     .background(Color.netural80)
+                    .padding(.top, 5)
                 
                 // 알림
                 HStack {
+                    // 아이콘
+                    Image(systemName: "clock")
+                        .font(.system(size: 18))
+                        .foregroundColor(.primary100)
                     
+                    // 알림, 시작, 종료
+                    VStack(spacing: 20) {
+                        HStack {
+                            Text("알림")
+                                .font(.bodyRegular)
+                                .foregroundColor(.white)
+                            
+                            Spacer()
+                            
+                            Toggle("", isOn: $clockIsOn)
+                                .toggleStyle(ToggleSt())
+                        }
+                    }
                 }
+                .padding([.leading, .trailing], 20)
+                .padding(.top, 20)
                 
             }
         }
