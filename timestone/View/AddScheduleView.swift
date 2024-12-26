@@ -75,7 +75,7 @@ struct AddScheduleView: View {
                 }
                 
                 Divider()
-                    .frame(height: 1.5) // 높이 값을 사용해서 Divider 두께 조절
+                    .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
                     .background(Color.netural80)
                     .padding(.top, 5)
                 
@@ -138,8 +138,34 @@ struct AddScheduleView: View {
                 .padding([.leading, .trailing], 20)
                 .padding(.top, 20)
                 
-            }
-        }
+                Divider()
+                    .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
+                    .background(Color.netural80)
+                    .padding(.top, 20)
+                
+                // 메모
+                // 아이콘
+                HStack {
+                    VStack {
+                        Image(systemName: "pencil")
+                            .font(.system(size: 18))
+                            .foregroundColor(.primary100)
+                        Spacer()
+                    }
+                    .padding(.top, 2)
+                    
+                    Spacer()
+                    
+                    // 알림, 시작, 종료
+                    HStack {
+                        Text("메모")
+                    }
+                }
+                .padding([.leading, .trailing], 20)
+                .padding(.top, 20)
+                
+            } // VStack
+        } // ScrollView
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.netural100))
     }
