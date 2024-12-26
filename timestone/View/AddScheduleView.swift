@@ -116,7 +116,7 @@ struct AddScheduleView: View {
                                 .environment(\.locale, Locale(identifier: "ko_KR"))
                                 .background()
                                 .scaleEffect(0.8)
-                                .offset(x: 30) //TODO: offset 말고 다른 방법 필요(핸드폰 사이즈에 따라 달라질 수 있음)
+                                .offset(x: 30) // TODO: offset 말고 다른 방법 필요(핸드폰 사이즈에 따라 달라질 수 있음)
                         }
                         
                         // 종료
