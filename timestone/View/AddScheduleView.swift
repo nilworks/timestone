@@ -23,9 +23,11 @@ struct TestView: View {
 }
 
 struct AddScheduleView: View {
+    // MARK: -Properties
     @StateObject var viewModel = AddScheduleViewModel()
     @State private var scheduleTitle: String = ""
     @State private var clockIsOn: Bool = false
+    @State private var selectDay = Date() // TODO: 캘린더에서 선택된 날짜 가져오도록 하기
     
     var body: some View {
         ScrollView {
@@ -80,12 +82,17 @@ struct AddScheduleView: View {
                 // 알림
                 HStack {
                     // 아이콘
-                    Image(systemName: "clock")
-                        .font(.system(size: 18))
-                        .foregroundColor(.primary100)
+                    VStack {
+                        Image(systemName: "clock")
+                            .font(.system(size: 18))
+                            .foregroundColor(.primary100)
+                        Spacer()
+                    }
+                    .padding(.top, 2)
                     
                     // 알림, 시작, 종료
-                    VStack(spacing: 20) {
+                    VStack(spacing: 15) {
+                        // 알림
                         HStack {
                             Text("알림")
                                 .font(.bodyRegular)
@@ -96,6 +103,36 @@ struct AddScheduleView: View {
                             Toggle("", isOn: $clockIsOn)
                                 .toggleStyle(ToggleSt())
                         }
+                        
+                        // 시작
+                        HStack {
+                            Text("시작")
+                                .font(.bodyRegular)
+                                .foregroundColor(.white)
+                            
+                            Spacer()
+                            
+                            DatePicker("", selection: $selectDay)
+                                .environment(\.locale, Locale(identifier: "ko_KR"))
+                                .background()
+                                .scaleEffect(0.8)
+                                .offset(x: 30) //TODO: offset 말고 다른 방법 필요(핸드폰 사이즈에 따라 달라질 수 있음)
+                        }
+                        
+                        // 종료
+                        HStack {
+                            Text("종료")
+                                .font(.bodyRegular)
+                                .foregroundColor(.white)
+                            
+                            Spacer()
+                            
+                            DatePicker("", selection: $selectDay)
+                                .environment(\.locale, Locale(identifier: "ko_KR"))
+                                .scaleEffect(0.8)
+                                .offset(x: 30)
+                        }
+                        .offset(y: -3)
                     }
                 }
                 .padding([.leading, .trailing], 20)
