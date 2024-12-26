@@ -25,13 +25,13 @@ struct SetEventView: View {
                 "링크를 입력해 주세요.",
                 text: $inputLink,
                 prompt: Text("링크를 입력해 주세요.")
-                    .foregroundColor(.netural50)
+                    .foregroundColor(.neutral50)
                 )
             .padding(10)
             .foregroundStyle(.white)
             .font(.captionLight)
             .frame(width: 260, height: 21, alignment: .leading)
-            .background(.netural80)
+            .background(.neutral80)
             .cornerRadius(4)//추후 코드 수정 필요
 
         }

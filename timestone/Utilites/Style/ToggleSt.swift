@@ -12,7 +12,7 @@ struct ToggleSt: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             RoundedRectangle(cornerRadius: 24 / 2)
-                .fill(configuration.isOn ? Color.green : Color.netural70)
+                .fill(configuration.isOn ? Color.green : Color.neutral70)
                 .frame(width: 46, height: 24)
                 .overlay(
                     Circle()

@@ -53,7 +53,7 @@ struct AddScheduleView: View {
                     }) {
                         Text("Save")
                             .font(.bodyRegular)
-                            .foregroundColor(.netural60)
+                            .foregroundColor(.neutral60)
                     }
                 }
                 .padding([.leading, .trailing], 20)
@@ -61,7 +61,7 @@ struct AddScheduleView: View {
                 
                 // 일정 제목 입력
                 if #available(iOS 17.0, *) {
-                    TextField("일정", text: $scheduleTitle, prompt: Text("일정").foregroundStyle(.netural70))
+                    TextField("일정", text: $scheduleTitle, prompt: Text("일정").foregroundStyle(.neutral70))
                         .font(.titleBold)
                         .padding([.leading, .trailing], 20)
                         .padding(.top, 40)
@@ -76,7 +76,7 @@ struct AddScheduleView: View {
                 
                 Divider()
                     .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
-                    .background(Color.netural80)
+                    .background(Color.neutral80)
                     .padding(.top, 5)
                 
                 // 알림
@@ -140,7 +140,7 @@ struct AddScheduleView: View {
                 
                 Divider()
                     .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
-                    .background(Color.netural80)
+                    .background(Color.neutral80)
                     .padding(.top, 20)
                 
                 // 메모
@@ -167,7 +167,7 @@ struct AddScheduleView: View {
             } // VStack
         } // ScrollView
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.netural100))
+        .background(Color(.neutral100))
     }
 }
 
