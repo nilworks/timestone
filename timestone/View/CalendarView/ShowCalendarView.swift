@@ -10,7 +10,7 @@ import SwiftUI
 struct ShowCalendarView: View {
     @State var selectYearMonthBtn = "2024년 12월"
     
-    var body: some View {
+     var body: some View {
         NavigationView {
             VStack {
                 HStack {
