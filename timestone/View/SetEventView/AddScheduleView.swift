@@ -28,6 +28,7 @@ struct AddScheduleView: View {
     @State private var scheduleTitle: String = ""
     @State private var clockIsOn: Bool = false
     @State private var selectDay = Date() // TODO: 캘린더에서 선택된 날짜 가져오도록 하기
+    @State private var memoText: String = ""
     
     var body: some View {
         ScrollView {
@@ -57,7 +58,7 @@ struct AddScheduleView: View {
                     }
                 }
                 .padding([.leading, .trailing], 20)
-                .padding(.top, 15)
+                .padding(.top, 20)
                 
                 // 일정 제목 입력
                 if #available(iOS 17.0, *) {
@@ -158,7 +159,17 @@ struct AddScheduleView: View {
                     
                     // 알림, 시작, 종료
                     HStack {
-                        Text("메모")
+                        VStack {
+                            Text("메모")
+                            Spacer()
+                        }
+                        
+                        Spacer()
+                        
+                        TextEditor(text: $memoText)
+                            .font(.captionLight)
+                            .frame(height: 96)
+                            .cornerRadius(4)
                     }
                 }
                 .padding([.leading, .trailing], 20)
