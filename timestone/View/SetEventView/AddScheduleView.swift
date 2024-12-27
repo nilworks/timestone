@@ -30,6 +30,11 @@ struct AddScheduleView: View {
     @State private var selectDay = Date() // TODO: 캘린더에서 선택된 날짜 가져오도록 하기
     @State private var memoText: String = ""
     
+    // 텍스트 뷰 여백 조절
+    init() {
+        UITextView.appearance().textContainerInset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+    }
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -135,18 +140,18 @@ struct AddScheduleView: View {
                         }
                         .offset(y: -3)
                     }
-                }
+                } // 알림
                 .padding([.leading, .trailing], 20)
-                .padding(.top, 20)
+                .padding(.top, 15)
                 
                 Divider()
                     .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
                     .background(Color.neutral80)
-                    .padding(.top, 20)
+                    .padding(.top, 15)
                 
                 // 메모
-                // 아이콘
                 HStack {
+                    // 아이콘
                     VStack {
                         Image(systemName: "pencil")
                             .font(.system(size: 18))
@@ -157,23 +162,63 @@ struct AddScheduleView: View {
                     
                     Spacer()
                     
-                    // 알림, 시작, 종료
-                    HStack {
+                    // 메모 콘텐츠
+                    HStack(spacing: 30) {
                         VStack {
                             Text("메모")
+                                .font(.bodyRegular)
+                            
                             Spacer()
                         }
-                        
-                        Spacer()
-                        
+
                         TextEditor(text: $memoText)
                             .font(.captionLight)
                             .frame(height: 96)
                             .cornerRadius(4)
+                            // placeholder 만들기
+                            .overlay(alignment: .topLeading) {
+                                Text("메모를 입력해주세요.")
+                                    .foregroundStyle(memoText.isEmpty ? .neutral50 : .clear)
+                                    .font(.captionLight)
+                                    .padding([.leading, .top], 4)
+                            }
                     }
-                }
+                } // 메모
                 .padding([.leading, .trailing], 20)
-                .padding(.top, 20)
+                .padding(.top, 15)
+                
+                Divider()
+                    .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
+                    .background(Color.neutral80)
+                    .padding(.top, 20)
+                
+                // 사진
+                HStack {
+                    // 아이콘
+                    VStack {
+                        Image(systemName: "photo")
+                            .font(.system(size: 18))
+                            .foregroundStyle(.primary100)
+                        
+                        Spacer()
+                    }
+                    .padding(.top, 2)
+                    
+                    // 사진 추가 콘텐츠
+                    HStack(spacing: 20) {
+                        VStack {
+                            Text("사진")
+                                .font(.bodyRegular)
+                            
+                            Spacer()
+                        }
+                        
+                        
+                    }
+                    
+                } // 사진
+                .padding([.leading, .trailing], 20)
+                .padding(.top, 15)
                 
             } // VStack
         } // ScrollView
