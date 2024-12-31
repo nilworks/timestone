@@ -12,7 +12,7 @@ struct ShowCalendarView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 0) {
                 // 달력 상단 <, > 버튼 스택
                 HStack {
                     Button {
@@ -45,7 +45,7 @@ struct ShowCalendarView: View {
                 }
                 .padding(.horizontal, 17)
                 .background(.red)
-                .padding(.top)
+                .padding(.top, 5)
                 .padding(.bottom, 5)
                 LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
                     ForEach(calendarVM.weekDays, id: \.self) { day in
@@ -53,9 +53,13 @@ struct ShowCalendarView: View {
                     }
                 }
                 .background(.green)
+                .padding(.bottom, 5)
                 CalendarGrid()
-                    .background(.yellow)
-                Spacer()
+                    .frame(maxHeight: .infinity)
+                    .background(.blue)
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundStyle(.clear)
             }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading, content: {
