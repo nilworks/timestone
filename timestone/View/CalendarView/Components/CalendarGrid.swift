@@ -11,35 +11,44 @@ struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarVM
     
     var body: some View {
-        VStack {
-            LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-                let prevDaysCount: Int = calendarVM.firstWeekdayOfMonth() - 1
-                let countPrevMonthDays: Int = calendarVM.numberOfDaysPrevMonth() // 지난 달 총 몇일
-                let countMonthDays: Int = calendarVM.numberOfDays()
-                if prevDaysCount >= 1 {
-                    ForEach((0..<prevDaysCount).reversed(), id: \.self) { i in
-                        CalendarCellView(cellTitle: countPrevMonthDays - i, currentMonthDay: false)
-                    }
-                }
-                ForEach(0..<countMonthDays, id: \.self) { day in
-                    CalendarCellView(cellTitle: day + 1, currentMonthDay: true)
-                }
+        GeometryReader { geometry in
+            VStack {
                 
-                if (prevDaysCount + countMonthDays) <= 35 {
-                    let remainNextMonthDays: Int = 35 - (prevDaysCount + countMonthDays)
-                    ForEach(0..<remainNextMonthDays, id: \.self) { day in
-                        CalendarCellView(cellTitle: day + 1, currentMonthDay: false)
+                LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
+                    let prevDaysCount: Int = calendarVM.firstWeekdayOfMonth() - 1
+                    let countPrevMonthDays: Int = calendarVM.numberOfDaysPrevMonth() // 지난 달 총 몇일
+                    let countMonthDays: Int = calendarVM.numberOfDays()
+                    let rowHeight = prevDaysCount + countMonthDays > 35 ? geometry.size.height / 7 : geometry.size.height / 6
+                    if prevDaysCount >= 1 {
+                        ForEach((0..<prevDaysCount).reversed(), id: \.self) { i in
+                            CalendarCellView(cellTitle: countPrevMonthDays - i, currentMonthDay: false)
+                                .frame(height: rowHeight)
+                        }
+                    }
+                    ForEach(0..<countMonthDays, id: \.self) { day in
+                        CalendarCellView(cellTitle: day + 1, currentMonthDay: true)
+                            .frame(height: rowHeight)
+                    }
+                    
+                    if (prevDaysCount + countMonthDays) <= 35 {
+                        let remainNextMonthDays: Int = 35 - (prevDaysCount + countMonthDays)
+                        ForEach(0..<remainNextMonthDays, id: \.self) { day in
+                            CalendarCellView(cellTitle: day + 1, currentMonthDay: false)
+                                .frame(height: rowHeight)
+                        }
+                    }
+                    
+                    if (prevDaysCount + countMonthDays) > 35 {
+                        let remainNextMonthDays: Int = 42 - (prevDaysCount + countMonthDays)
+                        ForEach(0..<remainNextMonthDays, id: \.self) { day in
+                            CalendarCellView(cellTitle: day + 1, currentMonthDay: false)
+                                .frame(height: rowHeight)
+                        }
                     }
                 }
-                
-                if (prevDaysCount + countMonthDays) > 35 {
-                    let remainNextMonthDays: Int = 42 - (prevDaysCount + countMonthDays)
-                    ForEach(0..<remainNextMonthDays, id: \.self) { day in
-                        CalendarCellView(cellTitle: day + 1, currentMonthDay: false)
-                    }
-                }
+                .background(.green)
+                .frame(maxHeight: geometry.size.height, alignment: .top)
             }
-            .background(.green)
         }
     }
 }
@@ -52,7 +61,11 @@ struct CalendarCellView: View {
         VStack {
             Text("\(cellTitle)")
                 .foregroundStyle(currentMonthDay ? Color.black : Color.gray)
+            Spacer()
         }
+        .frame(maxHeight: .infinity)
+        .background(.yellow)
+        
     }
 }
 

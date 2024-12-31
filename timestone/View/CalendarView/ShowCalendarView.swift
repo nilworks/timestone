@@ -54,6 +54,7 @@ struct ShowCalendarView: View {
                 }
                 .background(.green)
                 CalendarGrid()
+                    .background(.yellow)
                 Spacer()
             }
                 .toolbar {
