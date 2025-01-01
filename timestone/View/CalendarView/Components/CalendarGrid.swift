@@ -9,15 +9,17 @@ import SwiftUI
 
 struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarVM
+    @Binding var gridHeight: CGFloat
+//    var newHeight
     
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
+                LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 0) {
                     let currentFirstWeekday: Int = calendarVM.firstWeekdayOfMonth() - 1 // 현재 달 1일 요일
                     let numberPrevMonthDays: Int = calendarVM.numberOfDaysPrevMonth() // 지난 달 날짜 개수
                     let numberCurrentMonthDays: Int = calendarVM.numberOfDays() // 현재 달 날짜 개수
-                    let cellHeight = currentFirstWeekday + numberCurrentMonthDays > 35 ?  geometry.size.height / 7 : geometry.size.height / 6 // 행 개수에 따른 cell 높이
+                    let cellHeight = currentFirstWeekday + numberCurrentMonthDays > 35 ?  gridHeight / 6 : gridHeight / 5 // 행 개수에 따른 cell 높이
                     
                     // 현재 달의 1일이 일요일이 아닐 경우
                     if currentFirstWeekday >= 1 {
@@ -52,6 +54,11 @@ struct CalendarGrid: View {
                 }
                 .background(.green)
                 .frame(maxHeight: .infinity, alignment: .top)
+                .onAppear {
+                                    // View가 나타날 때 높이를 계산하여 전달
+                                    gridHeight = geometry.size.height
+//                    print("현재 높이 : \(gridHeight)")
+                                }
             }
         }
     }
@@ -74,7 +81,8 @@ struct CalendarCellView: View {
 }
 
 #Preview {
-    CalendarGrid()
+    @State var gridHeight: CGFloat = 0.0
+    CalendarGrid( gridHeight: $gridHeight)
         .environmentObject(CalendarVM())
 }
 

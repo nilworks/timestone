@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShowCalendarView: View {
     @EnvironmentObject var calendarVM: CalendarVM
+    @State private var gridHeight: CGFloat = 0
     
     var body: some View {
         NavigationView {
@@ -54,9 +55,9 @@ struct ShowCalendarView: View {
                 }
                 .background(.green)
                 .padding(.bottom, 5)
-                CalendarGrid()
-                    .frame(maxHeight: .infinity)
-                    .background(.blue)
+                CalendarGrid(gridHeight: $gridHeight)
+                                    .frame(maxHeight: .infinity)
+                                    .background(.blue)
                 Rectangle()
                     .frame(height: 1)
                     .foregroundStyle(.clear)

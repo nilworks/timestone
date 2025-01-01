@@ -47,7 +47,6 @@ class CalendarVM: ObservableObject {
     // 특정 월의 이전 달 일 개수
     func numberOfDaysPrevMonth() -> Int {
         let prevMonth = Calendar.current.date(byAdding: .month, value: -1, to: month)!
-        print("이전 달의 날짜 개수 : \(Calendar.current.range(of: .day, in: .month, for: prevMonth)?.count ?? 0)")
         return Calendar.current.range(of: .day, in: .month, for: prevMonth)?.count ?? 0
     }
     
