@@ -8,7 +8,6 @@
 import Foundation
 
 class CalendarVM: ObservableObject {
-    // 1-7의 요일 값으로 Calendar.current.weekdaySymbols[Int] 를 사용해서 더 알잘딱하게 표현할 수 있을지도?
     @Published var weekDays: [String] = ["일", "월", "화", "수", "목", "금", "토"]
     
     @Published var month: Date = Date() {
@@ -19,10 +18,20 @@ class CalendarVM: ObservableObject {
     
     
     // yyyy년 m월 문자열 dateformat
+    @discardableResult
     func dateToStringYearMonth() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 M월"
         return formatter.string(from: month)
+    }
+    
+    // value: -1(이전 달), 0(현재 달), 1(다음 달)
+    func getDate(value: Int, day: Int) -> Date {
+        let calendar = Calendar.current
+        
+        var changedMonth = calendar.date(byAdding: .month, value: value, to: month)!
+        
+        return calendar.date(from: DateComponents(year: calendar.component(.year, from: changedMonth), month: calendar.component(.month, from: changedMonth), day: day)) ?? Date()
     }
     
     // 이전/다음 달
