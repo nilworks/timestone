@@ -47,7 +47,7 @@ struct CalendarGrid: View {
                     ForEach(0..<remainCount, id: \.self) { day in
                         let isToday: Bool = Date().calendarDateString() == calendarVM.getDate(value: 1, day: day + 1).calendarDateString()
                         
-                        CalendarCellView(cellDate: calendarVM.getDate(value: -1, day: day + 1), currentMonthDay: true, isToday: isToday)
+                        CalendarCellView(cellDate: calendarVM.getDate(value: -1, day: day + 1), currentMonthDay: false, isToday: isToday)
                             .frame(height: cellHeight)
                     }  
                 }
@@ -85,13 +85,33 @@ struct CalendarCellView: View {
                         .foregroundStyle(currentMonthDay ? Color.black : Color.gray)
                 }
             Spacer()
-            Rectangle()
+            VStack(spacing: 2) {
+                eventCell()
+                eventCell()
+                eventCell()
+            }
             Rectangle()
                 .frame(height: 1.5)
                 .foregroundStyle(.neutral80)
         }
         .frame(maxHeight: .infinity)
         .background(.yellow)
+    }
+}
+
+struct eventCell: View {
+    var cellTitle: String = "회의를 합시다."
+    
+    
+    var body: some View {
+        Rectangle()
+            .foregroundStyle(.neutral10)
+            .padding(.horizontal, 1)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
+            .overlay {
+                Text("회의를 합시다")
+                    .font(.system(size: 13))
+            }
     }
 }
 
@@ -106,7 +126,7 @@ extension Date {
 
 
 #Preview {
-    @State var gridHeight: CGFloat = 654.0
+    @State var gridHeight: CGFloat = 650.0
     CalendarGrid( gridHeight: $gridHeight)
         .environmentObject(CalendarVM())
 }
