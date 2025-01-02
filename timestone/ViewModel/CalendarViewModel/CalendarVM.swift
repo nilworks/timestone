@@ -29,9 +29,14 @@ class CalendarVM: ObservableObject {
     func getDate(value: Int, day: Int) -> Date {
         let calendar = Calendar.current
         
-        var changedMonth = calendar.date(byAdding: .month, value: value, to: month)!
+        let changedMonth = calendar.date(byAdding: .month, value: value, to: month)!
         
         return calendar.date(from: DateComponents(year: calendar.component(.year, from: changedMonth), month: calendar.component(.month, from: changedMonth), day: day)) ?? Date()
+    }
+    
+    func getDay(date: Date) -> Int {
+        let calendar = Calendar.current
+        return calendar.component(.day, from: date)
     }
     
     // 이전/다음 달

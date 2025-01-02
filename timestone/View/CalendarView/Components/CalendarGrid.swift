@@ -10,9 +10,7 @@ import SwiftUI
 struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarVM
     @Binding var gridHeight: CGFloat
-    
-    
-    
+
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -28,7 +26,7 @@ struct CalendarGrid: View {
                         ForEach((0..<currentFirstWeekday).reversed(), id: \.self) { i in
                             let isToday: Bool = Date().calendarDateString() == calendarVM.getDate(value: -1, day: numberPrevMonthDays - i).calendarDateString()
                             
-                            CalendarCellView(cellTitle: numberPrevMonthDays - i, currentMonthDay: false, isToday: isToday)
+                            CalendarCellView(cellDate: calendarVM.getDate(value: -1, day: numberPrevMonthDays - i), currentMonthDay: false, isToday: isToday)
                                 .frame(height: cellHeight)
                         }
                     }
@@ -37,10 +35,9 @@ struct CalendarGrid: View {
                     ForEach(0..<numberCurrentMonthDays, id: \.self) { day in
                         let isToday: Bool = Date().calendarDateString() == calendarVM.getDate(value: 0, day: day + 1).calendarDateString()
                         
-                        CalendarCellView(cellTitle: day + 1, currentMonthDay: true, isToday: isToday)
+                        CalendarCellView(cellDate: calendarVM.getDate(value: 0, day: day + 1), currentMonthDay: true, isToday: isToday)
                             .frame(height: cellHeight)
                     }
-                    
                     
                     // 현재 달의 날짜들을 전부 채웠는데 cell이 35개(5행)보다 적은지 많은지 구분
                     // 적으면 35개가 될때까지 다음 달의 날짜를 채우고, 많으면 42개가 될때까지 채움
@@ -50,12 +47,9 @@ struct CalendarGrid: View {
                     ForEach(0..<remainCount, id: \.self) { day in
                         let isToday: Bool = Date().calendarDateString() == calendarVM.getDate(value: 1, day: day + 1).calendarDateString()
                         
-                        CalendarCellView(cellTitle: day + 1, currentMonthDay: false, isToday: isToday)
+                        CalendarCellView(cellDate: calendarVM.getDate(value: -1, day: day + 1), currentMonthDay: true, isToday: isToday)
                             .frame(height: cellHeight)
-                    }
-                    
-                    
-                    
+                    }  
                 }
                 .background(.green)
                 .frame(maxHeight: .infinity, alignment: .top)
@@ -68,12 +62,14 @@ struct CalendarGrid: View {
 }
 
 struct CalendarCellView: View {
-    var cellTitle: Int
+    @EnvironmentObject var calendarVM: CalendarVM
+    
+    var cellDate: Date
     var currentMonthDay: Bool
     var isToday: Bool
     
-    init(cellTitle: Int, currentMonthDay: Bool = false, isToday: Bool = true) {
-        self.cellTitle = cellTitle
+    init(cellDate: Date, currentMonthDay: Bool = false, isToday: Bool = true) {
+        self.cellDate = cellDate
         self.currentMonthDay = currentMonthDay
         self.isToday = isToday
     }
@@ -82,19 +78,20 @@ struct CalendarCellView: View {
         VStack {
             Circle()
                 .foregroundStyle(isToday ? .primary100 : .clear)
-                .scaleEffect(0.6)
+                .frame(maxWidth: 40, maxHeight: 40)
+                .padding(.top, 5)
                 .overlay {
-                    Text("\(cellTitle)")
+                    Text("\(calendarVM.getDay(date: cellDate))")
                         .foregroundStyle(currentMonthDay ? Color.black : Color.gray)
                 }
             Spacer()
+            Rectangle()
             Rectangle()
                 .frame(height: 1.5)
                 .foregroundStyle(.neutral80)
         }
         .frame(maxHeight: .infinity)
         .background(.yellow)
-        
     }
 }
 
