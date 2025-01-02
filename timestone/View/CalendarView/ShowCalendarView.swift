@@ -54,6 +54,9 @@ struct ShowCalendarView: View {
                 }
                 .background(.green)
                 .padding(.bottom, 5)
+                Rectangle()
+                    .frame(height: 1.5)
+                    .foregroundStyle(.neutral80)
                 CalendarGrid(gridHeight: $gridHeight)
                                     .frame(maxHeight: .infinity)
                                     .background(.blue)

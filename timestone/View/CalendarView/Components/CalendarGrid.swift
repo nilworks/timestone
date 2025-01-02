@@ -16,7 +16,7 @@ struct CalendarGrid: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                LazyVGrid(columns: Array(repeating: GridItem(spacing: 1), count: 7), spacing: 0) {
+                LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 7), spacing: 0) {
                     let currentFirstWeekday: Int = calendarVM.firstWeekdayOfMonth() - 1 // 현재 달 1일 요일
                     let numberPrevMonthDays: Int = calendarVM.numberOfDaysPrevMonth() // 지난 달 날짜 개수
                     let numberCurrentMonthDays: Int = calendarVM.numberOfDays() // 현재 달 날짜 개수
@@ -58,7 +58,7 @@ struct CalendarGrid: View {
                     
                 }
                 .background(.green)
-                .frame(maxHeight: .infinity)
+                .frame(maxHeight: .infinity, alignment: .top)
                 .onAppear {
                     gridHeight = geometry.size.height
                 }
@@ -88,6 +88,9 @@ struct CalendarCellView: View {
                         .foregroundStyle(currentMonthDay ? Color.black : Color.gray)
                 }
             Spacer()
+            Rectangle()
+                .frame(height: 1.5)
+                .foregroundStyle(.neutral80)
         }
         .frame(maxHeight: .infinity)
         .background(.yellow)
