@@ -29,6 +29,9 @@ struct AddScheduleView: View {
     @State private var clockIsOn: Bool = false
     @State private var selectDay = Date() // TODO: 캘린더에서 선택된 날짜 가져오도록 하기
     @State private var memoText: String = ""
+    @State private var image = UIImage()
+    @State private var images: [UIImage] = []
+    @State private var showSheet = false
     
     // 텍스트 뷰 여백 조절
     init() {
@@ -170,12 +173,12 @@ struct AddScheduleView: View {
                             
                             Spacer()
                         }
-
+                        
                         TextEditor(text: $memoText)
                             .font(.captionLight)
                             .frame(height: 96)
                             .cornerRadius(4)
-                            // placeholder 만들기
+                        // placeholder 만들기
                             .overlay(alignment: .topLeading) {
                                 Text("메모를 입력해주세요.")
                                     .foregroundStyle(memoText.isEmpty ? .neutral50 : .clear)
@@ -213,11 +216,33 @@ struct AddScheduleView: View {
                             Spacer()
                         }
                         
-                        
+                        ScrollView(.horizontal) {
+                            HStack {
+                                VStack {
+                                    Image(systemName: "plus")
+                                        .foregroundStyle(.white)
+                                        .padding(.bottom, 2)
+                                    Text("0/10") // TODO: 추가된 이미지 숫자로 바뀌도록
+                                        .foregroundStyle(.white)
+                                        .font(.subCaptionLight)
+                                }
+                                .frame(width: 100, height: 100)
+                                .background(.neutral90)
+                                .cornerRadius(4)
+                                .onTapGesture {
+                                    showSheet = true
+                                }
+                                .sheet(isPresented: $showSheet) {
+                                    ImagePicker(sourceType: .photoLibrary, selectedImage: self.$image)
+                                }
+                            }
+                            
+                        } // ScrollView
+                        .foregroundStyle(.red)
                     }
                     
                 } // 사진
-                .padding([.leading, .trailing], 20)
+                .padding(.leading, 20)
                 .padding(.top, 15)
                 
             } // VStack
