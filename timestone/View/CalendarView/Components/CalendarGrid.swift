@@ -87,8 +87,8 @@ struct CalendarCellView: View {
             Spacer()
             VStack(spacing: 2) {
                 eventCell()
-                eventCell()
-                eventCell()
+                    .frame(maxHeight: 23)
+                Spacer()
             }
             Rectangle()
                 .frame(height: 1.5)
