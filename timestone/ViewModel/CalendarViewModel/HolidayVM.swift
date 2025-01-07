@@ -20,14 +20,13 @@ class HolidayVM: ObservableObject {
     @Published var holidays: [Holiday] = []
     
     func load(year: Int) {
-        let urlString = "\(baseURL)?ServiceKey=\(privateKey)&solYear=\(year)"
+        let urlString = "\(baseURL)?ServiceKey=\(privateKey)&solYear=\(year)&numOfRows=50"
         
         guard let url = URL(string: urlString) else {
             print("잘못된 URL입니다.")
             return
         }
         
-        print("url: \(url)")
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
                 print("에러 발생: \(error.localizedDescription)")
@@ -43,11 +42,10 @@ class HolidayVM: ObservableObject {
             let parser = HolidayParser()
             let holidays = parser.parse(data: data)
             
-            // 결과 출력
             DispatchQueue.main.async {
                 for holiday in holidays {
                     self.holidays.append(holiday)
-                    print("날짜: \(holiday.locdate), 이름: \(holiday.dateName), 공휴일 여부: \(holiday.isHoliday)")
+                    print("날짜: \(holiday.locdate), 공휴일 명: \(holiday.dateName), 공휴일 유무: \(holiday.isHoliday)")
                 }
             }
         }.resume()
@@ -103,6 +101,6 @@ class HolidayParser: NSObject, XMLParserDelegate {
     }
 
     func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
-        print("XML 파싱 에러 발생: \(parseError.localizedDescription)")
+        print("XML 파싱 에러: \(parseError.localizedDescription)")
     }
 }

@@ -16,6 +16,7 @@ class CalendarVM: ObservableObject {
         }
     }
     
+    let calendar = Calendar.current
     
     // yyyy년 m월 문자열 dateformat
     @discardableResult
@@ -27,16 +28,21 @@ class CalendarVM: ObservableObject {
     
     // value: -1(이전 달), 0(현재 달), 1(다음 달)
     func getDate(value: Int, day: Int) -> Date {
-        let calendar = Calendar.current
-        
         let changedMonth = calendar.date(byAdding: .month, value: value, to: month)!
         
         return calendar.date(from: DateComponents(year: calendar.component(.year, from: changedMonth), month: calendar.component(.month, from: changedMonth), day: day)) ?? Date()
     }
     
     func getDay(date: Date) -> Int {
-        let calendar = Calendar.current
         return calendar.component(.day, from: date)
+    }
+    
+    func getMonth(date: Date) -> Int {
+        return calendar.component(.month, from: date)
+    }
+    
+    func getYear(date: Date) -> Int {
+        return calendar.component(.year, from: date)
     }
     
     // 이전/다음 달

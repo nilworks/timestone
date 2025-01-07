@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ShowCalendarView: View {
-    @ObservedObject var holidayVM: HolidayVM = HolidayVM()
     @EnvironmentObject var calendarVM: CalendarVM
     @State private var gridHeight: CGFloat = 0
     
@@ -87,9 +86,6 @@ struct ShowCalendarView: View {
                                 .font(.system(size: 22))
                         }
                     })
-                }
-                .onAppear {
-                    holidayVM.load(year: 2025)
                 }
         }
     }

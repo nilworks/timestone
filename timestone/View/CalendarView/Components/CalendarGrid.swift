@@ -10,6 +10,9 @@ import SwiftUI
 struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarVM
     @Binding var gridHeight: CGFloat
+    
+    @StateObject var holidayVM: HolidayVM = HolidayVM()
+    @State var holidaysLoaded = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -18,24 +21,26 @@ struct CalendarGrid: View {
                     let currentFirstWeekday: Int = calendarVM.firstWeekdayOfMonth() - 1 // 현재 달 1일 요일
                     let numberPrevMonthDays: Int = calendarVM.numberOfDaysPrevMonth() // 지난 달 날짜 개수
                     let numberCurrentMonthDays: Int = calendarVM.numberOfDays() // 현재 달 날짜 개수
-                    let cellHeight = currentFirstWeekday + numberCurrentMonthDays > 35 ?  gridHeight / 6 : gridHeight / 5 // 행 개수에 따른 cell 높이
+                    let cellHeight = currentFirstWeekday + numberCurrentMonthDays > 35 ?  gridHeight / 6 : gridHeight / 5
                     
                     // 현재 달의 1일이 일요일이 아닐 경우
                     if currentFirstWeekday >= 1 {
                         // 이전 달의 남은 날짜를 cell에 넣음
                         ForEach((0..<currentFirstWeekday).reversed(), id: \.self) { i in
-                            let isToday: Bool = Date().calendarDateString() == calendarVM.getDate(value: -1, day: numberPrevMonthDays - i).calendarDateString()
+                            let prevDate: Date = calendarVM.getDate(value: -1, day: numberPrevMonthDays - i)
+                            let isToday: Bool = Date().calendarDateString() == prevDate.calendarDateString()
                             
-                            CalendarCellView(cellDate: calendarVM.getDate(value: -1, day: numberPrevMonthDays - i), currentMonthDay: false, isToday: isToday)
+                            CalendarCellView(cellDate: prevDate, currentMonthDay: false, isToday: isToday)
                                 .frame(height: cellHeight)
                         }
                     }
                     
                     // 현재 달의 날짜들을 cell에 넣음
                     ForEach(0..<numberCurrentMonthDays, id: \.self) { day in
-                        let isToday: Bool = Date().calendarDateString() == calendarVM.getDate(value: 0, day: day + 1).calendarDateString()
+                        let currentDate: Date = calendarVM.getDate(value: 0, day: day + 1)
+                        let isToday: Bool = Date().calendarDateString() == currentDate.calendarDateString()
                         
-                        CalendarCellView(cellDate: calendarVM.getDate(value: 0, day: day + 1), currentMonthDay: true, isToday: isToday)
+                        CalendarCellView(cellDate: currentDate, currentMonthDay: true, isToday: isToday)
                             .frame(height: cellHeight)
                     }
                     
@@ -45,16 +50,19 @@ struct CalendarGrid: View {
                     let remainCount = sumPrevCurrentCount <= 35 ? 35 - sumPrevCurrentCount : 42 - sumPrevCurrentCount
                     
                     ForEach(0..<remainCount, id: \.self) { day in
-                        let isToday: Bool = Date().calendarDateString() == calendarVM.getDate(value: 1, day: day + 1).calendarDateString()
+                        let nextDate: Date = calendarVM.getDate(value: 1, day: day + 1)
+                        let isToday: Bool = Date().calendarDateString() == nextDate.calendarDateString()
                         
-                        CalendarCellView(cellDate: calendarVM.getDate(value: -1, day: day + 1), currentMonthDay: false, isToday: isToday)
+                        CalendarCellView(cellDate: nextDate, currentMonthDay: false, isToday: isToday)
                             .frame(height: cellHeight)
                     }  
                 }
                 .background(.green)
                 .frame(maxHeight: .infinity, alignment: .top)
                 .onAppear {
+                    // 달력 높이
                     gridHeight = geometry.size.height
+                    holidayVM.load(year: calendarVM.getYear(date: calendarVM.month))
                 }
             }
         }
@@ -67,11 +75,13 @@ struct CalendarCellView: View {
     var cellDate: Date
     var currentMonthDay: Bool
     var isToday: Bool
+    var isHoliday: Bool = false
     
     init(cellDate: Date, currentMonthDay: Bool = false, isToday: Bool = true) {
         self.cellDate = cellDate
         self.currentMonthDay = currentMonthDay
         self.isToday = isToday
+        self.isHoliday = true
     }
     
     var body: some View {
@@ -86,7 +96,7 @@ struct CalendarCellView: View {
                 }
             Spacer()
             VStack(spacing: 2) {
-                eventCell()
+                eventCell(isHoliday: isHoliday)
                     .frame(maxHeight: 23)
                 Spacer()
             }
@@ -100,18 +110,35 @@ struct CalendarCellView: View {
 }
 
 struct eventCell: View {
-    var cellTitle: String = "회의를 합시다."
-    
+    var isHoliday: Bool = false
+    var dateName: String = "공휴일"
+    var currentMonthDay: Bool = false
+    var isExistEvent: Bool = false
+//    var event: Event = Event(id: , date: , title: , ... )
     
     var body: some View {
-        Rectangle()
-            .foregroundStyle(.neutral10)
-            .padding(.horizontal, 1)
-            .clipShape(RoundedRectangle(cornerRadius: 5))
-            .overlay {
-                Text("회의를 합시다")
-                    .font(.system(size: 13))
+        VStack {
+            if isHoliday {
+                Rectangle()
+                    .foregroundStyle(.neutral10)
+                    .padding(.horizontal, 1)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                    .overlay {
+                        Text("\(dateName)")
+                            .font(.system(size: 13))
+                    }
             }
+            if isExistEvent {
+                Rectangle()
+                    .foregroundStyle(.neutral10)
+                    .padding(.horizontal, 1)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                    .overlay {
+//                        Text("\(event.title)")
+//                            .font(.system(size: 13))
+                    }
+            }
+        }
     }
 }
 
