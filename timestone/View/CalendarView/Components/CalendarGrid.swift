@@ -11,8 +11,7 @@ struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarVM
     @Binding var gridHeight: CGFloat
     
-    @StateObject var holidayVM: HolidayVM = HolidayVM()
-    @State var holidaysLoaded = false
+    @EnvironmentObject var holidayVM: HolidayVM
 
     var body: some View {
         GeometryReader { geometry in
@@ -71,17 +70,23 @@ struct CalendarGrid: View {
 
 struct CalendarCellView: View {
     @EnvironmentObject var calendarVM: CalendarVM
+    @EnvironmentObject var holidayVM: HolidayVM
     
     var cellDate: Date
     var currentMonthDay: Bool
     var isToday: Bool
-    var isHoliday: Bool = false
+    var isHoliday: Bool {
+        print("셀 정보 : \(cellDate.calendarDateString())")
+        return holidayVM.holidays.contains { $0.locdate == cellDate.calendarDateString() }
+    }
+    var holidayName: String {
+        holidayVM.holidays.first { $0.locdate == cellDate.calendarDateString() }?.dateName ?? "..?"
+    }
     
     init(cellDate: Date, currentMonthDay: Bool = false, isToday: Bool = true) {
         self.cellDate = cellDate
         self.currentMonthDay = currentMonthDay
         self.isToday = isToday
-        self.isHoliday = true
     }
     
     var body: some View {
@@ -96,7 +101,7 @@ struct CalendarCellView: View {
                 }
             Spacer()
             VStack(spacing: 2) {
-                eventCell(isHoliday: isHoliday)
+                eventCell(isHoliday: isHoliday, dateName: holidayName)
                     .frame(maxHeight: 23)
                 Spacer()
             }
@@ -146,7 +151,7 @@ struct eventCell: View {
 extension Date {
     func calendarDateString() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy dd"
+        formatter.dateFormat = "YYYYMMDD"
         return formatter.string(from: self)
     }
 }
@@ -156,5 +161,6 @@ extension Date {
     @State var gridHeight: CGFloat = 650.0
     CalendarGrid( gridHeight: $gridHeight)
         .environmentObject(CalendarVM())
+        .environmentObject(HolidayVM())
 }
 

@@ -7,12 +7,6 @@
 
 import Foundation
 
-struct Holiday {
-    let dateName: String
-    let isHoliday: Bool
-    let locdate: String
-}
-
 class HolidayVM: ObservableObject {
     let baseURL = "https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo"
     let privateKey: String = Bundle.main.object(forInfoDictionaryKey: "HolidayKey") as? String ?? ""

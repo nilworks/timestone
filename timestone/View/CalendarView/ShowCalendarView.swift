@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShowCalendarView: View {
     @EnvironmentObject var calendarVM: CalendarVM
+    @EnvironmentObject var holidayVM: HolidayVM
     @State private var gridHeight: CGFloat = 0
     
     var body: some View {
@@ -94,4 +95,5 @@ struct ShowCalendarView: View {
 #Preview {
     ShowCalendarView()
         .environmentObject(CalendarVM())
+        .environmentObject(HolidayVM())
 }
