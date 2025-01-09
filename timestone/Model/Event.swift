@@ -1,21 +1,10 @@
 //
-<<<<<<< .merge_file_MhK0dD
-//  Untitled.swift
-=======
 //  Event.swift
->>>>>>> .merge_file_LFMVbN
 //  timestone
 //
 //  Created by 조성빈 on 1/8/25.
 //
 
-<<<<<<< .merge_file_MhK0dD
-struct Event {
-    let startTime: String
-    let endTime: String
-    
-    let title: String?
-=======
 import Foundation
 
 struct Event {
@@ -132,6 +121,4 @@ struct EventInfo {
             images: ["hiking.jpg"]
         )
     ]
-
->>>>>>> .merge_file_LFMVbN
 }
