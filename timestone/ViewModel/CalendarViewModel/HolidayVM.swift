@@ -6,12 +6,16 @@
 //
 
 import Foundation
+import Combine
 
 class HolidayVM: ObservableObject {
     let baseURL = "https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo"
     let privateKey: String = Bundle.main.object(forInfoDictionaryKey: "HolidayKey") as? String ?? ""
     
     @Published var holidays: [Holiday] = []
+    @Published var isDataLoaded: Bool = false // 데이터 로딩 상태
+    
+    var cancellables: Set<AnyCancellable> = [] // Combine cancellables
     
     func load(year: Int) {
         let urlString = "\(baseURL)?ServiceKey=\(privateKey)&solYear=\(year)&numOfRows=50"
@@ -20,6 +24,9 @@ class HolidayVM: ObservableObject {
             print("잘못된 URL입니다.")
             return
         }
+        
+        // 로딩 시작 전에 isDataLoaded를 false로 설정
+                self.isDataLoaded = false
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
@@ -37,10 +44,12 @@ class HolidayVM: ObservableObject {
             let holidays = parser.parse(data: data)
             
             DispatchQueue.main.async {
-                for holiday in holidays {
-                    self.holidays.append(holiday)
-                    print("날짜: \(holiday.locdate), 공휴일 명: \(holiday.dateName), 공휴일 유무: \(holiday.isHoliday)")
-                }
+                self.holidays = holidays
+                self.isDataLoaded = true
+//                for holiday in holidays {
+//                    self.holidays.append(holiday)
+//                    print("날짜: \(holiday.locdate), 공휴일 명: \(holiday.dateName), 공휴일 유무: \(holiday.isHoliday)")
+//                }
             }
         }.resume()
     }

@@ -63,7 +63,11 @@ struct CalendarGrid: View {
                     gridHeight = geometry.size.height
                     holidayVM.load(year: calendarVM.getYear(date: calendarVM.month))
                 }
+                .onChange(of: calendarVM.getYear(date: calendarVM.month)) { newYear in
+                    holidayVM.load(year: newYear)
+                }
             }
+
         }
     }
 }
@@ -76,7 +80,6 @@ struct CalendarCellView: View {
     var currentMonthDay: Bool
     var isToday: Bool
     var isHoliday: Bool {
-        print("셀 정보 : \(cellDate.calendarDateString())")
         return holidayVM.holidays.contains { $0.locdate == cellDate.calendarDateString() }
     }
     var holidayName: String {
@@ -151,7 +154,7 @@ struct eventCell: View {
 extension Date {
     func calendarDateString() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "YYYYMMDD"
+        formatter.dateFormat = "YYYYMMdd"
         return formatter.string(from: self)
     }
 }
