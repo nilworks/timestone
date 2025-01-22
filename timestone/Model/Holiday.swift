@@ -1,5 +1,5 @@
 //
-//  HolidayModel.swift
+//  Holiday.swift
 //  timestone
 //
 //  Created by 조성빈 on 1/8/25.

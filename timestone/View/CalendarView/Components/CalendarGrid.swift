@@ -56,7 +56,7 @@ struct CalendarGrid: View {
                             .frame(height: cellHeight)
                     }  
                 }
-                .background(.green)
+//                .background(.green)
                 .frame(maxHeight: .infinity, alignment: .top)
                 .onAppear {
                     // 달력 높이
@@ -67,12 +67,14 @@ struct CalendarGrid: View {
                     holidayVM.load(year: newYear)
                 }
             }
-
+            .background(.neutral100)
         }
     }
 }
 
 struct CalendarCellView: View {
+    let dummyEvents: [Event] = EventInfo().dummyEvents
+    
     @EnvironmentObject var calendarVM: CalendarVM
     @EnvironmentObject var holidayVM: HolidayVM
     
@@ -85,6 +87,16 @@ struct CalendarCellView: View {
     var holidayName: String {
         holidayVM.holidays.first { $0.locdate == cellDate.calendarDateString() }?.dateName ?? "..?"
     }
+    var isExistEvent: Bool {
+        return dummyEvents.contains {
+            return $0.startTime.formattedDateString() == cellDate.calendarDateString() || $0.endTime.formattedDateString() == cellDate.calendarDateString()
+        }
+    }
+    var events: [Event]? {
+        return dummyEvents.filter {
+            $0.startTime.formattedDateString() == cellDate.calendarDateString() || $0.endTime.formattedDateString() == cellDate.calendarDateString()
+        }
+    }
     
     init(cellDate: Date, currentMonthDay: Bool = false, isToday: Bool = true) {
         self.cellDate = cellDate
@@ -96,16 +108,24 @@ struct CalendarCellView: View {
         VStack {
             Circle()
                 .foregroundStyle(isToday ? .primary100 : .clear)
-                .frame(maxWidth: 40, maxHeight: 40)
+                .frame(maxWidth: 35, maxHeight: 35)
                 .padding(.top, 5)
                 .overlay {
                     Text("\(calendarVM.getDay(date: cellDate))")
-                        .foregroundStyle(currentMonthDay ? Color.black : Color.gray)
+                        .foregroundStyle(!currentMonthDay ? .neutral70 : self.isToday ? .neutral100 : .neutral05)
+                        .font(.bodyMedium)
                 }
-            Spacer()
             VStack(spacing: 2) {
-                eventCell(isHoliday: isHoliday, dateName: holidayName)
-                    .frame(maxHeight: 23)
+                if isHoliday {
+                    eventCell(isHoliday: isHoliday, dateName: holidayName)
+                        .frame(maxHeight: 20)
+                }
+                if let events = events {
+                    ForEach(events, id: \.self) { event in
+                        eventCell(isHoliday: false, dateName: holidayName, isExistEvent: isExistEvent, event: event)
+                            .frame(maxHeight: 20)
+                    }
+                }
                 Spacer()
             }
             Rectangle()
@@ -122,29 +142,30 @@ struct eventCell: View {
     var dateName: String = "공휴일"
     var currentMonthDay: Bool = false
     var isExistEvent: Bool = false
-//    var event: Event = Event(id: , date: , title: , ... )
+    var event: Event = Event(title: nil, alarm: false, startTime: "2025-01-30T06:55", endTime: "2025-01-30T07:55", notes: nil, url: nil, location: nil, images: nil)
     
     var body: some View {
         VStack {
             if isHoliday {
                 Rectangle()
-                    .foregroundStyle(.neutral10)
+                    .foregroundStyle(.red)
                     .padding(.horizontal, 1)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
                     .overlay {
                         Text("\(dateName)")
                             .font(.system(size: 13))
+                            .foregroundStyle(.white)
                     }
             }
             if isExistEvent {
-                Rectangle()
-                    .foregroundStyle(.neutral10)
-                    .padding(.horizontal, 1)
-                    .clipShape(RoundedRectangle(cornerRadius: 5))
-                    .overlay {
-//                        Text("\(event.title)")
-//                            .font(.system(size: 13))
-                    }
+                    Rectangle()
+                        .foregroundStyle(.neutral05)
+                        .padding(.horizontal, 1)
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                        .overlay {
+                            Text("\(event.title ?? "nil")")
+                                .font(.system(size: 13))
+                        }
             }
         }
     }
@@ -156,6 +177,12 @@ extension Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "YYYYMMdd"
         return formatter.string(from: self)
+    }
+}
+
+extension String {
+    func formattedDateString() -> String {
+        return self.split(separator: "T")[0].replacingOccurrences(of: "-", with: "")
     }
 }
 

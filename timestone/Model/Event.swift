@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Event {
+struct Event: Hashable {
     let title: String?
     let alarm: Bool
     let startTime: String
@@ -23,8 +23,8 @@ struct EventInfo {
         Event(
             title: "Morning Yoga",
             alarm: true,
-            startTime: "2025-01-08T06:30",
-            endTime: "2025-01-08T07:30",
+            startTime: "2025-01-01T06:30",
+            endTime: "2025-01-01T07:30",
             notes: "Start your day with some relaxing yoga.",
             url: URL(string: "https://yoga.com/morning-session"),
             location: "Yoga Center, 123 Wellness St.",
@@ -119,6 +119,26 @@ struct EventInfo {
             url: URL(string: "https://hikingclub.com/event789"),
             location: "Mountain Base, Trailhead Parking Lot",
             images: ["hiking.jpg"]
-        )
+        ),
+        Event(
+            title: "15-16",
+            alarm: true,
+            startTime: "2025-01-015T06:30",
+            endTime: "2025-01-016T07:30",
+            notes: "Start your day with some relaxing yoga.",
+            url: URL(string: "https://yoga.com/morning-session"),
+            location: "Yoga Center, 123 Wellness St.",
+            images: ["yoga1.jpg", "yoga2.jpg"]
+        ),
+        Event(
+            title: "15-17",
+            alarm: true,
+            startTime: "2025-01-15T06:30",
+            endTime: "2025-01-17T07:30",
+            notes: "Start your day with some relaxing yoga.",
+            url: URL(string: "https://yoga.com/morning-session"),
+            location: "Yoga Center, 123 Wellness St.",
+            images: ["yoga1.jpg", "yoga2.jpg"]
+        ),
     ]
 }

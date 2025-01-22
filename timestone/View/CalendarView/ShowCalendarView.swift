@@ -45,15 +45,16 @@ struct ShowCalendarView: View {
                     }
 
                 }
+                .foregroundStyle(.neutral05)
                 .padding(.horizontal, 17)
-                .background(.red)
+//                .background(.red)
                 .padding(.vertical, 5)
                 LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 7)) {
                     ForEach(calendarVM.weekDays, id: \.self) { day in
                         Text(day)
                     }
                 }
-                .background(.green)
+//                .background(.green)
                 .padding(.bottom, 5)
                 Rectangle()
                     .frame(height: 1.5)
@@ -61,7 +62,7 @@ struct ShowCalendarView: View {
 //                    .padding(.bottom, 5)
                 CalendarGrid(gridHeight: $gridHeight)
                                     .frame(maxHeight: .infinity)
-                                    .background(.blue)
+//                                    .background(.blue)
                 Rectangle()
                     .frame(height: 1)
                     .foregroundStyle(.clear)
@@ -75,7 +76,7 @@ struct ShowCalendarView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 35, height: 35)
-                                .background(.red)
+//                                .background(.red)
                         }
                     })
                     
@@ -88,6 +89,8 @@ struct ShowCalendarView: View {
                         }
                     })
                 }
+                .foregroundStyle(.neutral05)
+                .background(.neutral100)
         }
     }
 }
