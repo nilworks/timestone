@@ -116,19 +116,19 @@ struct CalendarCellView: View {
                         .font(.bodyMedium)
                 }
             GeometryReader { geometry in
-                VStack(spacing: 2) {
+                VStack(spacing: 3) {
                     if isHoliday {
                         eventCell(isHoliday: isHoliday, dateName: holidayName)
-                            .frame(height: geometry.size.height / 3.2)
+                            .frame(height: geometry.size.height / 3.5)
                     }
                     if let events = events {
                         ForEach(Array(events.prefix(isHoliday ? 1 : 2).enumerated()), id: \.0) { index, event in
                             eventCell(isHoliday: false, dateName: holidayName, isExistEvent: isExistEvent, event: event)
-                                .frame(height: geometry.size.height / 3.2)
+                                .frame(height: geometry.size.height / 3.5)
                         }
                         if events.prefix(isHoliday ? 1 : 2).count < events.count {
                             eventCell(isExistEvent: true, moreEvent: (events.count - events.prefix(isHoliday ? 1 : 2).count))
-                                .frame(height: geometry.size.height / 5)
+                                .frame(height: geometry.size.height / 3.5)
                         }
                     }
                     Spacer()
@@ -167,12 +167,13 @@ struct eventCell: View {
             }
             if isExistEvent {
                     Rectangle()
-                        .foregroundStyle(.neutral05)
+                    .foregroundStyle(.neutral80)
                         .padding(.horizontal, 1)
                         .clipShape(RoundedRectangle(cornerRadius: 5))
                         .overlay {
                             Text("\(moreEvent != 0 ? "+\(moreEvent)" : event.title ?? "nil")")
                                 .font(.system(size: 13))
+                                .foregroundStyle(.white)
                                 .padding(.horizontal, 3)
                         }
             }
