@@ -110,30 +110,36 @@ struct CalendarCellView: View {
             Circle()
                 .foregroundStyle(isToday ? .primary100 : .clear)
                 .frame(maxWidth: 35, maxHeight: 35)
-                .padding(.top, 5)
                 .overlay {
                     Text("\(calendarVM.getDay(date: cellDate))")
                         .foregroundStyle(!currentMonthDay ? .neutral70 : self.isToday ? .neutral100 : .neutral05)
                         .font(.bodyMedium)
                 }
-            VStack(spacing: 2) {
-                if isHoliday {
-                    eventCell(isHoliday: isHoliday, dateName: holidayName)
-                        .frame(maxHeight: 20)
-                }
-                if let events = events {
-                    ForEach(events, id: \.self) { event in
-                        eventCell(isHoliday: false, dateName: holidayName, isExistEvent: isExistEvent, event: event)
-                            .frame(maxHeight: 20)
+            GeometryReader { geometry in
+                VStack(spacing: 2) {
+                    if isHoliday {
+                        eventCell(isHoliday: isHoliday, dateName: holidayName)
+                            .frame(height: geometry.size.height / 3.2)
                     }
+                    if let events = events {
+                        ForEach(Array(events.prefix(isHoliday ? 1 : 2).enumerated()), id: \.0) { index, event in
+                            eventCell(isHoliday: false, dateName: holidayName, isExistEvent: isExistEvent, event: event)
+                                .frame(height: geometry.size.height / 3.2)
+                        }
+                        if events.prefix(isHoliday ? 1 : 2).count < events.count {
+                            eventCell(isExistEvent: true, moreEvent: (events.count - events.prefix(isHoliday ? 1 : 2).count))
+                                .frame(height: geometry.size.height / 5)
+                        }
+                    }
+                    Spacer()
                 }
-                Spacer()
             }
             Rectangle()
                 .frame(height: 1.5)
                 .foregroundStyle(.neutral80)
         }
         .frame(maxHeight: .infinity)
+        .padding(.top, 5)
     }
 }
 
@@ -143,6 +149,7 @@ struct eventCell: View {
     var currentMonthDay: Bool = false
     var isExistEvent: Bool = false
     var event: Event = Event(title: nil, alarm: false, startTime: "2025-01-30T06:55", endTime: "2025-01-30T07:55", notes: nil, url: nil, location: nil, images: nil)
+    var moreEvent: Int = 0
     
     var body: some View {
         VStack {
@@ -164,7 +171,7 @@ struct eventCell: View {
                         .padding(.horizontal, 1)
                         .clipShape(RoundedRectangle(cornerRadius: 5))
                         .overlay {
-                            Text("\(event.title ?? "nil")")
+                            Text("\(moreEvent != 0 ? "+\(moreEvent)" : event.title ?? "nil")")
                                 .font(.system(size: 13))
                                 .padding(.horizontal, 3)
                         }

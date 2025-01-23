@@ -21,7 +21,27 @@ struct Event: Hashable {
 struct EventInfo {
     let dummyEvents: [Event] = [
         Event(
-            title: "Morning Yoga",
+            title: "아침 요가",
+            alarm: true,
+            startTime: "2025-01-01T06:30",
+            endTime: "2025-01-01T07:30",
+            notes: "Start your day with some relaxing yoga.",
+            url: URL(string: "https://yoga.com/morning-session"),
+            location: "Yoga Center, 123 Wellness St.",
+            images: ["yoga1.jpg", "yoga2.jpg"]
+        ),
+        Event(
+            title: "점심 요가",
+            alarm: true,
+            startTime: "2025-01-01T06:30",
+            endTime: "2025-01-01T07:30",
+            notes: "Start your day with some relaxing yoga.",
+            url: URL(string: "https://yoga.com/morning-session"),
+            location: "Yoga Center, 123 Wellness St.",
+            images: ["yoga1.jpg", "yoga2.jpg"]
+        ),
+        Event(
+            title: "저녁 요가",
             alarm: true,
             startTime: "2025-01-01T06:30",
             endTime: "2025-01-01T07:30",
@@ -41,16 +61,6 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "Lunch with Sarah",
-            alarm: false,
-            startTime: "2025-01-08T12:30",
-            endTime: "2025-01-08T13:30",
-            notes: nil,
-            url: nil,
-            location: "Cafe Aroma, 45 Maple St.",
-            images: nil
-        ),
-        Event(
             title: "Project Deadline",
             alarm: true,
             startTime: "2025-01-08T17:00",
@@ -61,7 +71,7 @@ struct EventInfo {
             images: ["deadline.jpg"]
         ),
         Event(
-            title: "Cooking Class",
+            title: "요리 수업",
             alarm: false,
             startTime: "2025-01-08T19:00",
             endTime: "2025-01-08T21:00",
@@ -69,16 +79,6 @@ struct EventInfo {
             url: URL(string: "https://cookingclass.com/register"),
             location: "Cooking Academy, 789 Culinary St.",
             images: ["cooking1.jpg", "cooking2.jpg"]
-        ),
-        Event(
-            title: "Dentist Appointment",
-            alarm: true,
-            startTime: "2025-01-09T08:30",
-            endTime: "2025-01-09T09:00",
-            notes: "Routine dental check-up.",
-            url: nil,
-            location: "Smile Dental, 22 Health Ave.",
-            images: nil
         ),
         Event(
             title: "Conference Call",
@@ -134,7 +134,7 @@ struct EventInfo {
             title: "B",
             alarm: true,
             startTime: "2025-01-15T06:30",
-            endTime: "2025-01-15T07:30",
+            endTime: "2025-01-16T07:30",
             notes: "Start your day with some relaxing yoga.",
             url: URL(string: "https://yoga.com/morning-session"),
             location: "Yoga Center, 123 Wellness St.",
@@ -149,6 +149,16 @@ struct EventInfo {
             url: URL(string: "https://yoga.com/morning-session"),
             location: "Yoga Center, 123 Wellness St.",
             images: ["yoga1.jpg", "yoga2.jpg"]
+        ),
+        Event(
+            title: "오늘!",
+            alarm: true,
+            startTime: "2025-01-23T14:00",
+            endTime: "2025-01-23T15:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
         ),
     ]
 }

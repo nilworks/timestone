@@ -86,10 +86,10 @@ struct ShowCalendarView: View {
                         } label: {
                             Image(systemName: "bell")
                                 .font(.system(size: 22))
+                                .foregroundStyle(.neutral05)
                         }
                     })
                 }
-                .foregroundStyle(.neutral05)
                 .background(.neutral100)
         }
     }
