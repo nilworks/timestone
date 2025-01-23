@@ -121,20 +121,30 @@ struct EventInfo {
             images: ["hiking.jpg"]
         ),
         Event(
-            title: "15-16",
+            title: "A",
             alarm: true,
-            startTime: "2025-01-015T06:30",
-            endTime: "2025-01-016T07:30",
+            startTime: "2025-01-14T06:30",
+            endTime: "2025-01-15T07:30",
             notes: "Start your day with some relaxing yoga.",
             url: URL(string: "https://yoga.com/morning-session"),
             location: "Yoga Center, 123 Wellness St.",
             images: ["yoga1.jpg", "yoga2.jpg"]
         ),
         Event(
-            title: "15-17",
+            title: "B",
             alarm: true,
             startTime: "2025-01-15T06:30",
-            endTime: "2025-01-17T07:30",
+            endTime: "2025-01-15T07:30",
+            notes: "Start your day with some relaxing yoga.",
+            url: URL(string: "https://yoga.com/morning-session"),
+            location: "Yoga Center, 123 Wellness St.",
+            images: ["yoga1.jpg", "yoga2.jpg"]
+        ),
+        Event(
+            title: "C",
+            alarm: true,
+            startTime: "2025-01-15T06:30",
+            endTime: "2025-01-16T07:30",
             notes: "Start your day with some relaxing yoga.",
             url: URL(string: "https://yoga.com/morning-session"),
             location: "Yoga Center, 123 Wellness St.",

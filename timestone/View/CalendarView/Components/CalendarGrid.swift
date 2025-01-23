@@ -88,14 +88,15 @@ struct CalendarCellView: View {
         holidayVM.holidays.first { $0.locdate == cellDate.calendarDateString() }?.dateName ?? "..?"
     }
     var isExistEvent: Bool {
-        return dummyEvents.contains {
-            return $0.startTime.formattedDateString() == cellDate.calendarDateString() || $0.endTime.formattedDateString() == cellDate.calendarDateString()
+        let existStartTime: Bool = dummyEvents.contains { $0.startTime.formattedDateString() == cellDate.calendarDateString() }
+        let existEndTime: Bool = dummyEvents.contains {
+            $0.endTime.formattedDateString() == cellDate.calendarDateString()
         }
+        return existStartTime || existEndTime
     }
+    
     var events: [Event]? {
-        return dummyEvents.filter {
-            $0.startTime.formattedDateString() == cellDate.calendarDateString() || $0.endTime.formattedDateString() == cellDate.calendarDateString()
-        }
+        return dummyEvents.filter { $0.startTime.formattedDateString() == cellDate.calendarDateString() || $0.endTime.formattedDateString() == cellDate.calendarDateString() }
     }
     
     init(cellDate: Date, currentMonthDay: Bool = false, isToday: Bool = true) {
@@ -133,7 +134,6 @@ struct CalendarCellView: View {
                 .foregroundStyle(.neutral80)
         }
         .frame(maxHeight: .infinity)
-        .background(.yellow)
     }
 }
 
@@ -155,6 +155,7 @@ struct eventCell: View {
                         Text("\(dateName)")
                             .font(.system(size: 13))
                             .foregroundStyle(.white)
+                            .padding(.horizontal, 3)
                     }
             }
             if isExistEvent {
@@ -165,6 +166,7 @@ struct eventCell: View {
                         .overlay {
                             Text("\(event.title ?? "nil")")
                                 .font(.system(size: 13))
+                                .padding(.horizontal, 3)
                         }
             }
         }
