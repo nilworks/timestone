@@ -190,6 +190,7 @@ extension Date {
     }
 }
 
+
 extension String {
     func formattedDateString() -> String {
         return self.split(separator: "T")[0].replacingOccurrences(of: "-", with: "")

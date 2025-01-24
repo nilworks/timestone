@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ShowCalendarView: View {
-    @EnvironmentObject var calendarVM: CalendarVM
-    @EnvironmentObject var holidayVM: HolidayVM
+    @StateObject var calendarVM: CalendarVM = CalendarVM()
+    @StateObject var holidayVM: HolidayVM = HolidayVM()
     @State private var gridHeight: CGFloat = 0
     
     var body: some View {
@@ -52,6 +52,7 @@ struct ShowCalendarView: View {
                 LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 7)) {
                     ForEach(calendarVM.weekDays, id: \.self) { day in
                         Text(day)
+                            .foregroundStyle(.neutral05)
                     }
                 }
 //                .background(.green)
@@ -61,6 +62,8 @@ struct ShowCalendarView: View {
                     .foregroundStyle(.neutral80)
 //                    .padding(.bottom, 5)
                 CalendarGrid(gridHeight: $gridHeight)
+                    .environmentObject(calendarVM)
+                    .environmentObject(holidayVM)
                                     .frame(maxHeight: .infinity)
 //                                    .background(.blue)
                 Rectangle()
@@ -97,6 +100,6 @@ struct ShowCalendarView: View {
 
 #Preview {
     ShowCalendarView()
-        .environmentObject(CalendarVM())
-        .environmentObject(HolidayVM())
+//        .environmentObject(CalendarVM())
+//        .environmentObject(HolidayVM())
 }
