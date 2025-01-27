@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Photos
 
 struct TestView: View {
     @State private var isShow = true
@@ -24,14 +25,16 @@ struct TestView: View {
 
 struct AddScheduleView: View {
     // MARK: -Properties
-    @StateObject var viewModel = AddScheduleViewModel()
+    @StateObject private var viewModel = AddScheduleViewModel()
+    @StateObject private var imagePickerViewModel = ImagePickerViewModel()
+    
     @State private var scheduleTitle: String = ""
     @State private var clockIsOn: Bool = false
     @State private var selectDay = Date() // TODO: 캘린더에서 선택된 날짜 가져오도록 하기
     @State private var memoText: String = ""
-    @State private var image = UIImage()
-    @State private var images: [UIImage] = []
-    @State private var showSheet = false
+    @State private var selectedImages: [UIImage] = []
+    @State private var selectedAssetIDs: [String] = []
+    @State private var showImagePicker = false
     
     // 텍스트 뷰 여백 조절
     init() {
@@ -119,13 +122,11 @@ struct AddScheduleView: View {
                                 .font(.bodyRegular)
                                 .foregroundColor(.white)
                             
-                            Spacer()
-                            
+                            // TODO: 커스텀...만들기
                             DatePicker("", selection: $selectDay)
                                 .environment(\.locale, Locale(identifier: "ko_KR"))
-                                .background()
                                 .scaleEffect(0.8)
-                                .offset(x: 30) // TODO: offset 말고 다른 방법 필요(핸드폰 사이즈에 따라 달라질 수 있음)
+                                .offset(x: 30)
                         }
                         
                         // 종료
@@ -174,11 +175,15 @@ struct AddScheduleView: View {
                             Spacer()
                         }
                         
+                        // TODO: 빈 화면 탭했을 때 키보드 없어지기
+                        // TODO: 키보드에 키보드 없어지는 버튼 추가하기
                         TextEditor(text: $memoText)
                             .font(.captionLight)
                             .frame(height: 96)
+                            .scrollContentBackground(.hidden)
+                            .background(Color.neutral90)
                             .cornerRadius(4)
-                        // placeholder 만들기
+                             // placeholder 만들기
                             .overlay(alignment: .topLeading) {
                                 Text("메모를 입력해주세요.")
                                     .foregroundStyle(memoText.isEmpty ? .neutral50 : .clear)
@@ -218,22 +223,41 @@ struct AddScheduleView: View {
                         
                         ScrollView(.horizontal) {
                             HStack {
-                                VStack {
-                                    Image(systemName: "plus")
-                                        .foregroundStyle(.white)
-                                        .padding(.bottom, 2)
-                                    Text("0/10") // TODO: 추가된 이미지 숫자로 바뀌도록
-                                        .foregroundStyle(.white)
-                                        .font(.subCaptionLight)
+                                HStack {
+                                    VStack {
+                                        Image(systemName: "plus")
+                                            .foregroundStyle(.white)
+                                            .padding(.bottom, 2)
+                                        Text("\(imagePickerViewModel.selectedImages.count)/5")
+                                            .foregroundStyle(.white)
+                                            .font(.subCaptionLight)
+                                    }
+                                    .frame(width: 100, height: 100)
+                                    .background(.neutral90)
+                                    .cornerRadius(4)
+                                    .onTapGesture {
+                                        showImagePicker = true
+                                        print("Current selected Asset IDs: \(imagePickerViewModel.selectedAssetIDs)")
+                                        checkPhotoLibraryPermission()
+                                        print("iOS 버전: \(UIDevice.current.systemVersion)")
+                                    }
+                                    .sheet(isPresented: $showImagePicker) {
+                                        MultiImagePicker(selectedImages: $imagePickerViewModel.selectedImages,
+                                                         selectedAssetIDs: $imagePickerViewModel.selectedAssetIDs)
+                                    }
                                 }
-                                .frame(width: 100, height: 100)
-                                .background(.neutral90)
-                                .cornerRadius(4)
-                                .onTapGesture {
-                                    showSheet = true
-                                }
-                                .sheet(isPresented: $showSheet) {
-                                    ImagePicker(sourceType: .photoLibrary, selectedImage: self.$image)
+                                
+                                // 추가된 이미지
+                                HStack {
+                                    LazyVGrid(columns: dynamicColumns(), spacing: 10) {
+                                        ForEach(imagePickerViewModel.selectedImages, id: \.self) { image in
+                                            Image(uiImage: image)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(width: 100, height: 100)
+                                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        }
+                                    }
                                 }
                             }
                             
@@ -249,8 +273,47 @@ struct AddScheduleView: View {
         } // ScrollView
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.neutral100))
+        
+    }
+    
+    private func dynamicColumns() -> [GridItem] {
+        let count = imagePickerViewModel.selectedImages.count
+        return Array(repeating: GridItem(.flexible(), spacing: 10), count: max(count, 1))
+    }
+    
+    // 사진 접근 권한 허용 팝업
+    func checkPhotoLibraryPermission() {
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        
+        switch status {
+        case .notDetermined:
+            // 권한 요청
+            PHPhotoLibrary.requestAuthorization(for: .readWrite) { newStatus in
+                DispatchQueue.main.async {
+                    if newStatus == .authorized || newStatus == .limited {
+                        print("사진 접근 권한 허용됨")
+                        self.showImagePicker = true // 권한 허용 시 시트를 표시
+                    } else {
+                        print("사진 접근 권한 거부됨")
+                    }
+                }
+            }
+        case .authorized, .limited:
+            // 이미 권한 허용됨
+            print("사진 접근 권한이 이미 허용됨")
+            self.showImagePicker = true // 권한이 이미 허용된 경우 시트를 표시
+        case .denied, .restricted:
+            // 권한 거부 또는 제한
+            print("사진 접근 권한이 거부됨 - 설정에서 변경 필요")
+            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
+            }
+        @unknown default:
+            print("알 수 없는 권한 상태")
+        }
     }
 }
+
 
 #Preview {
     TestView()

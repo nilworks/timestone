@@ -9,10 +9,11 @@ import SwiftUI
 import PhotosUI
 
 class AddScheduleViewModel: ObservableObject {
-    @Published var schedule: [Schedule] = []
+    
 }
 
 // MARK: - 이미지 다중 선택을 위한 뷰모델
 class ImagePickerViewModel: ObservableObject {
     @Published var selectedImages: [UIImage] = [] // 선택된 이미지를 저장하는 배열
+    @Published var selectedAssetIDs: [String] = []
 }
