@@ -30,6 +30,8 @@ struct AddScheduleView: View {
     
     @State private var scheduleTitle: String = ""
     @State private var clockIsOn: Bool = false
+    @State private var eventTimeIndex: Int = 0
+    let eventTimes: [String] = ["정각", "5분 전", "1시간 전", "2시간 전", "1일 전(오전 9:00)", "2일 전(오전 9:00)"]
     @State private var selectDay = Date() // TODO: 캘린더에서 선택된 날짜 가져오도록 하기
     @State private var memoText: String = ""
     @State private var selectedImages: [UIImage] = []
@@ -106,14 +108,34 @@ struct AddScheduleView: View {
                     VStack(spacing: 15) {
                         // 알림
                         HStack {
-                            Text("알림")
-                                .font(.bodyRegular)
-                                .foregroundColor(.white)
+                            VStack {
+                                Text("알림")
+                                    .font(.bodyRegular)
+                                    .foregroundColor(.white)
+                                
+                                Spacer()
+                            }
                             
                             Spacer()
                             
-                            Toggle("", isOn: $clockIsOn)
-                                .toggleStyle(ToggleSt())
+                            VStack(alignment: .trailing) {
+                                Toggle("", isOn: $clockIsOn)
+                                    .toggleStyle(ToggleSt())
+                                
+                                VStack {
+                                    Picker("", selection: $eventTimeIndex) {
+                                        ForEach(0..<eventTimes.count, id: \.self) { index in
+                                            Text(eventTimes[index]).tag(index)
+                                                .font(.subBodyRegular)
+                                        }
+                                    }
+                                    .pickerStyle(.wheel)
+                                }
+                                .frame(width: 260,height: clockIsOn ? 80 : 0)
+                                .background(.neutral80)
+                                .cornerRadius(4)
+                                .clipped()
+                            }
                         }
                         
                         // 시작
@@ -181,9 +203,9 @@ struct AddScheduleView: View {
                             .font(.captionLight)
                             .frame(height: 96)
                             .scrollContentBackground(.hidden)
-                            .background(Color.neutral90)
+                            .background(Color.neutral80)
                             .cornerRadius(4)
-                             // placeholder 만들기
+                        // placeholder 만들기
                             .overlay(alignment: .topLeading) {
                                 Text("메모를 입력해주세요.")
                                     .foregroundStyle(memoText.isEmpty ? .neutral50 : .clear)
@@ -233,7 +255,7 @@ struct AddScheduleView: View {
                                             .font(.subCaptionLight)
                                     }
                                     .frame(width: 100, height: 100)
-                                    .background(.neutral90)
+                                    .background(.neutral80)
                                     .cornerRadius(4)
                                     .onTapGesture {
                                         showImagePicker = true
@@ -272,7 +294,7 @@ struct AddScheduleView: View {
             } // VStack
         } // ScrollView
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.neutral100))
+        .background(Color(.neutral90))
         
     }
     
