@@ -9,10 +9,12 @@ import SwiftUI
 
 struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarVM
+    @EnvironmentObject var holidayVM: HolidayVM
+    
     @Binding var gridHeight: CGFloat
     
-    @EnvironmentObject var holidayVM: HolidayVM
-
+    let manager = DateFormatManager.shared
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -27,8 +29,7 @@ struct CalendarGrid: View {
                         // 이전 달의 남은 날짜를 cell에 넣음
                         ForEach((0..<currentFirstWeekday).reversed(), id: \.self) { i in
                             let prevDate: Date = calendarVM.getDate(value: -1, day: numberPrevMonthDays - i)
-                            let isToday: Bool = Date().calendarDateString() == prevDate.calendarDateString()
-                            
+                            let isToday: Bool = manager.dateString(date: Date()) == manager.dateString(date: prevDate)
                             CalendarCellView(cellDate: prevDate, currentMonthDay: false, isToday: isToday)
                                 .frame(height: cellHeight)
                         }
@@ -37,7 +38,7 @@ struct CalendarGrid: View {
                     // 현재 달의 날짜들을 cell에 넣음
                     ForEach(0..<numberCurrentMonthDays, id: \.self) { day in
                         let currentDate: Date = calendarVM.getDate(value: 0, day: day + 1)
-                        let isToday: Bool = Date().calendarDateString() == currentDate.calendarDateString()
+                        let isToday: Bool = manager.dateString(date: Date()) == manager.dateString(date: currentDate)
                         
                         CalendarCellView(cellDate: currentDate, currentMonthDay: true, isToday: isToday)
                             .frame(height: cellHeight)
@@ -50,13 +51,12 @@ struct CalendarGrid: View {
                     
                     ForEach(0..<remainCount, id: \.self) { day in
                         let nextDate: Date = calendarVM.getDate(value: 1, day: day + 1)
-                        let isToday: Bool = Date().calendarDateString() == nextDate.calendarDateString()
+                        let isToday: Bool = manager.dateString(date: Date()) == manager.dateString(date: nextDate)
                         
                         CalendarCellView(cellDate: nextDate, currentMonthDay: false, isToday: isToday)
                             .frame(height: cellHeight)
-                    }  
+                    }
                 }
-//                .background(.green)
                 .frame(maxHeight: .infinity, alignment: .top)
                 .onAppear {
                     // 달력 높이
@@ -78,25 +78,27 @@ struct CalendarCellView: View {
     @EnvironmentObject var calendarVM: CalendarVM
     @EnvironmentObject var holidayVM: HolidayVM
     
+    let manager = DateFormatManager.shared
+    
     var cellDate: Date
     var currentMonthDay: Bool
     var isToday: Bool
     var isHoliday: Bool {
-        return holidayVM.holidays.contains { $0.locdate == cellDate.calendarDateString() }
+        return holidayVM.holidays.contains { $0.locdate == manager.dateString(date: cellDate) }
     }
     var holidayName: String {
-        holidayVM.holidays.first { $0.locdate == cellDate.calendarDateString() }?.dateName ?? "..?"
+        holidayVM.holidays.first { $0.locdate == manager.dateString(date: cellDate) }?.dateName ?? "..?"
     }
     var isExistEvent: Bool {
-        let existStartTime: Bool = dummyEvents.contains { $0.startTime.formattedDateString() == cellDate.calendarDateString() }
+        let existStartTime: Bool = dummyEvents.contains { manager.formattedDateString(textDate: $0.startTime) == manager.dateString(date: cellDate) }
         let existEndTime: Bool = dummyEvents.contains {
-            $0.endTime.formattedDateString() == cellDate.calendarDateString()
+            manager.formattedDateString(textDate: $0.endTime) == manager.dateString(date: cellDate)
         }
         return existStartTime || existEndTime
     }
     
     var events: [Event]? {
-        return dummyEvents.filter { $0.startTime.formattedDateString() == cellDate.calendarDateString() || $0.endTime.formattedDateString() == cellDate.calendarDateString() }
+        return dummyEvents.filter { manager.formattedDateString(textDate: $0.startTime) == manager.dateString(date: cellDate) || manager.formattedDateString(textDate: $0.endTime) == manager.dateString(date: cellDate) }
     }
     
     init(cellDate: Date, currentMonthDay: Bool = false, isToday: Bool = true) {
@@ -166,37 +168,39 @@ struct eventCell: View {
                     }
             }
             if isExistEvent {
-                    Rectangle()
+                Rectangle()
                     .foregroundStyle(.neutral80)
-                        .padding(.horizontal, 1)
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
-                        .overlay {
-                            Text("\(moreEvent != 0 ? "+\(moreEvent)" : event.title ?? "nil")")
-                                .font(.system(size: 13))
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 3)
-                        }
+                    .padding(.horizontal, 1)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                    .overlay {
+                        Text("\(moreEvent != 0 ? "+\(moreEvent)" : event.title ?? "nil")")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 3)
+                    }
             }
         }
     }
 }
 
-
-extension Date {
-    func calendarDateString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "YYYYMMdd"
-        return formatter.string(from: self)
+class DateFormatManager {
+    static let shared = DateFormatManager()
+    
+    let dateFormatter: DateFormatter
+    
+    private init() {
+        dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYYMMdd"
+    }
+    
+    func dateString(date: Date) -> String {
+        return dateFormatter.string(from: date)
+    }
+    
+    func formattedDateString(textDate: String) -> String {
+        return textDate.split(separator: "T")[0].replacingOccurrences(of: "-", with: "")
     }
 }
-
-
-extension String {
-    func formattedDateString() -> String {
-        return self.split(separator: "T")[0].replacingOccurrences(of: "-", with: "")
-    }
-}
-
 
 #Preview {
     @State var gridHeight: CGFloat = 650.0
