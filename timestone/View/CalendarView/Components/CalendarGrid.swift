@@ -162,6 +162,7 @@ struct eventCell: View {
                     .clipShape(RoundedRectangle(cornerRadius: 5))
                     .overlay {
                         Text("\(dateName)")
+                            .transition(.slide)
                             .font(.system(size: 13))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 3)
@@ -173,16 +174,58 @@ struct eventCell: View {
                     .padding(.horizontal, 1)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
                     .overlay {
-                        Text("\(moreEvent != 0 ? "+\(moreEvent)" : event.title ?? "nil")")
+                        MarqueeText(text: "\(moreEvent != 0 ? "+\(moreEvent)" : event.title ?? "nil")", font: Font.captionLight)
                             .font(.system(size: 13))
                             .foregroundStyle(.white)
-                            .padding(.horizontal, 3)
+                            .padding(.horizontal, 4)
                     }
             }
         }
     }
 }
 
+
+//MARK: - 텍스트 슬라이딩 애니메이션(Marquee)
+struct MarqueeText: View {
+    
+    var text: String = "회의 싫어요!"
+    var font: Font
+    
+    @State var storedSize: CGSize = .zero
+    @State var offset: CGFloat = .zero
+    
+    var body: some View {
+        GeometryReader { scrollGeometry in
+            ScrollView(.horizontal) {
+                HStack {
+                    Text(text)
+                        .fixedSize()
+                        .frame(maxWidth: .infinity)
+                        .offset(x: offset)
+                        .animation(.linear(duration: 0.05 * storedSize.width))
+                        .background {
+                            GeometryReader { textGeo in
+                                Color.clear
+                                    .onAppear {
+                                        storedSize = textGeo.size
+                                        print(textGeo.size.width)
+                                        if storedSize.width > scrollGeometry.size.width {
+                                            offset = -storedSize.width
+                                        }
+                                    }
+                            }
+                        }
+                }
+                .frame(width: scrollGeometry.size.width, height: scrollGeometry.size.height, alignment: .leading)
+            }
+            .scrollDisabled(true)
+        }
+    }
+    
+}
+
+
+//MARK: - DateFormat 관련 싱글톤
 class DateFormatManager {
     static let shared = DateFormatManager()
     

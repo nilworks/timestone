@@ -21,4 +21,5 @@ extension Font {
     
     static let captionLight: Font = .custom("Pretendard-Medium", size: 14)
     static let subCaptionLight: Font = .custom("Pretendard-Medium", size: 12)
+    
 }
