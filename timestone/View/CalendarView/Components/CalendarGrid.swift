@@ -161,7 +161,7 @@ struct eventCell: View {
                     .padding(.horizontal, 1)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
                     .overlay {
-                        Text("\(dateName)")
+                        MarqueeText(text: dateName)
                             .transition(.slide)
                             .font(.system(size: 13))
                             .foregroundStyle(.white)
@@ -174,7 +174,7 @@ struct eventCell: View {
                     .padding(.horizontal, 1)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
                     .overlay {
-                        MarqueeText(text: "\(moreEvent != 0 ? "+\(moreEvent)" : event.title ?? "nil")", font: Font.captionLight)
+                        MarqueeText(text: "\(moreEvent != 0 ? "+\(moreEvent)" : event.title ?? "nil")")
                             .font(.system(size: 13))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 4)
@@ -188,11 +188,11 @@ struct eventCell: View {
 //MARK: - 텍스트 슬라이딩 애니메이션(Marquee)
 struct MarqueeText: View {
     
-    var text: String = "회의 싫어요!"
-    var font: Font
-    
+    @State var text: String = "회의 싫어요! "
     @State var storedSize: CGSize = .zero
     @State var offset: CGFloat = .zero
+    
+    @State var changeText: Int = 0
     
     var body: some View {
         GeometryReader { scrollGeometry in
@@ -202,14 +202,28 @@ struct MarqueeText: View {
                         .fixedSize()
                         .frame(maxWidth: .infinity)
                         .offset(x: offset)
-                        .animation(.linear(duration: 0.05 * storedSize.width))
                         .background {
                             GeometryReader { textGeo in
                                 Color.clear
                                     .onAppear {
+                                        if textGeo.size.width > scrollGeometry.size.width {
+                                            text.append("       ")
+                                            changeText += 1
+                                        }
+                                    }
+                                    .onChange(of: changeText, perform: { newValue in
                                         storedSize = textGeo.size
-                                        print(textGeo.size.width)
-                                        if storedSize.width > scrollGeometry.size.width {
+                                        let newText = text
+                                        text.append(newText)
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                            withAnimation(.linear(duration: 5)) {
+                                                offset = -storedSize.width
+                                            }
+                                        }
+                                    })
+                                    .onReceive(Timer.publish(every: 8, on: .main, in: .default).autoconnect()) { _ in
+                                        offset = 0
+                                        withAnimation(.linear(duration: 5)) {
                                             offset = -storedSize.width
                                         }
                                     }
