@@ -18,9 +18,10 @@ struct DailyView: View {
                     DailyCellView(event: event)
                 }
             }
+            .padding(.top, 30)
+            Spacer()
         }
         .frame(maxHeight: .infinity)
-        .background(.red)
     }
 }
 
@@ -34,7 +35,29 @@ struct DailyCellView: View {
     }
     
     var body: some View {
-        Text(event.title ?? "nil")
+        HStack {
+            Rectangle()
+                .frame(height: 40)
+                .frame(maxWidth: 2, maxHeight: 40)
+                .foregroundStyle(.primary100)
+            VStack(alignment: .leading, spacing: 5) {
+                Text(event.title ?? "title is nil.")
+                    .font(.system(size: 18))
+                HStack(spacing: 5) {
+                    Text("\(eventVM.getTimeToString(textDate: event.startTime)) ~ \(eventVM.getTimeToString(textDate: event.endTime))")
+                    Image(systemName: "clock")
+                        .font(.system(size: 15))
+                }
+                .font(.system(size: 13))
+                .foregroundStyle(.neutral50)
+            }
+            .foregroundStyle(.neutral05)
+            .frame(maxHeight: 40)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 15)
     }
 }
 
@@ -56,6 +79,10 @@ class EventViewModel: ObservableObject {
         }
     }
     
+    func resetDay() {
+        self.day = Date()
+    }
+    
     // 일간 보기에서의 해당 날짜 Events 가져오기
     @discardableResult
     func getDailyEvents() -> [Event] {
@@ -63,9 +90,19 @@ class EventViewModel: ObservableObject {
         let formattedDay: String = dateFormatterManager.basicDateString(date: day)
         
         let dailyEvents: [Event] = wholeEvents.filter {
-            dateFormatterManager.formattedDateString(textDate: $0.startTime) == formattedDay || dateFormatterManager.formattedDateString(textDate: $0.endTime) == formattedDay
+            dateFormatterManager.removeHypenDateString(textDate: $0.startTime) == formattedDay || dateFormatterManager.removeHypenDateString(textDate: $0.endTime) == formattedDay
         }
         
         return dailyEvents
+    }
+    
+    // [String] date to time(DateFormatManager 싱글톤 함수 사용)
+    func getTimeToString(textDate: String) -> String {
+        return dateFormatterManager.timeToString(textDate: textDate)
+    }
+    
+    // MM월 dd일 EEEE : dailyView의 title
+    func dailyViewTitle() -> String {
+        return dateFormatterManager.dailyViewTitleFormat(date: day)
     }
 }

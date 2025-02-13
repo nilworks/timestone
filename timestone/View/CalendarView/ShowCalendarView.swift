@@ -21,7 +21,11 @@ struct ShowCalendarView: View {
                 // 달력 상단 <, > 버튼 스택
                 HStack {
                     Button {
-                        calendarVM.changeMonth(value: -1)
+                        if !showDailyView {
+                            calendarVM.changeMonth(value: -1)
+                        } else {
+                            eventVM.changeDay(value: -1)
+                        }
                     } label: {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 24))
@@ -32,25 +36,30 @@ struct ShowCalendarView: View {
                     Button {
                         // action
                     } label: {
-                        Text(calendarVM.dateToStringYearMonth())
+                        Text(!showDailyView ? calendarVM.dateToStringYearMonth() : eventVM.dailyViewTitle())
                             .font(.system(size: 27))
                             .fontWeight(.semibold)
                             .padding(.bottom, showDailyView ? 0 : 15)
                     }
-
+                    
                     Spacer()
                     
                     Button {
-                        calendarVM.changeMonth(value: 1)
+                        if !showDailyView {
+                            calendarVM.changeMonth(value: 1)
+                        } else {
+                            eventVM.changeDay(value: 1)
+                        }
                     } label: {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 24))
                     }
-
+                    
                 }
                 .foregroundStyle(.neutral05)
                 .padding(.horizontal, 17)
-                .padding(.vertical, 5)
+                .padding(.bottom, 5)
+                .padding(.top, 15)
                 if !showDailyView {
                     LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 7)) {
                         ForEach(calendarVM.weekDays, id: \.self) { day in
@@ -65,62 +74,63 @@ struct ShowCalendarView: View {
                     CalendarGrid(gridHeight: $gridHeight)
                         .environmentObject(calendarVM)
                         .environmentObject(holidayVM)
-                                        .frame(maxHeight: .infinity)
+                        .frame(maxHeight: .infinity)
                 } else {
                     // show DailyView
                     DailyView()
                         .environmentObject(eventVM)
                 }
             }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading, content: {
-                        Button {
-                            // action
-                            showDailyView = false
-                        } label: {
-                            Image("CalendarIcon")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 35, height: 35)
-                        }
-                    })
-                    
-                    ToolbarItem(placement: .topBarLeading, content: {
-                        Button {
-                            // action
-                            showDailyView = true
-                        } label: {
-                            Image(systemName: "1.lane")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 35, height: 35)
-                                .foregroundStyle(.neutral05)
-                        }
-                    })
-                    
-                    ToolbarItem(placement: .topBarLeading, content: {
-                        Button {
-                            // action
-                        } label: {
-                            Image(systemName: "7.lane")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 35, height: 35)
-                                .foregroundStyle(.neutral05)
-                        }
-                    })
-                    
-                    ToolbarItem(placement: .topBarTrailing, content: {
-                        Button {
-                            // action
-                        } label: {
-                            Image(systemName: "bell")
-                                .font(.system(size: 22))
-                                .foregroundStyle(.neutral05)
-                        }
-                    })
-                }
-                .background(.neutral100)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading, content: {
+                    Button {
+                        // action
+                        showDailyView = false
+                        eventVM.resetDay()
+                    } label: {
+                        Image("CalendarIcon")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 35, height: 35)
+                    }
+                })
+                
+                ToolbarItem(placement: .topBarLeading, content: {
+                    Button {
+                        // action
+                        showDailyView = true
+                    } label: {
+                        Image(systemName: "1.lane")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 35, height: 35)
+                            .foregroundStyle(.neutral05)
+                    }
+                })
+                
+                ToolbarItem(placement: .topBarLeading, content: {
+                    Button {
+                        // action
+                    } label: {
+                        Image(systemName: "7.lane")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 35, height: 35)
+                            .foregroundStyle(.neutral05)
+                    }
+                })
+                
+                ToolbarItem(placement: .topBarTrailing, content: {
+                    Button {
+                        // action
+                    } label: {
+                        Image(systemName: "bell")
+                            .font(.system(size: 22))
+                            .foregroundStyle(.neutral05)
+                    }
+                })
+            }
+            .background(.neutral100)
         }
     }
 }
