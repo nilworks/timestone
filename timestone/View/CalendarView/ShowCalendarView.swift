@@ -94,16 +94,12 @@ struct ShowCalendarView: View {
                             .frame(width: 35, height: 35)
                     }
                 })
-                
-                ToolbarItem(placement: .topBarLeading, content: {
+                ToolbarItem(placement: .topBarTrailing, content: {
                     Button {
                         // action
-                        showDailyView = true
                     } label: {
-                        Image(systemName: "1.lane")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 35, height: 35)
+                        Image(systemName: "bell")
+                            .font(.system(size: 22))
                             .foregroundStyle(.neutral05)
                     }
                 })
