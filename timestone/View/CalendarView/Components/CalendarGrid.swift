@@ -10,8 +10,11 @@ import SwiftUI
 struct CalendarGrid: View {
     @EnvironmentObject var calendarVM: CalendarViewModel
     @EnvironmentObject var holidayVM: HolidayViewModel
+    @EnvironmentObject var eventVM: EventViewModel
     
     @Binding var gridHeight: CGFloat
+    
+    @Binding var showDailyView: Bool
     
     let manager = DateFormatManager.shared
     
@@ -30,7 +33,7 @@ struct CalendarGrid: View {
                         ForEach((0..<currentFirstWeekday).reversed(), id: \.self) { i in
                             let prevDate: Date = calendarVM.getDate(value: -1, day: numberPrevMonthDays - i)
                             let isToday: Bool = manager.basicDateString(date: Date()) == manager.basicDateString(date: prevDate)
-                            CalendarCellView(cellDate: prevDate, currentMonthDay: false, isToday: isToday)
+                            CalendarCellView(showDailyView: $showDailyView, cellDate: prevDate, currentMonthDay: false, isToday: isToday)
                                 .frame(height: cellHeight)
                         }
                     }
@@ -40,7 +43,7 @@ struct CalendarGrid: View {
                         let currentDate: Date = calendarVM.getDate(value: 0, day: day + 1)
                         let isToday: Bool = manager.basicDateString(date: Date()) == manager.basicDateString(date: currentDate)
                         
-                        CalendarCellView(cellDate: currentDate, currentMonthDay: true, isToday: isToday)
+                        CalendarCellView(showDailyView: $showDailyView, cellDate: currentDate, currentMonthDay: true, isToday: isToday)
                             .frame(height: cellHeight)
                     }
                     
@@ -53,7 +56,7 @@ struct CalendarGrid: View {
                         let nextDate: Date = calendarVM.getDate(value: 1, day: day + 1)
                         let isToday: Bool = manager.basicDateString(date: Date()) == manager.basicDateString(date: nextDate)
                         
-                        CalendarCellView(cellDate: nextDate, currentMonthDay: false, isToday: isToday)
+                        CalendarCellView(showDailyView: $showDailyView, cellDate: nextDate, currentMonthDay: false, isToday: isToday)
                             .frame(height: cellHeight)
                     }
                 }
@@ -77,6 +80,9 @@ struct CalendarCellView: View {
     
     @EnvironmentObject var calendarVM: CalendarViewModel
     @EnvironmentObject var holidayVM: HolidayViewModel
+    @EnvironmentObject var eventVM: EventViewModel
+    
+    @Binding var showDailyView: Bool
     
     let manager = DateFormatManager.shared
     
@@ -99,12 +105,6 @@ struct CalendarCellView: View {
     
     var events: [Event]? {
         return dummyEvents.filter { manager.removeHypenDateString(textDate: $0.startTime) == manager.basicDateString(date: cellDate) || manager.removeHypenDateString(textDate: $0.endTime) == manager.basicDateString(date: cellDate) }
-    }
-    
-    init(cellDate: Date, currentMonthDay: Bool = false, isToday: Bool = true) {
-        self.cellDate = cellDate
-        self.currentMonthDay = currentMonthDay
-        self.isToday = isToday
     }
     
     var body: some View {
@@ -142,6 +142,12 @@ struct CalendarCellView: View {
         }
         .frame(maxHeight: .infinity)
         .padding(.top, 5)
+        .background(.neutral100)
+        .onTapGesture {
+            self.showDailyView = true
+            eventVM.setDay(date: cellDate)
+            print("cell clicked.")
+        }
     }
 }
 
@@ -285,8 +291,10 @@ class DateFormatManager {
 
 #Preview {
     @State var gridHeight: CGFloat = 650.0
-    CalendarGrid( gridHeight: $gridHeight)
+    @State var showDailyView: Bool = false
+    CalendarGrid( gridHeight: $gridHeight, showDailyView: $showDailyView)
         .environmentObject(CalendarViewModel())
         .environmentObject(HolidayViewModel())
+        .environmentObject(EventViewModel())
 }
 

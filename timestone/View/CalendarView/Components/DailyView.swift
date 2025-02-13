@@ -72,6 +72,11 @@ class EventViewModel: ObservableObject {
         }
     }
     
+    // 날짜 셀 클릭시 해당 날짜로 초기화
+    func setDay(date: Date) {
+        self.day = date
+    }
+    
     // value: -1(어제), 1(내일)
     func changeDay(value: Int) {
         if let newDay = calendar.date(byAdding: .day, value: value, to: day) {
@@ -79,9 +84,9 @@ class EventViewModel: ObservableObject {
         }
     }
     
-    func resetDay() {
-        self.day = Date()
-    }
+//    func resetDay() {
+//        self.day = Date()
+//    }
     
     // 일간 보기에서의 해당 날짜 Events 가져오기
     @discardableResult

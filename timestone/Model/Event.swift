@@ -149,6 +149,26 @@ struct EventInfo {
             url: URL(string: "https://conference.com/call456"),
             location: nil,
             images: nil
+        ),
+        Event(
+            title: "알바2",
+            alarm: true,
+            startTime: "2025-03-01 14:00:00",
+            endTime: "2025-03-01 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
+        ),
+        Event(
+            title: "알바3",
+            alarm: true,
+            startTime: "2025-03-01 14:00:00",
+            endTime: "2025-03-01 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
         )
     ]
 }

@@ -13,7 +13,7 @@ struct ShowCalendarView: View {
     @StateObject var eventVM: EventViewModel = EventViewModel()
     
     @State private var gridHeight: CGFloat = 0
-    @State private var showDailyView: Bool = true
+    @State private var showDailyView: Bool = false
     
     var body: some View {
         NavigationView {
@@ -71,9 +71,10 @@ struct ShowCalendarView: View {
                     Rectangle()
                         .frame(height: 1.5)
                         .foregroundStyle(.neutral80)
-                    CalendarGrid(gridHeight: $gridHeight)
+                    CalendarGrid(gridHeight: $gridHeight, showDailyView: $showDailyView)
                         .environmentObject(calendarVM)
                         .environmentObject(holidayVM)
+                        .environmentObject(eventVM)
                         .frame(maxHeight: .infinity)
                 } else {
                     // show DailyView
@@ -86,7 +87,6 @@ struct ShowCalendarView: View {
                     Button {
                         // action
                         showDailyView = false
-                        eventVM.resetDay()
                     } label: {
                         Image("CalendarIcon")
                             .resizable()
@@ -104,28 +104,6 @@ struct ShowCalendarView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 35, height: 35)
-                            .foregroundStyle(.neutral05)
-                    }
-                })
-                
-                ToolbarItem(placement: .topBarLeading, content: {
-                    Button {
-                        // action
-                    } label: {
-                        Image(systemName: "7.lane")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 35, height: 35)
-                            .foregroundStyle(.neutral05)
-                    }
-                })
-                
-                ToolbarItem(placement: .topBarTrailing, content: {
-                    Button {
-                        // action
-                    } label: {
-                        Image(systemName: "bell")
-                            .font(.system(size: 22))
                             .foregroundStyle(.neutral05)
                     }
                 })
