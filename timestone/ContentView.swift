@@ -37,6 +37,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-//        .environmentObject(CalendarVM())
-//        .environmentObject(HolidayVM())
 }

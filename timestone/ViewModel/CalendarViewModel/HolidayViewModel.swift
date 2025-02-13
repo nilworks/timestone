@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class HolidayVM: ObservableObject {
+class HolidayViewModel: ObservableObject {
     let baseURL = "https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo"
     let privateKey: String = Bundle.main.object(forInfoDictionaryKey: "HolidayKey") as? String ?? ""
     
