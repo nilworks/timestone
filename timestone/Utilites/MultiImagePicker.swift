@@ -14,7 +14,9 @@ struct MultiImagePicker: UIViewControllerRepresentable {
     @Binding var selectedAssetIDs: [String] // 선택된 이미지 ID 배열
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
-        var config = PHPickerConfiguration()
+        let photoLibrary = PHPhotoLibrary.shared()
+        var config = PHPickerConfiguration(photoLibrary: photoLibrary)
+
         config.filter = .images // 이미지 필터링
         config.selectionLimit = 5 // 최대 선택 가능 이미지 수
         
@@ -43,11 +45,11 @@ struct MultiImagePicker: UIViewControllerRepresentable {
         
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
             parent.selectedImages.removeAll() // 선택된 이미지 초기화(미리보기 화면)
-            parent.selectedAssetIDs.removeAll() // 선택된 ID 초기화
+            // parent.selectedAssetIDs.removeAll() // 선택된 ID 초기화
             
             for result in results {
+                
                 if let assetID = result.assetIdentifier {
-                    print("Selected Asset ID: \(assetID)") // 에셋 ID 출력
                     parent.selectedAssetIDs.append(assetID) // 선택된 에셋 ID 배열에 추가
                 } else {
                     print("Asset ID is nil")
@@ -63,7 +65,7 @@ struct MultiImagePicker: UIViewControllerRepresentable {
                     }
                 }
             }
-            
+            print("Selected Asset ID: \(parent.selectedAssetIDs)")
             picker.dismiss(animated: true) // 선택 후 picker 닫기
         }
     }
