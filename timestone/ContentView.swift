@@ -10,7 +10,6 @@ import SwiftUI
 
 
 struct ContentView: View {
-
     var body: some View {
         TabView {
             ShowCalendarView()
@@ -19,7 +18,7 @@ struct ContentView: View {
                     Text("일정")
                 }
             // 맞는 View로 바꿔서 적용하시면 됩니다.
-            ShowCalendarView()
+            DetailEventView()
                 .tabItem {
                     Image(systemName: "plus.square")
                     Text("일정 추가")
