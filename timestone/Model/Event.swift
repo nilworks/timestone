@@ -141,6 +141,86 @@ struct EventInfo {
             images: nil
         ),
         Event(
+            title: "nilworks 회의",
+            alarm: true,
+            startTime: "2025-02-13 14:00:00",
+            endTime: "2025-02-13 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
+        ),
+        Event(
+            title: "nilworks 회의",
+            alarm: true,
+            startTime: "2025-02-13 14:00:00",
+            endTime: "2025-02-13 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
+        ),
+        Event(
+            title: "nilworks 회의",
+            alarm: true,
+            startTime: "2025-02-13 14:00:00",
+            endTime: "2025-02-13 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
+        ),
+        Event(
+            title: "nilworks 회의",
+            alarm: true,
+            startTime: "2025-02-13 14:00:00",
+            endTime: "2025-02-13 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
+        ),
+        Event(
+            title: "nilworks 회의",
+            alarm: true,
+            startTime: "2025-02-13 14:00:00",
+            endTime: "2025-02-13 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
+        ),
+        Event(
+            title: "nilworks 회의",
+            alarm: true,
+            startTime: "2025-02-13 14:00:00",
+            endTime: "2025-02-13 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
+        ),
+        Event(
+            title: "nilworks 회의",
+            alarm: true,
+            startTime: "2025-02-13 14:00:00",
+            endTime: "2025-02-13 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
+        ),
+        Event(
+            title: "nilworks 회의",
+            alarm: true,
+            startTime: "2025-02-13 14:00:00",
+            endTime: "2025-02-13 15:00:00",
+            notes: "Discuss partnership opportunities.",
+            url: URL(string: "https://conference.com/call456"),
+            location: nil,
+            images: nil
+        ),
+        Event(
             title: "알바",
             alarm: true,
             startTime: "2025-02-12 14:00:00",

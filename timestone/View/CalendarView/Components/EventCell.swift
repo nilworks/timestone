@@ -36,7 +36,7 @@ struct EventCell: View {
                     .padding(.horizontal, 1)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
                     .overlay {
-                        MarqueeText(text: "\(moreEvent != 0 ? "+\(moreEvent)" : event.title ?? "nil")")
+                        MarqueeText(text: "\(moreEvent != 0 ? (moreEvent > 999 ? "+999" : "+\(moreEvent)") : event.title ?? "nil")")
                             .font(.system(size: 13))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 4)

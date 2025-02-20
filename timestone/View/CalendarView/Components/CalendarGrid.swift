@@ -35,6 +35,7 @@ struct CalendarGrid: View {
                             let isToday: Bool = manager.basicDateString(date: Date()) == manager.basicDateString(date: prevDate)
                             CalendarCellView(showDailyView: $showDailyView, cellDate: prevDate, currentMonthDay: false, isToday: isToday)
                                 .frame(height: cellHeight)
+                                .opacity(0.4)
                         }
                     }
                     
@@ -58,6 +59,7 @@ struct CalendarGrid: View {
                         
                         CalendarCellView(showDailyView: $showDailyView, cellDate: nextDate, currentMonthDay: false, isToday: isToday)
                             .frame(height: cellHeight)
+                            .opacity(0.4)
                     }
                 }
                 .frame(maxHeight: .infinity, alignment: .top)

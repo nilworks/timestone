@@ -12,10 +12,6 @@ struct DailyCellView: View {
     
     var event: Event
     
-    init(event: Event) {
-        self.event = event
-    }
-    
     var body: some View {
         HStack {
             Rectangle()
