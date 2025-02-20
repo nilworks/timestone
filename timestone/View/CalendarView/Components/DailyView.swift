@@ -11,7 +11,7 @@ struct DailyView: View {
     @EnvironmentObject var eventVM: EventViewModel
     
     var body: some View {
-        VStack {
+        ScrollView(.vertical) {
             LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 1)) {
                 ForEach(eventVM.getDailyEvents(), id: \.self) { event in
                     DailyCellView(event: event)

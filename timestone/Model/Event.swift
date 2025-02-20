@@ -131,7 +131,7 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "nilworks 회의",
+            title: "nilworks 회의1",
             alarm: true,
             startTime: "2025-02-13 14:00:00",
             endTime: "2025-02-13 15:00:00",
@@ -141,7 +141,7 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "nilworks 회의",
+            title: "nilworks 회의2",
             alarm: true,
             startTime: "2025-02-13 14:00:00",
             endTime: "2025-02-13 15:00:00",
@@ -151,7 +151,7 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "nilworks 회의",
+            title: "nilworks 회의3",
             alarm: true,
             startTime: "2025-02-13 14:00:00",
             endTime: "2025-02-13 15:00:00",
@@ -161,7 +161,7 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "nilworks 회의",
+            title: "nilworks 회의4",
             alarm: true,
             startTime: "2025-02-13 14:00:00",
             endTime: "2025-02-13 15:00:00",
@@ -171,7 +171,7 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "nilworks 회의",
+            title: "nilworks 회의5",
             alarm: true,
             startTime: "2025-02-13 14:00:00",
             endTime: "2025-02-13 15:00:00",
@@ -181,7 +181,7 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "nilworks 회의",
+            title: "nilworks 회의6",
             alarm: true,
             startTime: "2025-02-13 14:00:00",
             endTime: "2025-02-13 15:00:00",
@@ -191,7 +191,7 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "nilworks 회의",
+            title: "nilworks 회의7",
             alarm: true,
             startTime: "2025-02-13 14:00:00",
             endTime: "2025-02-13 15:00:00",
@@ -201,7 +201,7 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "nilworks 회의",
+            title: "nilworks 회의8",
             alarm: true,
             startTime: "2025-02-13 14:00:00",
             endTime: "2025-02-13 15:00:00",
@@ -211,7 +211,7 @@ struct EventInfo {
             images: nil
         ),
         Event(
-            title: "nilworks 회의",
+            title: "nilworks 회의9",
             alarm: true,
             startTime: "2025-02-13 14:00:00",
             endTime: "2025-02-13 15:00:00",
