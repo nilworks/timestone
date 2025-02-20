@@ -18,6 +18,7 @@ struct ContentView: View {
                     Image(systemName: "calendar")
                     Text("일정")
                 }
+                .toolbarBackground(Color.neutral100, for: .tabBar)
             // 맞는 View로 바꿔서 적용하시면 됩니다.
             ShowCalendarView()
                 .tabItem {
