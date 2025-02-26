@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DetailEventView: View {
+    @State var draw: Bool = false
     var body: some View {
         VStack{
             Text("2024년")
@@ -77,11 +78,9 @@ struct DetailEventView: View {
                         .foregroundStyle(.neutral60)
                         .padding(.bottom, 5)
                     
-                    Image(systemName: "clock")
-                        .resizable()
-                        .foregroundStyle(.neutral60)
-                        .frame(width: 331, height: 125)
-                        .padding(.bottom, 20)
+                    KakaoMapView(draw: $draw)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    
                     
                     Text("사진")
                         .font(.subBodyRegular)
@@ -105,6 +104,11 @@ struct DetailEventView: View {
         }//: VSTACK
         .padding(.horizontal, 20)
         .background(.black)
+        .onAppear(perform: {
+            self.draw = true
+        }).onDisappear(perform: {
+            self.draw = false
+        })
     }
 }
 
