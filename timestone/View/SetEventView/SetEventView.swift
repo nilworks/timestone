@@ -52,53 +52,57 @@ struct SetEventView: View {
     }
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
+                // MARK: - 컨트롤러
+                HStack {
+                    // TODO: X버튼 기능 추가 필요
+                    // X 아이콘 버튼
+                    Button(action: {
+                        
+                    }) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 24))
+                            .foregroundColor(.white)
+                    }
+                    
+                    Spacer()
+                    
+                    // Save 버튼
+                    // TODO: Save버튼 기능 추가 필요
+                    Button(action: {
+                        
+                    }) {
+                        Text("Save")
+                            .font(.bodyRegular)
+                            .foregroundColor(.neutral60)
+                    }
+                }
+                .padding([.leading, .trailing], 20)
+                    .padding(.top, 20)
+                    .padding(.bottom, 20)
+                    .background(Color.neutral90) // 배경을 투명하게 할 수 있음
+                    .zIndex(1)
+            
             ScrollView {
                 VStack {
-                    // MARK: - 컨트롤러
-                    HStack {
-                        // TODO: X버튼 기능 추가 필요
-                        // X 아이콘 버튼
-                        Button(action: {
-                            
-                        }) {
-                            Image(systemName: "xmark")
-                                .font(.system(size: 24))
-                                .foregroundColor(.white)
-                        }
-                        
-                        Spacer()
-                        
-                        // Save 버튼
-                        // TODO: Save버튼 기능 추가 필요
-                        Button(action: {
-                            
-                        }) {
-                            Text("Save")
-                                .font(.bodyRegular)
-                                .foregroundColor(.neutral60)
-                        }
-                    }
-                    .padding([.leading, .trailing], 20)
-                    .padding(.top, 20)
-                    
+
                     // MARK: - 일정 제목 입력
                     if #available(iOS 17.0, *) {
                         TextField("일정", text: $scheduleTitle, prompt: Text("일정").foregroundStyle(.neutral70))
                             .font(.titleBold)
                             .padding([.leading, .trailing], 20)
-                            .padding(.top, 40)
+                            .padding(.top, 70)
                             .foregroundColor(Color.white)
                     } else {
                         TextField("일정", text: $scheduleTitle)
                             .font(.titleBold)
                             .padding([.leading, .trailing], 20)
-                            .padding(.top, 40)
+                            .padding(.top, 70)
                             .foregroundColor(Color.white)
                     }
                     
                     Divider()
-                        .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
+                        .frame(height: 0.4) // 높이 값을 사용해서 Divider 두께 조절
                         .background(Color.neutral80)
                         .padding(.top, 5)
                     
@@ -183,7 +187,7 @@ struct SetEventView: View {
                     .padding(.top, 15)
                     
                     Divider()
-                        .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
+                        .frame(height: 0.4) // 높이 값을 사용해서 Divider 두께 조절
                         .background(Color.neutral80)
                         .padding(.top, 15)
                     
@@ -230,7 +234,7 @@ struct SetEventView: View {
                     .padding(.top, 15)
                     
                     Divider()
-                        .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
+                        .frame(height: 0.4) // 높이 값을 사용해서 Divider 두께 조절
                         .background(Color.neutral80)
                         .padding(.top, 25)
                     
@@ -269,7 +273,7 @@ struct SetEventView: View {
                     .padding(.top, 15)
                     
                     Divider()
-                        .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
+                        .frame(height: 0.4) // 높이 값을 사용해서 Divider 두께 조절
                         .background(Color.neutral80)
                         .padding(.top, 15)
                     
@@ -307,7 +311,7 @@ struct SetEventView: View {
                     .padding(.top, 15)
                     
                     Divider()
-                        .frame(height: 1.0) // 높이 값을 사용해서 Divider 두께 조절
+                        .frame(height: 0.4) // 높이 값을 사용해서 Divider 두께 조절
                         .background(Color.neutral80)
                         .padding(.top, 20)
                     
@@ -348,7 +352,7 @@ struct SetEventView: View {
                                         .cornerRadius(4)
                                         .onTapGesture {
                                             showImagePicker = true
-                                            //print("Current selected Asset IDs: \(imagePickerViewModel.selectedAssetIDs)")
+                                            print("현재 저장된 이미지: \(imagePickerViewModel.selectedAssetIDs)")
                                             checkPhotoLibraryPermission()
                                         }
                                         .sheet(isPresented: $showImagePicker) {
@@ -372,7 +376,6 @@ struct SetEventView: View {
                                 }
                                 
                             } // ScrollView
-                            .foregroundStyle(.red)
                         }
                         
                     } // 사진
@@ -380,7 +383,9 @@ struct SetEventView: View {
                     .padding(.top, 15)
                     
                 } // VStack
+                .padding(.bottom, 130)
             } // ScrollView
+            .ignoresSafeArea(edges: .bottom)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.neutral90))
             .onTapGesture {
@@ -395,7 +400,7 @@ struct SetEventView: View {
             if datePickerViewModel.showTimePicker {
                 CustomTimePickerPopUp(viewModel: datePickerViewModel)
             }
-        } 
+        }
     }
     
     // 사진 정렬

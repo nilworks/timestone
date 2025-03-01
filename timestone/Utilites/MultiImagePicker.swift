@@ -36,6 +36,7 @@ struct MultiImagePicker: UIViewControllerRepresentable {
         return Coordinator(self)
     }
     
+    
     class Coordinator: NSObject, PHPickerViewControllerDelegate {
         var parent: MultiImagePicker
         
@@ -43,31 +44,44 @@ struct MultiImagePicker: UIViewControllerRepresentable {
             self.parent = parent
         }
         
+        func fetchImage(for assetID: String, completion: @escaping (UIImage?) -> Void) {
+            let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [assetID], options: nil) // 에셋ID 사용해 사진앱에서 이미지 찾기
+            
+            guard let asset = fetchResult.firstObject else { // 이미지 찾으면 가져오기
+                completion(nil) // 해당 ID의 이미지가 없을 경우 nil 반환
+                return
+            }
+
+            let imageManager = PHImageManager.default() // 이미지 가져오는 도구를 변수에 담아 사용할 준비하기
+            let options = PHImageRequestOptions()
+            options.isSynchronous = false // 비동기적으로 이미지 요청
+            
+            // 위에서 준비한 도구 사용해서 이미지를 양식에 맞게 불러오기
+            imageManager.requestImage(for: asset,
+                                      targetSize: CGSize(width: 500, height: 500),
+                                      contentMode: .aspectFit,
+                                      options: options) { image, _ in
+                completion(image)
+            }
+        }
+        
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
             parent.selectedImages.removeAll() // 선택된 이미지 초기화(미리보기 화면)
-            // parent.selectedAssetIDs.removeAll() // 선택된 ID 초기화
+            parent.selectedAssetIDs = results.compactMap { $0.assetIdentifier }
             
-            for result in results {
-                
-                if let assetID = result.assetIdentifier {
-                    parent.selectedAssetIDs.append(assetID) // 선택된 에셋 ID 배열에 추가
-                } else {
-                    print("Asset ID is nil")
-                }
-                
-                if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
-                        if let image = object as? UIImage {
+            for assetID in parent.selectedAssetIDs {
+                    fetchImage(for: assetID) { image in
+                        if let image = image {
                             DispatchQueue.main.async {
-                                self?.parent.selectedImages.append(image) // 이미지 배열에 추가
+                                self.parent.selectedImages.append(image) // 선택된 이미지 배열에 추가
                             }
                         }
                     }
                 }
+
+                print("Updated Asset IDs: \(parent.selectedAssetIDs)")
+                picker.dismiss(animated: true) // 선택 후 picker 닫기
             }
-            print("Selected Asset ID: \(parent.selectedAssetIDs)")
-            picker.dismiss(animated: true) // 선택 후 picker 닫기
-        }
     }
 }
 
