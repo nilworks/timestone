@@ -21,7 +21,7 @@ struct ContentView: View {
             DetailEventView()
                 .tabItem {
                     Image(systemName: "plus.square")
-                    Text("일정 추가")
+                    Text("디테일 뷰")
                 }
             // 맞는 View로 바꿔서 적용하시면 됩니다.
             ShowCalendarView()
