@@ -14,7 +14,6 @@ struct KakaoMapView: UIViewRepresentable {
     func makeUIView(context: Self.Context) -> KMViewContainer {
         //need to correct view size
         let view: KMViewContainer = KMViewContainer(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-
         context.coordinator.createController(view)
         
         return view
@@ -67,6 +66,9 @@ struct KakaoMapView: UIViewRepresentable {
         func addViews() {
             let defaultPosition: MapPoint = MapPoint(longitude: 127.0499, latitude: 37.65421)
             let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition)
+            createLabelLayer()
+            createPoiStyle()
+            createPoi()
             controller?.addView(mapviewInfo)
         }
         
@@ -89,6 +91,33 @@ struct KakaoMapView: UIViewRepresentable {
         func authenticationSucceeded() {
             auth = true
             addViews()
+        }
+        
+        func createLabelLayer(){
+            let view = controller?.getView("mapview") as? KakaoMap
+            let manager = view?.getLabelManager()
+            let layerOption = LabelLayerOptions(layerID: "PoiLayer", competitionType: .none, competitionUnit: .poi, orderType: .rank, zOrder: 10001)
+            let _ = manager?.addLabelLayer(option: layerOption)
+        }
+        
+        func createPoiStyle(){
+            let view = controller?.getView("mapview") as? KakaoMap
+            let manager = view?.getLabelManager()
+            let iconStyle = PoiIconStyle(symbol: UIImage(resource: .pinRed), anchorPoint: CGPoint(x: 0, y: 0))
+            let perLevelStyle = PerLevelPoiStyle(iconStyle: iconStyle, level: 0)
+            let poiStyle = PoiStyle(styleID: "customStyle", styles: [perLevelStyle])
+            manager?.addPoiStyle(poiStyle)
+        }
+        
+        func createPoi(){
+            let view = controller?.getView("mapview") as? KakaoMap
+            let manger = view?.getLabelManager()
+            let layer = manger?.getLabelLayer(layerID: "PoiLayer")
+            let poiOption = PoiOptions(styleID: "customStyle")
+            poiOption.rank = 0
+            
+            let poi = layer?.addPoi(option: poiOption, at: MapPoint(longitude: 127.0499, latitude: 37.65421))
+            poi?.show()
         }
         
         var controller: KMController?
