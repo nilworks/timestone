@@ -18,7 +18,7 @@ struct MultiImagePicker: UIViewControllerRepresentable {
         var config = PHPickerConfiguration(photoLibrary: photoLibrary)
 
         config.filter = .images // 이미지 필터링
-        config.selectionLimit = 5 // 최대 선택 가능 이미지 수
+        config.selectionLimit = 10 // 최대 선택 가능 이미지 수
         
         // 이전에 선택된 에셋 ID를 preselectedAssetIdentifiers에 설정
         config.preselectedAssetIdentifiers = selectedAssetIDs

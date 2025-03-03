@@ -46,46 +46,50 @@ struct SetEventView: View {
     @State private var selectedAssetIDs: [String] = []
     @State private var showImagePicker = false
     
+    @State private var selectedButtonPosition: CGPoint = .zero
+    
     // 텍스트 뷰 여백 조절
     init() {
         UITextView.appearance().textContainerInset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+        
     }
+    
     
     var body: some View {
         ZStack(alignment: .top) {
-                // MARK: - 컨트롤러
-                HStack {
-                    // TODO: X버튼 기능 추가 필요
-                    // X 아이콘 버튼
-                    Button(action: {
-                        
-                    }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 24))
-                            .foregroundColor(.white)
-                    }
+            // MARK: - 컨트롤러
+            HStack {
+                // TODO: X버튼 기능 추가 필요
+                // X 아이콘 버튼
+                Button(action: {
                     
-                    Spacer()
-                    
-                    // Save 버튼
-                    // TODO: Save버튼 기능 추가 필요
-                    Button(action: {
-                        
-                    }) {
-                        Text("Save")
-                            .font(.bodyRegular)
-                            .foregroundColor(.neutral60)
-                    }
+                }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 24))
+                        .foregroundColor(.white)
                 }
-                .padding([.leading, .trailing], 20)
-                    .padding(.top, 20)
-                    .padding(.bottom, 20)
-                    .background(Color.neutral90) // 배경을 투명하게 할 수 있음
-                    .zIndex(1)
+                
+                Spacer()
+                
+                // Save 버튼
+                // TODO: Save버튼 기능 추가 필요
+                Button(action: {
+                    
+                }) {
+                    Text("Save")
+                        .font(.bodyRegular)
+                        .foregroundColor(.neutral60)
+                }
+            }
+            .padding([.leading, .trailing], 20)
+            .padding(.top, 20)
+            .padding(.bottom, 20)
+            .background(Color.neutral90)
+            .zIndex(1)
             
             ScrollView {
                 VStack {
-
+                    
                     // MARK: - 일정 제목 입력
                     if #available(iOS 17.0, *) {
                         TextField("일정", text: $scheduleTitle, prompt: Text("일정").foregroundStyle(.neutral70))
@@ -107,49 +111,42 @@ struct SetEventView: View {
                         .padding(.top, 5)
                     
                     // MARK: - 알림
-                    HStack {
-                        // 아이콘
-                        VStack {
-                            Image(systemName: "clock")
-                                .font(.system(size: 18))
-                                .foregroundColor(.primary100)
-                            Spacer()
-                        }
-                        .padding(.top, 2)
-                        
-                        // 알림, 시작, 종료
-                        VStack(spacing: 15) {
-                            // 알림
-                            HStack {
-                                VStack {
-                                    Text("알림")
-                                        .font(.bodyRegular)
-                                        .foregroundColor(.white)
+                    VStack {
+                        HStack {
+                            // 알림 타이틀
+                            HStack(spacing: 10) {
+                                HStack {
+                                    Image(systemName: "clock")
+                                        .font(.system(size: 18))
+                                        .foregroundColor(.primary100)
                                     
-                                    Spacer()
+                                    Text("알림")
+                                        .font(.subTitleMedium)
+                                        .foregroundColor(.white)
                                 }
                                 
                                 Spacer()
                                 
-                                VStack(alignment: .trailing) {
-                                    Toggle("", isOn: $clockIsOn)
-                                        .toggleStyle(ToggleSt())
-                                    
-                                    VStack {
-                                        Picker("", selection: $eventTimeIndex) {
-                                            ForEach(0..<eventTimes.count, id: \.self) { index in
-                                                Text(eventTimes[index]).tag(index)
-                                                    .font(.subBodyRegular)
-                                            }
-                                        }
-                                        .pickerStyle(.wheel)
-                                    }
-                                    .frame(width: 260,height: clockIsOn ? 80 : 0)
-                                    .background(.neutral80)
-                                    .cornerRadius(4)
-                                    .clipped()
+                                Toggle("", isOn: $clockIsOn)
+                                    .toggleStyle(ToggleSt())
+                            }
+                        }
+                        
+                        VStack {
+                            Picker("", selection: $eventTimeIndex) {
+                                ForEach(0..<eventTimes.count, id: \.self) { index in
+                                    Text(eventTimes[index]).tag(index)
                                 }
                             }
+                            .pickerStyle(.inline)
+                        }
+                        .frame(height: clockIsOn ? 80 : 0)
+                        .background(.neutral80)
+                        .cornerRadius(6)
+                        .padding(.bottom, 10)
+                        
+                        // 시작, 종료
+                        VStack(spacing: 15) {
                             
                             // 시작
                             HStack {
@@ -159,12 +156,7 @@ struct SetEventView: View {
                                 
                                 Spacer()
                                 
-                                // TODO: 커스텀...만들기
-//                              DatePicker("", selection: $selectDay)
-//                                .environment(\.locale, Locale(identifier: "ko_KR"))
-//                                .scaleEffect(0.8)
-//                                .offset(x: 30)
-                                CustomDatePickerButton(viewModel: datePickerViewModel)
+                                CustomDatePickerButton(viewModel: datePickerViewModel, selectedButtonPosition: $selectedButtonPosition)
                             }
                             
                             // 종료
@@ -175,12 +167,8 @@ struct SetEventView: View {
                                 
                                 Spacer()
                                 
-                                DatePicker("", selection: $selectDay)
-                                    .environment(\.locale, Locale(identifier: "ko_KR"))
-                                    .scaleEffect(0.8)
-                                    .offset(x: 30)
+                                CustomDatePickerButton(viewModel: datePickerViewModel, selectedButtonPosition: $selectedButtonPosition)
                             }
-                            .offset(y: -3)
                         }
                     } // 알림
                     .padding([.leading, .trailing], 20)
@@ -192,31 +180,30 @@ struct SetEventView: View {
                         .padding(.top, 15)
                     
                     // MARK: - 메모
-                    HStack {
-                        // 아이콘
-                        VStack {
-                            Image(systemName: "pencil")
-                                .font(.system(size: 18))
-                                .foregroundColor(.primary100)
-                            Spacer()
-                        }
-                        .padding(.top, 2)
-                        
-                        Spacer()
-                        
-                        // 메모 콘텐츠
-                        HStack(spacing: 30) {
-                            VStack {
-                                Text("메모")
-                                    .font(.bodyRegular)
+                    VStack {
+                        HStack {
+                            // 메모 타이틀
+                            HStack(spacing: 10) {
+                                HStack {
+                                    Image(systemName: "pencil")
+                                        .font(.system(size: 18))
+                                        .foregroundColor(.primary100)
+                                    
+                                    Text("메모")
+                                        .font(.subTitleMedium)
+                                        .foregroundColor(.white)
+                                }
                                 
                                 Spacer()
                             }
-                            
+                        }
+                        
+                        // 메모 콘텐츠
+                        HStack {
                             // TODO: 빈 화면 탭했을 때 키보드 없어지기
                             // TODO: 키보드에 키보드 없어지는 버튼 추가하기
                             TextEditor(text: $memoText)
-                                .font(.captionLight)
+                                .font(.subBodyRegular)
                                 .frame(height: 96)
                                 .scrollContentBackground(.hidden)
                                 .background(Color.neutral80)
@@ -225,7 +212,7 @@ struct SetEventView: View {
                                 .overlay(alignment: .topLeading) {
                                     Text("메모를 입력해주세요.")
                                         .foregroundStyle(memoText.isEmpty ? .neutral50 : .clear)
-                                        .font(.captionLight)
+                                        .font(.subBodyRegular)
                                         .padding([.leading, .top], 4)
                                 }
                         }
@@ -240,33 +227,35 @@ struct SetEventView: View {
                     
                     
                     // MARK: - 링크
-                    HStack {
-                        VStack {
-                            Image(systemName: "link")
-                                .font(.system(size: 18))
-                                .foregroundColor(.primary100)
-                            Spacer()
+                    VStack {
+                        HStack {
+                            // 링크 타이틀
+                            HStack(spacing: 10) {
+                                HStack {
+                                    Image(systemName: "link")
+                                        .font(.system(size: 18))
+                                        .foregroundColor(.primary100)
+                                    
+                                    Text("링크")
+                                        .font(.subTitleMedium)
+                                        .foregroundColor(.white)
+                                }
+                                
+                                Spacer()
+                            }
                         }
-                        .padding(.top, 2)
-                        
-                        Spacer()
                         
                         // 링크 콘텐츠
                         HStack(spacing: 30) {
-                            VStack {
-                                Text("링크")
-                                    .font(.bodyRegular)
-                            }
                             
                             // TODO: 빈 화면 탭했을 때 키보드 없어지기
                             // TODO: 키보드에 키보드 없어지는 버튼 추가하기
                             TextField("링크를 입력해 주세요.",text: $inputLink, prompt: Text("링크를 입력해 주세요."))
-                            .padding(.leading, 4)
-                            .font(.captionLight)
-                            .frame(width: 260, height: 22, alignment: .leading)
-                            .scrollContentBackground(.hidden)
-                            .background(.neutral80)
-                            .cornerRadius(4)
+                                .padding(4)
+                                .font(.subBodyRegular)
+                                .scrollContentBackground(.hidden)
+                                .background(.neutral80)
+                                .cornerRadius(4)
                         }
                     }
                     .padding([.leading, .trailing], 20)
@@ -279,33 +268,45 @@ struct SetEventView: View {
                     
                     
                     // MARK: - 장소
-                    HStack {
-                        VStack {
-                            Image(systemName: "map")
-                                .font(.system(size: 18))
-                                .foregroundColor(.primary100)
-                            Spacer()
-                        }
-                        .padding(.top, 2)
-                        
-                        Spacer()
-                        
-                        // 지도 콘텐츠
-                        HStack(spacing: 30) {
-                            VStack {
-                                Text("장소")
-                                    .font(.bodyRegular)
+                    VStack {
+                        HStack {
+                            // 장소 타이틀
+                            HStack(spacing: 10) {
+                                HStack {
+                                    Image(systemName: "map")
+                                        .font(.system(size: 18))
+                                        .foregroundColor(.primary100)
+                                    
+                                    Text("장소")
+                                        .font(.subTitleMedium)
+                                        .foregroundColor(.white)
+                                }
                                 
                                 Spacer()
                             }
-                            
-                            VStack {
-                                // TODO: 지도 임배드
+                        }
+                        
+                        // 지도 콘텐츠
+
+                            Button(action: {
+                                
+                            }) {
+                                HStack {
+                                    Text("위치 추가")
+                                        .font(.subBodyRegular)
+                                        .foregroundStyle(.neutral60)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .foregroundStyle(.white)
+                                }
+                                .padding([.leading, .trailing], 10)
                             }
-                            .frame(width: 260, height: 96)
+                            .frame(height: 40)
                             .background(.neutral80)
                             .cornerRadius(4)
-                        }
+
                     }
                     .padding([.leading, .trailing], 20)
                     .padding(.top, 15)
@@ -316,70 +317,76 @@ struct SetEventView: View {
                         .padding(.top, 20)
                     
                     // MARK: - 사진
-                    HStack {
-                        // 아이콘
-                        VStack {
-                            Image(systemName: "photo")
-                                .font(.system(size: 18))
-                                .foregroundStyle(.primary100)
-                            
-                            Spacer()
-                        }
-                        .padding(.top, 2)
-                        
-                        // 사진 추가 콘텐츠
-                        HStack(spacing: 30) {
-                            VStack {
-                                Text("사진")
-                                    .font(.bodyRegular)
+                    VStack {
+                        HStack {
+                            // 사진 타이틀
+                            HStack(spacing: 10) {
+                                HStack {
+                                    Image(systemName: "photo")
+                                        .font(.system(size: 18))
+                                        .foregroundColor(.primary100)
+                                    
+                                    Text("사진")
+                                        .font(.subTitleMedium)
+                                        .foregroundColor(.white)
+                                }
                                 
                                 Spacer()
                             }
+                        }
+                        
+                        // 사진 추가 콘텐츠
+                        HStack(spacing: 30) {
                             
-                            ScrollView(.horizontal) {
-                                HStack {
+                            if #available(iOS 17.0, *) {
+                                ScrollView(.horizontal) {
                                     HStack {
-                                        VStack {
-                                            Image(systemName: "plus")
-                                                .foregroundStyle(.white)
-                                                .padding(.bottom, 2)
-                                            Text("\(imagePickerViewModel.selectedImages.count)/5")
-                                                .foregroundStyle(.white)
-                                                .font(.subCaptionLight)
+                                        HStack {
+                                            VStack {
+                                                Image(systemName: "plus")
+                                                    .foregroundStyle(.white)
+                                                    .padding(.bottom, 2)
+                                                Text("\(imagePickerViewModel.selectedImages.count)/10")
+                                                    .foregroundStyle(.white)
+                                                    .font(.subCaptionLight)
+                                            }
+                                            .frame(width: 100, height: 100)
+                                            .background(.neutral80)
+                                            .cornerRadius(4)
+                                            .onTapGesture {
+                                                showImagePicker = true
+                                                print("현재 저장된 이미지: \(imagePickerViewModel.selectedAssetIDs)")
+                                                checkPhotoLibraryPermission()
+                                            }
+                                            .sheet(isPresented: $showImagePicker) {
+                                                MultiImagePicker(selectedImages: $imagePickerViewModel.selectedImages,
+                                                                 selectedAssetIDs: $imagePickerViewModel.selectedAssetIDs)
+                                            }
                                         }
-                                        .frame(width: 100, height: 100)
-                                        .background(.neutral80)
-                                        .cornerRadius(4)
-                                        .onTapGesture {
-                                            showImagePicker = true
-                                            print("현재 저장된 이미지: \(imagePickerViewModel.selectedAssetIDs)")
-                                            checkPhotoLibraryPermission()
-                                        }
-                                        .sheet(isPresented: $showImagePicker) {
-                                            MultiImagePicker(selectedImages: $imagePickerViewModel.selectedImages,
-                                                             selectedAssetIDs: $imagePickerViewModel.selectedAssetIDs)
-                                        }
-                                    }
-                                    
-                                    // 추가된 이미지
-                                    HStack {
-                                        LazyVGrid(columns: dynamicColumns(), spacing: 10) {
-                                            ForEach(imagePickerViewModel.selectedImages, id: \.self) { image in
-                                                Image(uiImage: image)
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .frame(width: 100, height: 100)
-                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        
+                                        // 추가된 이미지
+                                        HStack {
+                                            LazyVGrid(columns: dynamicColumns(), spacing: 10) {
+                                                ForEach(imagePickerViewModel.selectedImages, id: \.self) { image in
+                                                    Image(uiImage: image)
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: 100, height: 100)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                
-                            } // ScrollView
+                                    
+                                } // ScrollView
+                                .scrollTargetBehavior (.paging)
+                            } else {
+                                // Fallback on earlier versions
+                            }
                         }
                         
                     } // 사진
-                    .padding(.leading, 20)
+                    .padding([.leading, .trailing], 20)
                     .padding(.top, 15)
                     
                 } // VStack
@@ -394,11 +401,11 @@ struct SetEventView: View {
             }
             
             if datePickerViewModel.showDatePicker {
-                CustomDatePickerPopUp(viewModel: datePickerViewModel)
+                CustomDatePickerPopUp(viewModel: datePickerViewModel, selectedButtonPosition: $selectedButtonPosition)
             }
             
             if datePickerViewModel.showTimePicker {
-                CustomTimePickerPopUp(viewModel: datePickerViewModel)
+                CustomTimePickerPopUp(viewModel: datePickerViewModel, selectedButtonPosition: $selectedButtonPosition)
             }
         }
     }
