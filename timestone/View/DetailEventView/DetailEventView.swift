@@ -34,8 +34,7 @@ struct DetailEventView: View {
             .padding(.bottom, 30)
             
             // TODO: ViewBuilder로 빼면 효과적일 것 같음, 혹은 컴포넌트 뷰 생성
-            VStack(){
-                VStack(alignment: .leading){
+            VStack(alignment: .leading){
                     Text("회의를 합시다")
                         .font(.subTitleBold)
                         .foregroundStyle(.white)
@@ -81,7 +80,6 @@ struct DetailEventView: View {
                     KakaoMapView(draw: $draw)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     
-                    
                     Text("사진")
                         .font(.subBodyRegular)
                         .foregroundStyle(.neutral60)
@@ -92,14 +90,13 @@ struct DetailEventView: View {
                         .foregroundStyle(.neutral60)
                         .frame(width: 331, height: 125)
                         .padding(.bottom, 20)
-                }
-                //: VSTACK
-                .padding(.horizontal, 20)
             }//: VSTACK
+            .padding(.leading, 20)
             .overlay(alignment: .leading, content: {
                 Rectangle()
                     .frame(width: 2)
                     .foregroundStyle(.primary100)
+                    .offset(x: -1)
             })
         }//: VSTACK
         .padding(.horizontal, 20)
