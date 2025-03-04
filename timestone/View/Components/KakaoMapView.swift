@@ -14,7 +14,6 @@ struct KakaoMapView: UIViewRepresentable {
     func makeUIView(context: Self.Context) -> KMViewContainer {
         //need to correct view size
         let view: KMViewContainer = KMViewContainer(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-
         context.coordinator.createController(view)
         
         return view
@@ -113,7 +112,7 @@ struct KakaoMapView: UIViewRepresentable {
         func createPoi(){
             let view = controller?.getView("mapview") as? KakaoMap
             let manger = view?.getLabelManager()
-            let layer = manger?.getLabelLayer(layerID: "PoiBagdeLayer")
+            let layer = manger?.getLabelLayer(layerID: "PoiLayer")
             let poiOption = PoiOptions(styleID: "customStyle")
             poiOption.rank = 0
             
