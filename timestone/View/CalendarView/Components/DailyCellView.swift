@@ -15,7 +15,6 @@ struct DailyCellView: View {
     var body: some View {
         HStack {
             Rectangle()
-                .frame(height: 40)
                 .frame(maxWidth: 2, maxHeight: 40)
                 .foregroundStyle(.primary100)
             VStack(alignment: .leading, spacing: 5) {

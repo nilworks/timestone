@@ -15,6 +15,7 @@ class DateFormatManager {
     let fullDateFormatter: DateFormatter
     let timeFormatter: DateFormatter
     let dailyViewTitleFormatter: DateFormatter
+    let dayOfWeekFormatter: DateFormatter
     
     private init() {
         basicDateFormatter = DateFormatter()
@@ -27,6 +28,9 @@ class DateFormatManager {
         dailyViewTitleFormatter = DateFormatter()
         dailyViewTitleFormatter.locale = Locale(identifier: "ko_KR")
         dailyViewTitleFormatter.dateFormat = "M월 d일 EEEE"
+        dayOfWeekFormatter = DateFormatter()
+        dayOfWeekFormatter.locale = Locale(identifier: "ko_KR")
+        dayOfWeekFormatter.dateFormat = "EEEE"
     }
     
     func basicDateString(date: Date) -> String {
@@ -48,5 +52,9 @@ class DateFormatManager {
     
     func dailyViewTitleFormat(date: Date) -> String {
         return dailyViewTitleFormatter.string(from: date)
+    }
+    
+    func dayOfWeekFormat(date: Date) -> String {
+        return dayOfWeekFormatter.string(from: date)
     }
 }

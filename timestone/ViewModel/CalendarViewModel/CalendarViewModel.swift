@@ -17,10 +17,11 @@ class CalendarViewModel: ObservableObject {
         }
     }
     
-    @Published var calendarArray: [[Date]] = []
+    @Published var calendarArray: [[CalendarDay]] = []
     @Published var calendarAryIndex: [Int] = []
     @Published var weekIndex: Int = 0
     @Published var isCalendarReady: Bool = false
+    let dateManager = DateFormatManager.shared
     
     let calendar = Calendar.current
     
@@ -102,7 +103,7 @@ class CalendarViewModel: ObservableObject {
         let isSixWeekMonth = currentFirstWeekday + numberCurrentMonthDays > 35
         let totalDays = isSixWeekMonth ? 42 : 35
         
-        var tempArray: [Date] = []
+        var tempArray: [CalendarDay] = []
         
         // 현재 달의 첫 번째 날짜 가져오기
         let firstDayOfMonth = startOfMonth(month: month)
@@ -110,21 +111,24 @@ class CalendarViewModel: ObservableObject {
         // 이전 달 날짜 채우기
         for i in (0..<currentFirstWeekday).reversed() {
             if let prevMonthDate = calendar.date(byAdding: .day, value: -i - 1, to: firstDayOfMonth) {
-                tempArray.append(prevMonthDate)
+                let dayOfWeek = dateManager.dayOfWeekFormat(date: prevMonthDate)
+                tempArray.append(CalendarDay(date: prevMonthDate, dayOfWeek: dayOfWeek, isCurrentMonth: false))
             }
         }
         
         // 현재 달 날짜 채우기
         for day in 0..<numberCurrentMonthDays {
             if let currentMonthDate = calendar.date(byAdding: .day, value: day, to: firstDayOfMonth) {
-                tempArray.append(currentMonthDate)
+                let dayOfWeek = dateManager.dayOfWeekFormat(date: currentMonthDate)
+                tempArray.append(CalendarDay(date: currentMonthDate, dayOfWeek: dayOfWeek, isCurrentMonth: true))
             }
         }
         
         // 다음 달 날짜 채우기
         for day in 0..<(totalDays - tempArray.count) {
             if let nextMonthDate = calendar.date(byAdding: .day, value: day + numberCurrentMonthDays, to: firstDayOfMonth) {
-                tempArray.append(nextMonthDate)
+                let dayOfWeek = dateManager.dayOfWeekFormat(date: nextMonthDate)
+                tempArray.append(CalendarDay(date: nextMonthDate, dayOfWeek: dayOfWeek, isCurrentMonth: false))
             }
         }
         
@@ -140,11 +144,10 @@ class CalendarViewModel: ObservableObject {
            calendar.isDate(month, equalTo: Date(), toGranularity: .year) {
             self.weekIndex = findCurrentWeekIndex() ?? 0
         } else {
-            print("CalenadrVM의 month가 현재 달이 아님")
+            weekIndex = 0
         }
         
         isCalendarReady = true
-        print("배열 채우기 완료 : \(month)")
     }
     
     // calendarArray에서 오늘 날짜가 속해있는 주 찾기
@@ -152,7 +155,7 @@ class CalendarViewModel: ObservableObject {
         let today = Date()
         
         for (index, week) in calendarArray.enumerated() {
-            if week.contains(where: { calendar.isDate($0, inSameDayAs: today)}) {
+            if week.contains(where: { calendar.isDate($0.date, inSameDayAs: today)}) {
                 return index
             }
         }
@@ -166,20 +169,16 @@ class CalendarViewModel: ObservableObject {
         case 1:
             if weekIndex < calendarArray.endIndex - 1 {
                 weekIndex += 1
-                print("다음 주로 넘어갑니다. \(weekIndex)")
             } else {
                 changeMonth(value: 1)
                 weekIndex = 0
-                print("다음 달로 넘어갑니다. \(weekIndex)")
             }
         case -1:
             if weekIndex > 0 {
                 weekIndex -= 1
-                print("이전 주로 넘어갑니다. \(weekIndex)")
             } else {
                 changeMonth(value: -1)
                     self.weekIndex = self.calendarArray.endIndex - 1
-                    print("이전 달로 넘어갑니다. \(self.weekIndex)")
             }
         default:
             print("chagneWeek - invalid value")
