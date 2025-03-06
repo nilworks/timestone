@@ -12,11 +12,7 @@ class EventViewModel: ObservableObject {
     let dateFormatterManager = DateFormatManager.shared
     let calendar = Calendar.current
     
-    @Published var day: Date = Date() {
-        didSet {
-            getDailyEvents()
-        }
-    }
+    @Published var day: Date = Date()
     
     // 날짜 셀 클릭시 해당 날짜로 초기화
     func setDay(date: Date) {
@@ -32,7 +28,7 @@ class EventViewModel: ObservableObject {
     
     // 일간 보기에서의 해당 날짜 Events 가져오기
     @discardableResult
-    func getDailyEvents() -> [Event] {
+    func getDailyEvents(day: Date) -> [Event] {
         // YYYYMMdd
         let formattedDay: String = dateFormatterManager.basicDateString(date: day)
         

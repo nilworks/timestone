@@ -17,7 +17,6 @@ struct CalendarGrid: View {
     @Binding var showDailyView: Bool
     
     let manager = DateFormatManager.shared
-    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -25,26 +24,26 @@ struct CalendarGrid: View {
                     let currentFirstWeekday: Int = calendarVM.firstWeekdayOfMonth() - 1 // 현재 달 1일 요일
                     let numberPrevMonthDays: Int = calendarVM.numberOfDaysPrevMonth() // 지난 달 날짜 개수
                     let numberCurrentMonthDays: Int = calendarVM.numberOfDays() // 현재 달 날짜 개수
-                    let cellHeight = currentFirstWeekday + numberCurrentMonthDays > 35 ?  gridHeight / 6 : gridHeight / 5
+                    let isSixRowMonth = currentFirstWeekday + numberCurrentMonthDays > 35
+                    let cellHeight = isSixRowMonth ? gridHeight / 6 : gridHeight / 5
                     
                     // 현재 달의 1일이 일요일이 아닐 경우
                     if currentFirstWeekday >= 1 {
                         // 이전 달의 남은 날짜를 cell에 넣음
                         ForEach((0..<currentFirstWeekday).reversed(), id: \.self) { i in
-                            let prevDate: Date = calendarVM.getDate(value: -1, day: numberPrevMonthDays - i)
+                            let prevDate: Date = calendarVM.calculateMonth(value: -1, day: numberPrevMonthDays - i)
                             let isToday: Bool = manager.basicDateString(date: Date()) == manager.basicDateString(date: prevDate)
-                            CalendarCellView(showDailyView: $showDailyView, cellDate: prevDate, currentMonthDay: false, isToday: isToday)
+                            CalendarCellView(showDailyView: $showDailyView, cellDate: prevDate, isSixRowMonth: isSixRowMonth, currentMonthDay: false, isToday: isToday)
                                 .frame(height: cellHeight)
-                                .opacity(0.4)
                         }
                     }
                     
                     // 현재 달의 날짜들을 cell에 넣음
                     ForEach(0..<numberCurrentMonthDays, id: \.self) { day in
-                        let currentDate: Date = calendarVM.getDate(value: 0, day: day + 1)
+                        let currentDate: Date = calendarVM.calculateMonth(value: 0, day: day + 1)
                         let isToday: Bool = manager.basicDateString(date: Date()) == manager.basicDateString(date: currentDate)
                         
-                        CalendarCellView(showDailyView: $showDailyView, cellDate: currentDate, currentMonthDay: true, isToday: isToday)
+                        CalendarCellView(showDailyView: $showDailyView, cellDate: currentDate, isSixRowMonth: isSixRowMonth, currentMonthDay: true, isToday: isToday)
                             .frame(height: cellHeight)
                     }
                     
@@ -54,12 +53,11 @@ struct CalendarGrid: View {
                     let remainCount = sumPrevCurrentCount <= 35 ? 35 - sumPrevCurrentCount : 42 - sumPrevCurrentCount
                     
                     ForEach(0..<remainCount, id: \.self) { day in
-                        let nextDate: Date = calendarVM.getDate(value: 1, day: day + 1)
+                        let nextDate: Date = calendarVM.calculateMonth(value: 1, day: day + 1)
                         let isToday: Bool = manager.basicDateString(date: Date()) == manager.basicDateString(date: nextDate)
                         
-                        CalendarCellView(showDailyView: $showDailyView, cellDate: nextDate, currentMonthDay: false, isToday: isToday)
+                        CalendarCellView(showDailyView: $showDailyView, cellDate: nextDate, isSixRowMonth: isSixRowMonth, currentMonthDay: false, isToday: isToday)
                             .frame(height: cellHeight)
-                            .opacity(0.4)
                     }
                 }
                 .frame(maxHeight: .infinity, alignment: .top)

@@ -13,8 +13,9 @@ struct DailyView: View {
     var body: some View {
         ScrollView(.vertical) {
             LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 1)) {
-                ForEach(eventVM.getDailyEvents(), id: \.self) { event in
+                ForEach(eventVM.getDailyEvents(day: eventVM.day), id: \.self) { event in
                     DailyCellView(event: event)
+                        .padding(.vertical, 5)
                 }
             }
             .padding(.top, 30)

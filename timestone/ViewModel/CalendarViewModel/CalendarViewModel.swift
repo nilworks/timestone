@@ -13,8 +13,14 @@ class CalendarViewModel: ObservableObject {
     @Published var month: Date = Date() {
         didSet {
             dateToStringYearMonth()
+            makeCalendarArray()
         }
     }
+    
+    @Published var calendarArray: [[Date]] = []
+    @Published var calendarAryIndex: [Int] = []
+    @Published var weekIndex: Int = 0
+    @Published var isCalendarReady: Bool = false
     
     let calendar = Calendar.current
     
@@ -27,8 +33,10 @@ class CalendarViewModel: ObservableObject {
     }
     
     // value: -1(이전 달), 0(현재 달), 1(다음 달)
-    func getDate(value: Int, day: Int) -> Date {
+    func calculateMonth(value: Int, day: Int) -> Date {
         let changedMonth = calendar.date(byAdding: .month, value: value, to: month)!
+        
+        
         
         return calendar.date(from: DateComponents(year: calendar.component(.year, from: changedMonth), month: calendar.component(.month, from: changedMonth), day: day)) ?? Date()
     }
@@ -78,4 +86,103 @@ class CalendarViewModel: ObservableObject {
         return Calendar.current.component(.weekday, from: firstDayOfMonth)
     }
     
+    
+    
+    //MARK: - 주간보기 함수
+    func makeCalendarArray() {
+        isCalendarReady = false
+        calendarArray = [] // 기존 배열 초기화
+        calendarAryIndex = []
+        
+        var count = 0
+        
+        let currentFirstWeekday = firstWeekdayOfMonth() - 1
+        let numberCurrentMonthDays = numberOfDays()
+        
+        let isSixWeekMonth = currentFirstWeekday + numberCurrentMonthDays > 35
+        let totalDays = isSixWeekMonth ? 42 : 35
+        
+        var tempArray: [Date] = []
+        
+        // 현재 달의 첫 번째 날짜 가져오기
+        let firstDayOfMonth = startOfMonth(month: month)
+        
+        // 이전 달 날짜 채우기
+        for i in (0..<currentFirstWeekday).reversed() {
+            if let prevMonthDate = calendar.date(byAdding: .day, value: -i - 1, to: firstDayOfMonth) {
+                tempArray.append(prevMonthDate)
+            }
+        }
+        
+        // 현재 달 날짜 채우기
+        for day in 0..<numberCurrentMonthDays {
+            if let currentMonthDate = calendar.date(byAdding: .day, value: day, to: firstDayOfMonth) {
+                tempArray.append(currentMonthDate)
+            }
+        }
+        
+        // 다음 달 날짜 채우기
+        for day in 0..<(totalDays - tempArray.count) {
+            if let nextMonthDate = calendar.date(byAdding: .day, value: day + numberCurrentMonthDays, to: firstDayOfMonth) {
+                tempArray.append(nextMonthDate)
+            }
+        }
+        
+        // 7개씩 끊어서 calendarArray에 저장
+        for chunk in stride(from: 0, to: totalDays, by: 7) {
+            let week = Array(tempArray[chunk..<chunk+7])
+            calendarArray.append(week)
+            calendarAryIndex.append(count)
+            count += 1
+        }
+        
+        if calendar.isDate(month, equalTo: Date(), toGranularity: .month) &&
+           calendar.isDate(month, equalTo: Date(), toGranularity: .year) {
+            self.weekIndex = findCurrentWeekIndex() ?? 0
+        } else {
+            print("CalenadrVM의 month가 현재 달이 아님")
+        }
+        
+        isCalendarReady = true
+        print("배열 채우기 완료 : \(month)")
+    }
+    
+    // calendarArray에서 오늘 날짜가 속해있는 주 찾기
+    func findCurrentWeekIndex() -> Int? {
+        let today = Date()
+        
+        for (index, week) in calendarArray.enumerated() {
+            if week.contains(where: { calendar.isDate($0, inSameDayAs: today)}) {
+                return index
+            }
+        }
+        
+        return nil
+    }
+    
+    //weekIndex 조절
+    func changeWeek(value: Int) {
+        switch value {
+        case 1:
+            if weekIndex < calendarArray.endIndex - 1 {
+                weekIndex += 1
+                print("다음 주로 넘어갑니다. \(weekIndex)")
+            } else {
+                changeMonth(value: 1)
+                weekIndex = 0
+                print("다음 달로 넘어갑니다. \(weekIndex)")
+            }
+        case -1:
+            if weekIndex > 0 {
+                weekIndex -= 1
+                print("이전 주로 넘어갑니다. \(weekIndex)")
+            } else {
+                changeMonth(value: -1)
+                    self.weekIndex = self.calendarArray.endIndex - 1
+                    print("이전 달로 넘어갑니다. \(self.weekIndex)")
+            }
+        default:
+            print("chagneWeek - invalid value")
+        }
+    }
 }

@@ -14,6 +14,7 @@ struct ShowCalendarView: View {
     
     @State private var gridHeight: CGFloat = 0
     @State private var showDailyView: Bool = false
+    @State private var showWeekDayView: Bool = false
     
     var body: some View {
         NavigationView {
@@ -21,10 +22,12 @@ struct ShowCalendarView: View {
                 // 달력 상단 <, > 버튼 스택
                 HStack {
                     Button {
-                        if !showDailyView {
+                        if !showDailyView && !showWeekDayView {
                             calendarVM.changeMonth(value: -1)
-                        } else {
+                        } else if showDailyView && !showWeekDayView {
                             eventVM.changeDay(value: -1)
+                        } else {
+                            calendarVM.changeWeek(value: -1)
                         }
                     } label: {
                         Image(systemName: "chevron.left")
@@ -39,16 +42,17 @@ struct ShowCalendarView: View {
                         Text(!showDailyView ? calendarVM.dateToStringYearMonth() : eventVM.dailyViewTitle())
                             .font(.system(size: 27))
                             .fontWeight(.semibold)
-                            .padding(.bottom, showDailyView ? 0 : 15)
                     }
                     
                     Spacer()
                     
                     Button {
-                        if !showDailyView {
+                        if !showDailyView && !showWeekDayView {
                             calendarVM.changeMonth(value: 1)
-                        } else {
+                        } else if showDailyView && !showWeekDayView {
                             eventVM.changeDay(value: 1)
+                        } else {
+                            calendarVM.changeWeek(value: 1)
                         }
                     } label: {
                         Image(systemName: "chevron.right")
@@ -58,9 +62,9 @@ struct ShowCalendarView: View {
                 }
                 .foregroundStyle(.neutral05)
                 .padding(.horizontal, 17)
-                .padding(.bottom, 5)
+                .padding(.bottom, 15)
                 .padding(.top, 15)
-                if !showDailyView {
+                if !showDailyView && !showWeekDayView {
                     LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 7)) {
                         ForEach(calendarVM.weekDays, id: \.self) { day in
                             Text(day)
@@ -76,10 +80,17 @@ struct ShowCalendarView: View {
                         .environmentObject(holidayVM)
                         .environmentObject(eventVM)
                         .frame(maxHeight: .infinity)
-                } else {
+                } else if showDailyView && !showWeekDayView {
                     // show DailyView
                     DailyView()
                         .environmentObject(eventVM)
+                } else {
+                    //TODO: - 주간 보기 뷰
+                    if calendarVM.isCalendarReady {
+                        WeekDayView()
+                            .environmentObject(calendarVM)
+                            .environmentObject(eventVM)
+                    }
                 }
             }
             .toolbar {
@@ -97,6 +108,7 @@ struct ShowCalendarView: View {
                 ToolbarItem(placement: .topBarTrailing, content: {
                     Button {
                         // action
+                        showWeekDayView.toggle()
                     } label: {
                         Image(systemName: "bell")
                             .font(.system(size: 22))
@@ -105,6 +117,9 @@ struct ShowCalendarView: View {
                 })
             }
             .background(.neutral100)
+            .onAppear {
+                calendarVM.makeCalendarArray()
+            }
         }
     }
 }

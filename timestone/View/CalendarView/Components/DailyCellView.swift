@@ -35,6 +35,6 @@ struct DailyCellView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
-        .padding(.bottom, 15)
+//        .padding(.bottom, 15)
     }
 }

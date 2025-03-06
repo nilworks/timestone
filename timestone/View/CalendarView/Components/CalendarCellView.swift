@@ -18,6 +18,7 @@ struct CalendarCellView: View {
     let manager = DateFormatManager.shared
     
     var cellDate: Date
+    var isSixRowMonth: Bool
     var currentMonthDay: Bool
     var isToday: Bool
     var isHoliday: Bool {
@@ -42,7 +43,7 @@ struct CalendarCellView: View {
         VStack {
             Circle()
                 .foregroundStyle(isToday ? .primary100 : .clear)
-                .frame(maxWidth: 35, maxHeight: 35)
+                .frame(maxWidth: isSixRowMonth ? 27 : 35, maxHeight: isSixRowMonth ? 27 : 35)
                 .overlay {
                     Text("\(calendarVM.getDay(date: cellDate))")
                         .foregroundStyle(!currentMonthDay ? .neutral70 : self.isToday ? .neutral100 : .neutral05)
@@ -52,20 +53,21 @@ struct CalendarCellView: View {
                 VStack(spacing: 3) {
                     if isHoliday {
                         EventCell(isHoliday: isHoliday, dateName: holidayName)
-                            .frame(height: geometry.size.height / 3.5)
+                            .frame(height: geometry.size.height / 3)
                     }
                     if let events = events {
                         ForEach(Array(events.prefix(isHoliday ? 1 : 2).enumerated()), id: \.0) { index, event in
                             EventCell(isHoliday: false, dateName: holidayName, isExistEvent: isExistEvent, event: event)
-                                .frame(height: geometry.size.height / 3.5)
+                                .frame(height: geometry.size.height / 3)
                         }
                         if events.prefix(isHoliday ? 1 : 2).count < events.count {
                             EventCell(isExistEvent: true, moreEvent: (events.count - events.prefix(isHoliday ? 1 : 2).count))
-                                .frame(height: geometry.size.height / 3.5)
+                                .frame(height: geometry.size.height / 3)
                         }
                     }
                     Spacer()
                 }
+                .opacity(currentMonthDay ? 1 : 0.4)
             }
             Rectangle()
                 .frame(height: 1.5)

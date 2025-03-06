@@ -193,8 +193,8 @@ struct EventInfo {
         Event(
             title: "nilworks 회의7",
             alarm: true,
-            startTime: "2025-02-13 14:00:00",
-            endTime: "2025-02-13 15:00:00",
+            startTime: "2025-02-28 14:00:00",
+            endTime: "2025-02-28 15:00:00",
             notes: "Discuss partnership opportunities.",
             url: URL(string: "https://conference.com/call456"),
             location: nil,
@@ -203,8 +203,8 @@ struct EventInfo {
         Event(
             title: "nilworks 회의8",
             alarm: true,
-            startTime: "2025-02-13 14:00:00",
-            endTime: "2025-02-13 15:00:00",
+            startTime: "2025-02-28 14:00:00",
+            endTime: "2025-02-28 15:00:00",
             notes: "Discuss partnership opportunities.",
             url: URL(string: "https://conference.com/call456"),
             location: nil,
@@ -213,8 +213,8 @@ struct EventInfo {
         Event(
             title: "nilworks 회의9",
             alarm: true,
-            startTime: "2025-02-13 14:00:00",
-            endTime: "2025-02-13 15:00:00",
+            startTime: "2025-02-28 14:00:00",
+            endTime: "2025-03-01 15:00:00",
             notes: "Discuss partnership opportunities.",
             url: URL(string: "https://conference.com/call456"),
             location: nil,
@@ -223,8 +223,8 @@ struct EventInfo {
         Event(
             title: "알바",
             alarm: true,
-            startTime: "2025-02-12 14:00:00",
-            endTime: "2025-02-13 15:00:00",
+            startTime: "2025-02-22 14:00:00",
+            endTime: "2025-02-23 15:00:00",
             notes: "Discuss partnership opportunities.",
             url: URL(string: "https://conference.com/call456"),
             location: nil,
