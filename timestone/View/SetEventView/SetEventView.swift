@@ -47,6 +47,7 @@ struct SetEventView: View {
     @State private var showImagePicker = false
     
     @State private var selectedButtonPosition: CGPoint = .zero
+    @State private var showSearchLocation: Bool = false
     
     // 텍스트 뷰 여백 조절
     init() {
@@ -289,7 +290,7 @@ struct SetEventView: View {
                         // 지도 콘텐츠
 
                             Button(action: {
-                                
+                                self.showSearchLocation.toggle()
                             }) {
                                 HStack {
                                     Text("위치 추가")
@@ -407,6 +408,9 @@ struct SetEventView: View {
             if datePickerViewModel.showTimePicker {
                 CustomTimePickerPopUp(viewModel: datePickerViewModel, selectedButtonPosition: $selectedButtonPosition)
             }
+        }
+        .sheet(isPresented: $showSearchLocation) {
+            SearchLocationSheetView()
         }
     }
     
