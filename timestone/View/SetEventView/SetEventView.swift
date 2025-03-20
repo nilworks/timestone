@@ -410,7 +410,9 @@ struct SetEventView: View {
             }
         }
         .sheet(isPresented: $showSearchLocation) {
-            SearchLocationSheetView()
+            NavigationStack{
+                SearchLocationSheetView()
+            }
         }
     }
     
