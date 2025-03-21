@@ -55,6 +55,9 @@ struct SearchLocationSheetView: View {
                 }//: SECTION
             }//: LIST
             .listStyle(.plain)
+            .overlay(alignment: .top) {
+                Divider()
+            }
         }//: VSTACK
         .background(.neutral90)
         .navigationTitle("위치")
