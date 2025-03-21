@@ -31,35 +31,26 @@ struct SearchLocationSheetView: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal, 15)
             
-            Divider()
-                .padding(.vertical, 10)
-                .background(.red)
-            
             List{
                 Section{
-                    Text("안녕하시렵니까?>")
+                    HStack{
+                        Image(systemName: "paperplane.circle.fill")
+                        Text("현재 위치")
+                    }//: HSTACK
                 }
-                .background(.green)
+                .background(.neutral90)
                 
                 Section("지도 위치") {
-                    LazyVStack(
-                        alignment: .leading,
-                        spacing: 10,
-                        pinnedViews: .sectionHeaders) {
-                            ForEach(1..<100){_ in
-                                HStack{
-                                    Image(systemName: "paperplane.circle.fill")
-                                    Text("현재 위치")
-                                }//: HSTACK
-                                .frame(height: 40)
-                            }//: LOOP
-                        }//: LazyVStack
+                    ForEach(1..<100){_ in
+                            HStack{
+                                Image(systemName: "paperplane.circle.fill")
+                                Text("현재 위치")
+                            }//: HSTACK
+                    }//: LOOP
                 }//: SECTION
-                .background(.green)
+                .background(.neutral90)
             }//: LIST
-            .background(.orange)
-            
-            Spacer()
+            .listStyle(.plain)
         }//: VSTACK
         .background(.neutral90)
         .navigationTitle("위치")
