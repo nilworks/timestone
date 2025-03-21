@@ -37,18 +37,22 @@ struct SearchLocationSheetView: View {
                         Image(systemName: "paperplane.circle.fill")
                         Text("현재 위치")
                     }//: HSTACK
+                    .alignmentGuide(.listRowSeparatorLeading) { dimension in
+                        dimension[.leading]
+                    }
                 }
-                .background(.neutral90)
                 
                 Section("지도 위치") {
                     ForEach(1..<100){_ in
-                            HStack{
-                                Image(systemName: "paperplane.circle.fill")
-                                Text("현재 위치")
-                            }//: HSTACK
+                        HStack{
+                            Image(systemName: "paperplane.circle.fill")
+                            Text("현재 위치")
+                        }//: HSTACK
+                        .alignmentGuide(.listRowSeparatorLeading) { dimension in
+                            dimension[.leading]
+                        }
                     }//: LOOP
                 }//: SECTION
-                .background(.neutral90)
             }//: LIST
             .listStyle(.plain)
         }//: VSTACK
