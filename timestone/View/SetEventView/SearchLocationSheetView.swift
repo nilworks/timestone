@@ -41,6 +41,7 @@ struct SearchLocationSheetView: View {
                         dimension[.leading]
                     }
                 }
+                .listRowBackground(Color.neutral90)
                 
                 Section("지도 위치") {
                     ForEach(1..<100){_ in
@@ -53,6 +54,7 @@ struct SearchLocationSheetView: View {
                         }
                     }//: LOOP
                 }//: SECTION
+                .listRowBackground(Color.neutral90)
             }//: LIST
             .listStyle(.plain)
             .overlay(alignment: .top) {
