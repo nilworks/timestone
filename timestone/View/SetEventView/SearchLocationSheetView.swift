@@ -31,35 +31,48 @@ struct SearchLocationSheetView: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal, 15)
             
-            List{
-                Section{
-                    HStack{
-                        Image(systemName: "paperplane.circle.fill")
-                        Text("현재 위치")
-                    }//: HSTACK
-                    .alignmentGuide(.listRowSeparatorLeading) { dimension in
-                        dimension[.leading]
-                    }
-                }
-                .listRowBackground(Color.neutral90)
-                
-                Section("지도 위치") {
-                    ForEach(1..<100){_ in
+            
+            ScrollView(.vertical) {
+                LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
+                    Section{
                         HStack{
                             Image(systemName: "paperplane.circle.fill")
                             Text("현재 위치")
                         }//: HSTACK
-                        .alignmentGuide(.listRowSeparatorLeading) { dimension in
-                            dimension[.leading]
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(height: 50)
+                        .overlay(alignment: .top) {
+                            Divider()
                         }
-                    }//: LOOP
-                }//: SECTION
-                .listRowBackground(Color.neutral90)
-            }//: LIST
-            .listStyle(.plain)
-            .overlay(alignment: .top) {
-                Divider()
-            }
+                        .overlay(alignment: .bottom) {
+                            Divider()
+                        }
+                    }//: SECTION
+                    .padding([.leading, .bottom], 15)
+                    
+                    Section{
+                        ForEach(1..<100){_ in
+                            HStack{
+                                Image(systemName: "paperplane.circle.fill")
+                                Text("현재 위치")
+                            }//: HSTACK
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .frame(height: 50)
+                            .overlay(alignment: .top) {
+                                Divider()
+                            }
+                            .overlay(alignment: .bottom) {
+                                Divider()
+                            }
+                        }//: LOOP
+                    } header: {
+                        Text("지도 위치")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(.neutral90)
+                    }//: SECTION
+                    .padding(.leading, 15)
+                }//: LazyVStack
+            }//: SCROLLVIEW
         }//: VSTACK
         .background(.neutral90)
         .navigationTitle("위치")
