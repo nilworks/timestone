@@ -30,4 +30,29 @@ extension NetworkRequest{
         }
         return url
     }
+    
+    func asUrlRequest() -> URLRequest{
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        
+        if method == .get {
+            components.queryItems = parameters.map{
+                URLQueryItem(name: $0.key, value: "\($0.value)")
+            }
+        }
+        
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = method.rawValue
+        
+        headers.forEach { key, value in
+            request.addValue(value, forHTTPHeaderField: key)
+        }
+        
+        if method == .post{
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try? JSONSerialization
+                .data(withJSONObject: parameters)
+        }
+        
+        return request
+    }
 }
