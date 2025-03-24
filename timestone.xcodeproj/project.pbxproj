@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		793AEEF22D13EC2D0089B065 /* timestone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = timestone.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		793E7D342D915E4100968775 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -140,6 +141,7 @@
 /* Begin XCBuildConfiguration section */
 		793AEEFE2D13EC310089B065 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 793E7D342D915E4100968775 /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
