@@ -14,7 +14,9 @@ class NetworkManager {
     
     func CallbackRequest<T: Decodable>(request: NetworkRequest) async throws -> T{
         
-        let (data, response) = try await URLSession.shared.data(from: request.url)
+        let urlRequest = request.asUrlRequest()
+        
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
         
         guard let httpResponse = response as? HTTPURLResponse else{
             throw NetworkError.invalidResponseType
