@@ -6,3 +6,23 @@
 //
 
 import Foundation
+
+class SearchLocationViewModel: ObservableObject{
+    @Published var searchLocationText: String = ""
+    @Published var searchResultLocation: [Document] = []
+    
+    func fetchSearchLocation(){
+        Task{
+            do{
+                let response: Place = try await NetworkManager.shared
+                    .CallbackRequest(
+                        request: KakaoRequest
+                            .placeSearch(query: self.searchLocationText)
+                    )
+                searchResultLocation = response.documents
+            }catch{
+                print(error.localizedDescription)
+            }
+        }
+    }
+}
