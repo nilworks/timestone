@@ -52,7 +52,8 @@ struct SearchLocationSheetView: View {
                             Divider()
                         }
                     }//: SECTION
-                    .padding([.leading, .bottom], 15)
+                    .padding(.leading, 15)
+                    .padding(.bottom, 30)
                     
                     Section{
                         ForEach(viewModel.searchResultLocation, id: \.id){ document in
@@ -62,7 +63,7 @@ struct SearchLocationSheetView: View {
                         Text("지도 위치")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(.neutral90)
-                            .padding(.bottom, 15)
+                            .padding(.bottom, 5)
                     }//: SECTION
                     .padding(.leading, 15)
                 }//: LazyVStack
