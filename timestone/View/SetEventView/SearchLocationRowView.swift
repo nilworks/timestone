@@ -8,11 +8,31 @@
 import SwiftUI
 
 struct SearchLocationRowView: View {
+    
+    let document: Document
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading){
+            Text(document.place_name)
+                .font(.bodyMedium)
+            
+            if !document.road_address_name.isEmpty{
+                Text(document.road_address_name)
+                    .font(.captionLight)
+                    .foregroundStyle(.neutral50)
+            }else if !document.address_name.isEmpty{
+                Text(document.address_name)
+                    .font(.captionLight)
+                    .foregroundStyle(.neutral50)
+            }
+        }//: VSTACK
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: 60)
+        .overlay(alignment: .top) {
+            Divider()
+        }
+        .overlay(alignment: .bottom) {
+            Divider()
+        }
     }
-}
-
-#Preview {
-    SearchLocationRowView()
 }

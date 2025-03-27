@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchLocationSheetView: View {
     
-    @State private var searchLocationText: String = ""
+    @StateObject private var viewModel: SearchLocationViewModel = SearchLocationViewModel()
     
     var body: some View {
         VStack{
@@ -17,10 +17,13 @@ struct SearchLocationSheetView: View {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.neutral50)
                 
-                TextField("위치 입력", text: $searchLocationText)
+                TextField("위치 입력", text: $viewModel.searchLocationText)
                     .foregroundStyle(.white)
+                    .onChange(of: viewModel.searchLocationText) { newValue in
+                        viewModel.fetchSearchLocation()
+                    }
                 
-                if !searchLocationText.isEmpty{
+                if !viewModel.searchLocationText.isEmpty{
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(.neutral50)
                 }
@@ -39,8 +42,9 @@ struct SearchLocationSheetView: View {
                             Image(systemName: "paperplane.circle.fill")
                             Text("현재 위치")
                         }//: HSTACK
+                        .font(.bodyMedium)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .frame(height: 50)
+                        .frame(height: 60)
                         .overlay(alignment: .top) {
                             Divider()
                         }
@@ -51,24 +55,14 @@ struct SearchLocationSheetView: View {
                     .padding([.leading, .bottom], 15)
                     
                     Section{
-                        ForEach(1..<100){_ in
-                            HStack{
-                                Image(systemName: "paperplane.circle.fill")
-                                Text("현재 위치")
-                            }//: HSTACK
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .frame(height: 50)
-                            .overlay(alignment: .top) {
-                                Divider()
-                            }
-                            .overlay(alignment: .bottom) {
-                                Divider()
-                            }
+                        ForEach(viewModel.searchResultLocation, id: \.id){ document in
+                            SearchLocationRowView(document: document)
                         }//: LOOP
                     } header: {
                         Text("지도 위치")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(.neutral90)
+                            .padding(.bottom, 15)
                     }//: SECTION
                     .padding(.leading, 15)
                 }//: LazyVStack
