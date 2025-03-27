@@ -10,7 +10,6 @@ import SwiftUI
 
 
 struct ContentView: View {
-
     var body: some View {
         TabView {
             ShowCalendarView()
@@ -20,10 +19,10 @@ struct ContentView: View {
                 }
                 .toolbarBackground(Color.neutral100, for: .tabBar)
             // 맞는 View로 바꿔서 적용하시면 됩니다.
-            ShowCalendarView()
+            DetailEventView()
                 .tabItem {
-                    Image(systemName: "plus.app")
-                    Text("일정 추가")
+                    Image(systemName: "plus.square")
+                    Text("디테일 뷰")
                 }
             // 맞는 View로 바꿔서 적용하시면 됩니다.
             ShowCalendarView()

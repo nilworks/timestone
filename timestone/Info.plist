@@ -11,6 +11,8 @@
 	<string>$(HOLIDAY_KEY)</string>
 	<key>URL types</key>
 	<array/>
+	<key>KAKAO_APP_KEY</key>
+	<string>${KAKAO_APP_KEY}</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pretendard-Bold.ttf</string>
