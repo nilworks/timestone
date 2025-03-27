@@ -16,13 +16,16 @@ enum KakaoRequest: NetworkRequest{
     
     var path: String{
         switch self{
-        case .placeSearch(let query):
-            return "/search/keyword?query=\(query)"
+        case .placeSearch:
+            return "/search/keyword"
         }
     }
     
     var parameters: [String : Any]{
-        [:]
+        switch self{
+        case .placeSearch(let query):
+            return ["query": query]
+        }
     }
     
     var headers: [String : String]{
