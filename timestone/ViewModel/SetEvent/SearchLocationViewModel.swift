@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class SearchLocationViewModel: ObservableObject{
     @Published var searchLocationText: String = ""
     @Published var searchResultLocation: [Document] = []
