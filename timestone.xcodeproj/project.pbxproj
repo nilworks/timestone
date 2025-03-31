@@ -12,7 +12,6 @@
 
 /* Begin PBXFileReference section */
 		793AEEF22D13EC2D0089B065 /* timestone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = timestone.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		793E7D342D915E4100968775 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -53,7 +52,6 @@
 			children = (
 				793AEEF42D13EC2D0089B065 /* timestone */,
 				793AEEF32D13EC2D0089B065 /* Products */,
-				79BCAFC52D9B0952004A3DCB /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -63,14 +61,6 @@
 				793AEEF22D13EC2D0089B065 /* timestone.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		79BCAFC52D9B0952004A3DCB /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				793E7D342D915E4100968775 /* Debug.xcconfig */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -159,7 +149,8 @@
 /* Begin XCBuildConfiguration section */
 		793AEEFE2D13EC310089B065 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 793E7D342D915E4100968775 /* Debug.xcconfig */;
+			baseConfigurationReferenceAnchor = 793AEEF42D13EC2D0089B065 /* timestone */;
+			baseConfigurationReferenceRelativePath = Debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

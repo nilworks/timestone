@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import KakaoMapsSDK
 
 @main
 struct timestoneApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-            
+                .onAppear {
+                    SDKInitializer.InitSDK(appKey: APIKey.KAKAO_APP_KEY)
+                }
         }
     }
 }
