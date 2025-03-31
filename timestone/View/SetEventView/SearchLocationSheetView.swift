@@ -11,11 +11,11 @@ struct SearchLocationSheetView: View {
     
     @StateObject private var viewModel: SearchLocationViewModel = SearchLocationViewModel()
     @State private var isSearching: Bool = false
+    @State private var kakaoMapDraw: Bool = false
     
     var body: some View {
         ZStack{
-            // TODO: 지도뷰가 보이게 표시
-            Color.neutral90
+            KakaoMapView(draw: $kakaoMapDraw)
             
             VStack{
                 HStack{
@@ -95,6 +95,9 @@ struct SearchLocationSheetView: View {
         .navigationTitle("위치")
         .navigationBarTitleDisplayMode(.inline)
         .animation(.linear(duration: 0.15), value: isSearching)
+        .onAppear {
+            kakaoMapDraw = true
+        }
     }
 }
 
