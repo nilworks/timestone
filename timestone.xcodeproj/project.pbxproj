@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		793E7DD72D98507700968775 /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 793E7DD62D98507700968775 /* KakaoMapsSDK-SPM */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		793AEEF22D13EC2D0089B065 /* timestone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = timestone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		793E7D342D915E4100968775 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
@@ -37,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				793E7DD72D98507700968775 /* KakaoMapsSDK-SPM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,6 +53,7 @@
 			children = (
 				793AEEF42D13EC2D0089B065 /* timestone */,
 				793AEEF32D13EC2D0089B065 /* Products */,
+				79BCAFC52D9B0952004A3DCB /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,6 +63,14 @@
 				793AEEF22D13EC2D0089B065 /* timestone.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		79BCAFC52D9B0952004A3DCB /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				793E7D342D915E4100968775 /* Debug.xcconfig */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -79,6 +93,7 @@
 			);
 			name = timestone;
 			packageProductDependencies = (
+				793E7DD62D98507700968775 /* KakaoMapsSDK-SPM */,
 			);
 			productName = timestone;
 			productReference = 793AEEF22D13EC2D0089B065 /* timestone.app */;
@@ -108,6 +123,9 @@
 			);
 			mainGroup = 793AEEE92D13EC2D0089B065;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				793E7DD52D98507700968775 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 793AEEF32D13EC2D0089B065 /* Products */;
 			projectDirPath = "";
@@ -349,6 +367,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		793E7DD52D98507700968775 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.12.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		793E7DD62D98507700968775 /* KakaoMapsSDK-SPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 793E7DD52D98507700968775 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */;
+			productName = "KakaoMapsSDK-SPM";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 793AEEEA2D13EC2D0089B065 /* Project object */;
 }
