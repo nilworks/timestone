@@ -9,8 +9,14 @@ import Foundation
 
 @MainActor
 class SearchLocationViewModel: ObservableObject{
+    enum ViewState {
+        case idle
+        case search
+    }
+    
     @Published var searchLocationText: String = ""
     @Published var searchResultLocation: [Document] = []
+    @Published var viewState: ViewState = .idle
     
     func fetchSearchLocation(){
         Task{
