@@ -18,6 +18,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var searchResultLocation: [Document] = []
     @Published var viewState: ViewState = .idle
     @Published var locationSettingAlert: Bool = false
+    @Published var currentCoordinate: Coordinate?
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -81,6 +82,22 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     //MARK: - 사용자의 권한상태가 변경될 때
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         checkDeviceLocation()
+    }
+    
+    func locationManager(
+        _ manager: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
+        guard let location = locations.last else { return }
+        let coordinate = Coordinate(
+            latitude: location.coordinate.latitude,
+            longitude: location.coordinate.longitude
+        )
+        
+        DispatchQueue.main.async {
+            self.currentCoordinate = coordinate
+        }
+        locationManager.stopUpdatingLocation()
     }
     
     //MARK: - 사용자의 위치를 성공적으로 가지고 오지 못한 경우
