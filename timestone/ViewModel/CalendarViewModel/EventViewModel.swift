@@ -40,6 +40,7 @@ class EventViewModel: ObservableObject {
     }
     
     // [String] date to time(DateFormatManager 싱글톤 함수 사용)
+    // Event의 예시 중 startTime과 endTime이 문자열 타입으로 되어있어서.. 일단 이렇게 사용
     func getTimeToString(textDate: String) -> String {
         return dateFormatterManager.timeToString(textDate: textDate)
     }

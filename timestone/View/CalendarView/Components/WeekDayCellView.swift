@@ -29,7 +29,7 @@ struct WeekDayCellView: View {
             VStack {
                 //TODO: - DailyCellView using foreach
                 ForEach(eventVM.getDailyEvents(day: calendarDay.date), id: \.self) { event in
-                    DailyCellView(event: event)
+                    DailyCellView(event: event, eventDate: calendarDay.date)
                 }
             }
             Spacer()

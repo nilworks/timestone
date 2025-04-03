@@ -49,19 +49,24 @@ struct CalendarCellView: View {
                         .foregroundStyle(!currentMonthDay ? .neutral70 : self.isToday ? .neutral100 : .neutral05)
                         .font(.bodyMedium)
                 }
+                .onTapGesture {
+                    self.showDailyView = true
+                    eventVM.setDay(date: cellDate)
+                    print("cell clicked.")
+                }
             GeometryReader { geometry in
                 VStack(spacing: 3) {
                     if isHoliday {
-                        EventCell(isHoliday: isHoliday, dateName: holidayName)
+                        EventCell(isHoliday: isHoliday, dateName: holidayName, eventDate: cellDate)
                             .frame(height: geometry.size.height / 3)
                     }
                     if let events = events {
                         ForEach(Array(events.prefix(isHoliday ? 1 : 2).enumerated()), id: \.0) { index, event in
-                            EventCell(isHoliday: false, dateName: holidayName, isExistEvent: isExistEvent, event: event)
+                            EventCell(isHoliday: false, dateName: holidayName, isExistEvent: isExistEvent, event: event, eventDate: cellDate)
                                 .frame(height: geometry.size.height / 3)
                         }
                         if events.prefix(isHoliday ? 1 : 2).count < events.count {
-                            EventCell(isExistEvent: true, moreEvent: (events.count - events.prefix(isHoliday ? 1 : 2).count))
+                            EventCell(isExistEvent: true, moreEvent: (events.count - events.prefix(isHoliday ? 1 : 2).count), eventDate: cellDate)
                                 .frame(height: geometry.size.height / 3)
                         }
                     }
@@ -76,10 +81,5 @@ struct CalendarCellView: View {
         .frame(maxHeight: .infinity)
         .padding(.top, 5)
         .background(.neutral100)
-        .onTapGesture {
-            self.showDailyView = true
-            eventVM.setDay(date: cellDate)
-            print("cell clicked.")
-        }
     }
 }

@@ -14,6 +14,9 @@ struct EventCell: View {
     var isExistEvent: Bool = false
     var event: Event = Event(title: nil, alarm: false, startTime: "2025-01-30T06:55", endTime: "2025-01-30T07:55", notes: nil, url: nil, location: nil, images: nil)
     var moreEvent: Int = 0
+    var eventDate: Date
+    
+    @State private var isEventClicked: Bool = false
     
     var body: some View {
         VStack {
@@ -40,6 +43,12 @@ struct EventCell: View {
                             .font(.system(size: 13))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 4)
+                    }
+                    .onTapGesture {
+                        isEventClicked.toggle()
+                    }
+                    .sheet(isPresented: $isEventClicked) {
+                        DetailEventView(event: event, eventDate: eventDate)
                     }
             }
         }

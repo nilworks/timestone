@@ -16,6 +16,7 @@ class DateFormatManager {
     let timeFormatter: DateFormatter
     let dailyViewTitleFormatter: DateFormatter
     let dayOfWeekFormatter: DateFormatter
+    let yearFormatter: DateFormatter
     
     private init() {
         basicDateFormatter = DateFormatter()
@@ -31,6 +32,9 @@ class DateFormatManager {
         dayOfWeekFormatter = DateFormatter()
         dayOfWeekFormatter.locale = Locale(identifier: "ko_KR")
         dayOfWeekFormatter.dateFormat = "EEEE"
+        yearFormatter = DateFormatter()
+        yearFormatter.locale = Locale(identifier: "ko_KR")
+        yearFormatter.dateFormat = "YYYY년"
     }
     
     func basicDateString(date: Date) -> String {
@@ -41,6 +45,7 @@ class DateFormatManager {
         return String(textDate.prefix(10)).replacingOccurrences(of: "-", with: "")
     }
     
+    // Event의 예시 중 startTime과 endTime이 문자열 타입으로 되어있어서.. 일단 이렇게 사용
     func timeToString(textDate: String) -> String {
         if let date = fullDateFormatter.date(from: textDate) {
             let timeString = timeFormatter.string(from: date)
@@ -56,5 +61,9 @@ class DateFormatManager {
     
     func dayOfWeekFormat(date: Date) -> String {
         return dayOfWeekFormatter.string(from: date)
+    }
+    
+    func yearFormat(date: Date) -> String {
+        return yearFormatter.string(from: date)
     }
 }

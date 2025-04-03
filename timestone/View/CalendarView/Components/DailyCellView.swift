@@ -11,6 +11,9 @@ struct DailyCellView: View {
     @EnvironmentObject var eventVM: EventViewModel
     
     var event: Event
+    var eventDate: Date
+    
+    @State private var isEventClicked: Bool = false
     
     var body: some View {
         HStack {
@@ -34,6 +37,11 @@ struct DailyCellView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
-//        .padding(.bottom, 15)
+        .onTapGesture {
+            isEventClicked.toggle()
+        }
+        .sheet(isPresented: $isEventClicked) {
+            DetailEventView(event: event, eventDate: eventDate)
+        }
     }
 }
