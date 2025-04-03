@@ -6,8 +6,8 @@
 //
 
 import Foundation
+import CoreLocation
 
-@MainActor
 class SearchLocationViewModel: ObservableObject{
     enum ViewState {
         case idle
@@ -17,7 +17,12 @@ class SearchLocationViewModel: ObservableObject{
     @Published var searchLocationText: String = ""
     @Published var searchResultLocation: [Document] = []
     @Published var viewState: ViewState = .idle
+    @Published var locationSettingAlert: Bool = false
     
+    //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
+    private let locationManager = CLLocationManager()
+    
+    @MainActor
     func fetchSearchLocation(){
         Task{
             do{
@@ -30,6 +35,22 @@ class SearchLocationViewModel: ObservableObject{
             }catch{
                 print(error.localizedDescription)
             }
+        }
+    }
+    
+    //MARK: - 기기의 위치 서비스 -> 허용
+    func checkDeviceLocation(){
+        print(#function)
+        Task.detached { [weak self] in
+            guard let self = self else { return }
+            guard CLLocationManager.locationServicesEnabled() else{
+                await MainActor.run {
+                    self.locationSettingAlert = true
+                }
+                return
+            }
+            
+            // TODO: 앱에서 위치 권한 확인
         }
     }
 }

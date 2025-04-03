@@ -33,8 +33,26 @@ struct SearchLocationSheetView: View {
         .animation(.linear(duration: 0.15), value: isSearching)
         .environmentObject(viewModel)
         .onAppear {
+            viewModel.checkDeviceLocation()
             kakaoMapDraw = true
         }
+        .alert(
+            "위치 서비스 사용",
+            isPresented: $viewModel.locationSettingAlert) {
+                Button("취소", role: .cancel) {
+                    
+                }
+                
+                Button("설정으로 이동", role: .destructive){
+                    UIApplication.shared
+                        .open(URL(string: UIApplication.openSettingsURLString)!)
+                }
+                
+            } message: {
+                Text("위치 서비스를 사용할 수 없습니다.\n") +
+                Text("기기의 \"설정 > timestone > 위치\"에서\n") +
+                Text("위치 서비스를 켜주세요.")
+            }
     }
 }
 
