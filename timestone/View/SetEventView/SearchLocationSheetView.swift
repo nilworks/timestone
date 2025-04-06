@@ -15,7 +15,10 @@ struct SearchLocationSheetView: View {
     
     var body: some View {
         ZStack{
-            KakaoMapView(draw: $kakaoMapDraw)
+            KakaoMapView(
+                draw: $kakaoMapDraw,
+                coordinate: $viewModel.currentCoordinate
+            )
             
             VStack{
                 switch viewModel.viewState {
