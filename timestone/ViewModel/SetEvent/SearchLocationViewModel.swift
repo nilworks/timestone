@@ -18,7 +18,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var searchResultLocation: [Document] = []
     @Published var viewState: ViewState = .idle
     @Published var locationSettingAlert: Bool = false
-    @Published var currentCoordinate: Coordinate?
+    @Published var currentCoordinate: Coordinate = Coordinate(latitude: 37.402001, longitude: 127.108678)
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -71,7 +71,9 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
             print("이 권환에서만 권환 문구 띄울 수 있음")
             locationManager.requestWhenInUseAuthorization()
         case .restricted, .denied:
-            locationSettingAlert = true
+            DispatchQueue.main.async {
+                self.locationSettingAlert = true
+            }
         case .authorizedWhenInUse, .authorizedAlways:
             locationManager.startUpdatingLocation()
         @unknown default:
