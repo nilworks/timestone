@@ -18,7 +18,7 @@ struct LocationSearchView: View {
                     Image(systemName: "chevron.left")
                         .foregroundStyle(.neutral50)
                 }
-
+                
                 
                 TextField("위치 입력", text: $viewModel.searchLocationText)
                     .foregroundStyle(.white)
@@ -68,12 +68,18 @@ struct LocationSearchView: View {
                     Section{
                         ForEach(viewModel.searchResultLocation, id: \.id){ document in
                             Button {
-                                 viewModel
+                                viewModel
                                     .updateCurrentCoordinate(
                                         document.y,
                                         document.x)
                             } label: {
                                 SearchLocationRowView(document: document)
+                            }
+                            .overlay(alignment: .top) {
+                                Divider()
+                            }
+                            .overlay(alignment: .bottom) {
+                                Divider()
                             }
                         }//: LOOP
                     } header: {

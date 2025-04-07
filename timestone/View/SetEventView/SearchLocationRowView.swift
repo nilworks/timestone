@@ -29,11 +29,5 @@ struct SearchLocationRowView: View {
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 60)
-        .overlay(alignment: .top) {
-            Divider()
-        }
-        .overlay(alignment: .bottom) {
-            Divider()
-        }
     }
 }
