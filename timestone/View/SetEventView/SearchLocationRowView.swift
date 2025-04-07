@@ -26,6 +26,7 @@ struct SearchLocationRowView: View {
                     .foregroundStyle(.neutral50)
             }
         }//: VSTACK
+        .foregroundStyle(.white)
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 60)
         .overlay(alignment: .top) {
