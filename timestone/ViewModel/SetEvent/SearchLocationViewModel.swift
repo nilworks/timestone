@@ -110,4 +110,17 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     ) {
         print(error.localizedDescription)
     }
+    
+    //MARK: - 검색 결과 자표로 위치 업데이트 함수
+    func updateCurrentCoordinate(_ y: String, _ x: String){
+        if let latitude = Double(y), let longitude = Double(x) {
+            currentCoordinate = Coordinate(
+                latitude: latitude,
+                longitude: longitude
+            )
+        }else{
+            print("좌표 변환 실페: latitude=\(y), longitude=\(x)")
+        }
+        viewState = .idle
+    }
 }
