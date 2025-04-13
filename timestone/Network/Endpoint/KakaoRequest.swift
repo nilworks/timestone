@@ -9,6 +9,7 @@ import Foundation
 
 enum KakaoRequest: NetworkRequest{
     case placeSearch(query: String)
+    case reverseGeocoding(longitude: String, latitude: String)
     
     var baseURL: String{
         return NetworkURL.kakaoMap
@@ -16,8 +17,10 @@ enum KakaoRequest: NetworkRequest{
     
     var path: String{
         switch self{
-        case .placeSearch:
+        case .placeSearch: //키워드로 장소 검색
             return "/search/keyword"
+        case .reverseGeocoding:
+            return "/geo/coord2address"
         }
     }
     
@@ -25,6 +28,8 @@ enum KakaoRequest: NetworkRequest{
         switch self{
         case .placeSearch(let query):
             return ["query": query]
+        case .reverseGeocoding(let longitude, let latitude):
+            return ["x": longitude, "y": latitude]
         }
     }
     
