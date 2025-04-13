@@ -19,6 +19,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var viewState: ViewState = .idle
     @Published var locationSettingAlert: Bool = false
     @Published var currentCoordinate: Coordinate = Coordinate(latitude: 37.402001, longitude: 127.108678)
+    @Published var currentPosition: [AddressDocument] = []
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -45,6 +46,23 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         }
     }
     
+    @MainActor
+    func fetchReverseGeocoding(longitude: String, latitude: String){
+        Task{
+            do{
+                let response: ReverseGeocodingResponse = try await NetworkManager.shared.CallbackRequest(
+                    request: KakaoRequest
+                        .reverseGeocoding(longitude: longitude,
+                                          latitude: latitude
+                                         )
+                )
+                currentPosition = response.documents
+            }catch{
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     //MARK: - 기기의 위치 서비스 -> 허용
     func checkDeviceLocation(){
         print(#function)
@@ -63,7 +81,6 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     
     //MARK: - 현재 사용자의 위치 권한 상태 확인
     func checkCurrentLocation(){
-        print(#function)
         let status = locationManager.authorizationStatus
         
         switch status{
@@ -99,6 +116,14 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         DispatchQueue.main.async {
             self.currentCoordinate = coordinate
         }
+
+        DispatchQueue.main.async{
+            self.fetchReverseGeocoding(
+                longitude: String(coordinate.longitude),
+                latitude: String(coordinate.latitude)
+            )
+        }
+        
         locationManager.stopUpdatingLocation()
     }
     
