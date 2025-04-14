@@ -27,6 +27,9 @@ struct SearchLocationSheetView: View {
                     Spacer()
                 case .search:
                     LocationSearchView()
+                case .result:
+                    ResultMapSearchBarView()
+                    Spacer()
                 }
             }
         }//: ZSTACK

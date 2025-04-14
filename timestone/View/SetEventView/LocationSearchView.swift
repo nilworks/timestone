@@ -44,7 +44,7 @@ struct LocationSearchView: View {
                     Section{
                         Button {
                             viewModel.checkDeviceLocation()
-                            viewModel.viewState = .idle
+                            viewModel.viewState = .result
                         } label: {
                             HStack{
                                 Image(systemName: "paperplane.circle.fill")
@@ -72,6 +72,7 @@ struct LocationSearchView: View {
                                     .updateCurrentCoordinate(
                                         document.y,
                                         document.x)
+                                viewModel.viewState = .result
                             } label: {
                                 SearchLocationRowView(document: document)
                             }
