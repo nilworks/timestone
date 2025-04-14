@@ -19,7 +19,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var searchResultLocation: [Document] = []
     @Published var viewState: ViewState = .idle
     @Published var locationSettingAlert: Bool = false
-    @Published var currentCoordinate: Coordinate = Coordinate(latitude: 37.402001, longitude: 127.108678)
+    @Published var currentCoordinate: Coordinate = LocationCacheManager.shared.load()
     @Published var currentPosition: [AddressDocument] = []
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
@@ -116,6 +116,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         
         DispatchQueue.main.async {
             self.currentCoordinate = coordinate
+            LocationCacheManager.shared.save(coordinate: coordinate)
         }
 
         DispatchQueue.main.async{
