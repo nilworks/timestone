@@ -12,6 +12,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     enum ViewState {
         case idle
         case search
+        case result
     }
     
     @Published var searchLocationText: String = ""
