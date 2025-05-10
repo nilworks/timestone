@@ -19,8 +19,8 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var searchResultLocation: [Document] = []
     @Published var viewState: ViewState = .idle
     @Published var locationSettingAlert: Bool = false
-    @Published var currentCoordinate: Coordinate = LocationCacheManager.shared.load()
-    @Published var currentPosition: [AddressDocument] = []
+    @Published var currentCoordinate: Coordinate = LocationCacheManager.shared.load() //사용자의 현재 위치(최초는 캐시에 저장된 위치 불러오기)
+    @Published var selectedCoordinate: SelectedCoordinate? = nil//선택된(검색한) 위치 정보
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -57,7 +57,17 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                                           latitude: latitude
                                          )
                 )
-                currentPosition = response.documents
+                guard let currentPosition = response.documents.first else { return }
+                
+                self.selectedCoordinate = SelectedCoordinate(
+                    placeName: currentPosition.road_address.building_name,
+                    address: currentPosition.road_address.address_name,
+                    coordinate: Coordinate(
+                        latitude: Double(latitude)!,
+                        longitude: Double(longitude)!
+                    )
+                )
+                
             }catch{
                 print(error.localizedDescription)
             }
@@ -118,12 +128,16 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
             self.currentCoordinate = coordinate
             LocationCacheManager.shared.save(coordinate: coordinate)
         }
-
-        DispatchQueue.main.async{
-            self.fetchReverseGeocoding(
-                longitude: String(coordinate.longitude),
-                latitude: String(coordinate.latitude)
-            )
+        
+        //검색 화면에서 현재위치를 클릭했을 때
+        if viewState == .result{
+            print("검색 화면에서 현재위치를 클릭")
+            DispatchQueue.main.async{
+                self.fetchReverseGeocoding(
+                    longitude: String(coordinate.longitude),
+                    latitude: String(coordinate.latitude)
+                )
+            }
         }
         
         locationManager.stopUpdatingLocation()
@@ -139,11 +153,12 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     }
     
     //MARK: - 검색 결과 자표로 위치 업데이트 함수
-    func updateCurrentCoordinate(_ y: String, _ x: String){
+    func updateCurrentCoordinate(placeName: String, address: String, _ y: String, _ x: String){
         if let latitude = Double(y), let longitude = Double(x) {
-            currentCoordinate = Coordinate(
-                latitude: latitude,
-                longitude: longitude
+            selectedCoordinate = SelectedCoordinate(
+                placeName: placeName,
+                address: address,
+                coordinate: Coordinate(latitude: latitude, longitude: longitude)
             )
         }else{
             print("좌표 변환 실페: latitude=\(y), longitude=\(x)")
