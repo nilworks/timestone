@@ -409,7 +409,7 @@ struct SetEventView: View {
                 CustomTimePickerPopUp(viewModel: datePickerViewModel, selectedButtonPosition: $selectedButtonPosition)
             }
         }
-        .sheet(isPresented: $showSearchLocation) {
+        .fullScreenCover(isPresented: $showSearchLocation) {
             NavigationStack{
                 SearchLocationSheetView()
             }
