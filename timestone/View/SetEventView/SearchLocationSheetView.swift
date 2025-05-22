@@ -12,6 +12,7 @@ struct SearchLocationSheetView: View {
     @StateObject private var viewModel: SearchLocationViewModel = SearchLocationViewModel()
     @State private var isSearching: Bool = false
     @State private var kakaoMapDraw: Bool = false
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ZStack{
@@ -63,6 +64,17 @@ struct SearchLocationSheetView: View {
         .navigationBarTitleDisplayMode(.inline)
         .animation(.linear(duration: 0.15), value: isSearching)
         .environmentObject(viewModel)
+        .toolbar(content: {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                }
+                .foregroundStyle(.white)
+                .font(.subBodyRegular)
+            }
+        })//: TOOLBAR
         .onAppear {
             viewModel.checkDeviceLocation()
             kakaoMapDraw = true
