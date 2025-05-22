@@ -70,6 +70,7 @@ struct LocationSearchView: View {
                             Button {
                                 viewModel
                                     .updateCurrentCoordinate(
+                                        placeName: document.place_name, address: document.road_address_name.isEmpty ? document.address_name : document.road_address_name,
                                         document.y,
                                         document.x)
                                 viewModel.viewState = .result
