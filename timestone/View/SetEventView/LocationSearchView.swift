@@ -42,30 +42,6 @@ struct LocationSearchView: View {
             ScrollView(.vertical) {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
                     Section{
-                        Button {
-                            viewModel.checkDeviceLocation()
-                            viewModel.viewState = .result
-                        } label: {
-                            HStack{
-                                Image(systemName: "paperplane.circle.fill")
-                                Text("현재 위치")
-                            }//: HSTACK
-                        }
-                        .font(.bodyMedium)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .frame(height: 60)
-                        .overlay(alignment: .top) {
-                            Divider()
-                        }
-                        .overlay(alignment: .bottom) {
-                            Divider()
-                        }
-                    }//: SECTION
-                    .padding(.leading, 15)
-                    .padding(.bottom, 30)
-                    
-                    Section{
                         ForEach(viewModel.searchResultLocation, id: \.id){ document in
                             Button {
                                 viewModel

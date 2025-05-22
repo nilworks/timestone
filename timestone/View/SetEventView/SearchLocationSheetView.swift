@@ -21,18 +21,42 @@ struct SearchLocationSheetView: View {
                 selectedCoordinate: $viewModel.selectedCoordinate
             )
             
-            VStack{
+            VStack(alignment: .trailing){
                 switch viewModel.viewState {
                 case .idle:
                     MapSearchBarView()
+                    
                     Spacer()
+                    
+                    Button {
+                        viewModel.checkDeviceLocation()
+                    } label: {
+                        Image(systemName: "dot.scope")
+                    }
+                    .padding(5)
+                    .background(.white)
+                    .clipShape(Circle())
+                    .padding(.horizontal, 15)
+                    .padding(.bottom, 15)
                 case .search:
                     LocationSearchView()
                 case .result:
                     ResultMapSearchBarView()
+                    
                     Spacer()
+                    
+                    Button {
+                        viewModel.checkDeviceLocation()
+                    } label: {
+                        Image(systemName: "dot.scope")
+                    }
+                    .padding(5)
+                    .background(.white)
+                    .clipShape(Circle())
+                    .padding(.horizontal, 15)
+                    .padding(.bottom, 15)
                 }
-            }
+            }//: VSTACK
         }//: ZSTACK
         .background(.neutral90)
         .navigationTitle("위치")
