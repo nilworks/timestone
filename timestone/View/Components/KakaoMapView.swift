@@ -10,7 +10,8 @@ import KakaoMapsSDK
 
 struct KakaoMapView: UIViewRepresentable {
     @Binding var draw: Bool
-    @Binding var coordinate: Coordinate
+    @Binding var currentCoordinate: Coordinate //현재 위치
+    @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 선택한 위치
     
     func makeUIView(context: Self.Context) -> KMViewContainer {
         //need to correct view size
@@ -33,7 +34,9 @@ struct KakaoMapView: UIViewRepresentable {
                     context.coordinator.controller?.activateEngine()
                 }
                 
-                context.coordinator.updateCamera(to: coordinate)
+                context.coordinator
+                    .updateCamera(
+                        to: selectedCoordinate?.coordinate ?? currentCoordinate)
             }
         }
         else {
@@ -43,7 +46,11 @@ struct KakaoMapView: UIViewRepresentable {
     }
     
     func makeCoordinator() -> KakaoMapCoordinator {
-        return KakaoMapCoordinator(coordinate: coordinate)
+        //선택된 위치가 있으면 해당 위치를 표시.
+        //선택된 위치가 없으면 저장된 혹은 현재위치를 표시
+        return KakaoMapCoordinator(
+            coordinate: selectedCoordinate?.coordinate ?? currentCoordinate
+        )
     }
     
     /// Cleans up the presented `UIView` (and coordinator) in
