@@ -19,7 +19,7 @@ struct SearchLocationSheetView: View {
             KakaoMapView(
                 draw: $kakaoMapDraw,
                 currentCoordinate: $viewModel.currentCoordinate,
-                selectedCoordinate: $viewModel.selectedCoordinate
+                selectedCoordinate: $viewModel.selectedCoordinate, isActualCurrentLocation: $viewModel.isActualLocation
             )
             
             VStack(alignment: .trailing){

@@ -12,6 +12,7 @@ struct KakaoMapView: UIViewRepresentable {
     @Binding var draw: Bool
     @Binding var currentCoordinate: Coordinate //현재 위치
     @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 선택한 위치
+    @Binding var isActualCurrentLocation: Bool
     
     func makeUIView(context: Self.Context) -> KMViewContainer {
         //need to correct view size
@@ -40,7 +41,8 @@ struct KakaoMapView: UIViewRepresentable {
                 context.coordinator
                     .updatePois(
                         current: currentCoordinate,
-                        selected: selectedCoordinate?.coordinate)
+                        selected: selectedCoordinate?.coordinate,
+                        showCurrent: isActualCurrentLocation)
             }
         }
         else {
@@ -53,7 +55,7 @@ struct KakaoMapView: UIViewRepresentable {
         //선택된 위치가 있으면 해당 위치를 표시.
         //선택된 위치가 없으면 저장된 혹은 현재위치를 표시
         return KakaoMapCoordinator(
-            coordinate: selectedCoordinate?.coordinate ?? currentCoordinate
+            coordinate: selectedCoordinate?.coordinate ?? currentCoordinate, showCurrent: isActualCurrentLocation
         )
     }
     
@@ -66,10 +68,11 @@ struct KakaoMapView: UIViewRepresentable {
     }
     
     class KakaoMapCoordinator: NSObject, MapControllerDelegate {
-        init(coordinate: Coordinate) {
+        init(coordinate: Coordinate, showCurrent: Bool) {
             first = true
             auth = false
             self.currentCoordinate = coordinate
+            self.showCurrent = showCurrent
             super.init()
         }
         
@@ -88,7 +91,11 @@ struct KakaoMapView: UIViewRepresentable {
             controller?.addView(mapviewInfo)
             createLabelLayer()
             createPoiStyle()
-            updatePois(current: currentCoordinate, selected: nil)
+            updatePois(
+                current: currentCoordinate,
+                selected: nil,
+                showCurrent: showCurrent
+            )
         }
         
         func addViewSucceeded(_ viewName: String, viewInfoName: String) {
@@ -122,6 +129,7 @@ struct KakaoMapView: UIViewRepresentable {
         }
         
         //Poi생성을 위한 LabelLayer 생성
+        // 1. 라벨 레이어 생성 + 성공 시 isLayerReady = true
         func createLabelLayer(){
             guard let mapView = controller?.getView("mapview") as? KakaoMap else {
                 return
@@ -139,9 +147,7 @@ struct KakaoMapView: UIViewRepresentable {
         
         //Poi 표시 스타일 생성
         func createPoiStyle(){
-            guard let mapView = controller?.getView("mapview") as? KakaoMap else {
-                return
-             }
+            guard let mapView = controller?.getView("mapview") as? KakaoMap else { return }
             let manager = mapView.getLabelManager()
             //현재 위치 스타일
             
@@ -180,10 +186,15 @@ struct KakaoMapView: UIViewRepresentable {
             manager.addPoiStyle(selectedStyle)
         }
         
-        func updatePois(current: Coordinate, selected: Coordinate?){
+        // 2. 업데이트 시에도 레이어 준비 상태 체크
+        func updatePois(
+            current: Coordinate,
+            selected: Coordinate?,
+            showCurrent: Bool
+        ){
             guard let mapView = controller?.getView("mapview") as? KakaoMap else {
                 return
-             }
+            }
             let manager = mapView.getLabelManager()
             guard let layer = manager.getLabelLayer(layerID: "PoiLayer") else { return }
             
@@ -192,16 +203,18 @@ struct KakaoMapView: UIViewRepresentable {
             var options: [PoiOptions] = []
             var points: [MapPoint] = []
             
-            let currentOption = PoiOptions(styleID: "CurrentStyle", poiID: "CurrentPoiID")
-            currentOption.rank = 100
-            options.append(currentOption)
-            points
-                .append(
-                    MapPoint(
-                        longitude: current.longitude,
-                        latitude: current.latitude
+            if showCurrent{
+                let currentOption = PoiOptions(styleID: "CurrentStyle", poiID: "CurrentPoiID")
+                currentOption.rank = 100
+                options.append(currentOption)
+                points
+                    .append(
+                        MapPoint(
+                            longitude: current.longitude,
+                            latitude: current.latitude
+                        )
                     )
-                )
+            }
             
             if let sel = selected{
                 let selectedOption = PoiOptions(
@@ -223,10 +236,12 @@ struct KakaoMapView: UIViewRepresentable {
             pois?.forEach{$0.show()}
         }
         
+        //속성 추가
         var controller: KMController?
         var container: KMViewContainer?
         var first: Bool
         var auth: Bool
         var currentCoordinate: Coordinate
+        private var showCurrent: Bool
     }
 }

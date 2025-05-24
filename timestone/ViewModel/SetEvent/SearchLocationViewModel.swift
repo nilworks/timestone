@@ -21,6 +21,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var locationSettingAlert: Bool = false
     @Published var currentCoordinate: Coordinate = LocationCacheManager.shared.load() //사용자의 현재 위치(최초는 캐시에 저장된 위치 불러오기)
     @Published var selectedCoordinate: SelectedCoordinate? = nil//선택된(검색한) 위치 정보
+    @Published var isActualLocation: Bool = false //실제 현재 위치인지 검증하는 프로퍼티(캐시에 저장되어 있는 값을 가져온 경우는 false)
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -96,7 +97,6 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         
         switch status{
         case .notDetermined:
-            print("이 권환에서만 권환 문구 띄울 수 있음")
             locationManager.requestWhenInUseAuthorization()
         case .restricted, .denied:
             DispatchQueue.main.async {
@@ -112,6 +112,13 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     //MARK: - 사용자의 권한상태가 변경될 때
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         checkDeviceLocation()
+        
+        let status = manager.authorizationStatus
+        if status == .denied || status == .restricted{
+            DispatchQueue.main.async {
+                self.isActualLocation = false
+            }
+        }
     }
     
     func locationManager(
@@ -127,17 +134,14 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         DispatchQueue.main.async {
             self.currentCoordinate = coordinate
             LocationCacheManager.shared.save(coordinate: coordinate)
+            self.isActualLocation = true
         }
         
-        //검색 화면에서 현재위치를 클릭했을 때
-        if viewState == .result{
-            print("검색 화면에서 현재위치를 클릭")
-            DispatchQueue.main.async{
-                self.fetchReverseGeocoding(
-                    longitude: String(coordinate.longitude),
-                    latitude: String(coordinate.latitude)
-                )
-            }
+        DispatchQueue.main.async{
+            self.fetchReverseGeocoding(
+                longitude: String(coordinate.longitude),
+                latitude: String(coordinate.latitude)
+            )
         }
         
         locationManager.stopUpdatingLocation()
@@ -150,6 +154,9 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         didFailWithError error: any Error
     ) {
         print(error.localizedDescription)
+        DispatchQueue.main.async {
+            self.isActualLocation = false
+        }
     }
     
     //MARK: - 검색 결과 자표로 위치 업데이트 함수
