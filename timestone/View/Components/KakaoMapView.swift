@@ -37,6 +37,10 @@ struct KakaoMapView: UIViewRepresentable {
                 context.coordinator
                     .updateCamera(
                         to: selectedCoordinate?.coordinate ?? currentCoordinate)
+                context.coordinator
+                    .updatePois(
+                        current: currentCoordinate,
+                        selected: selectedCoordinate?.coordinate)
             }
         }
         else {
@@ -82,6 +86,9 @@ struct KakaoMapView: UIViewRepresentable {
             )
             let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition) //임시 좌표
             controller?.addView(mapviewInfo)
+            createLabelLayer()
+            createPoiStyle()
+            updatePois(current: currentCoordinate, selected: nil)
         }
         
         func addViewSucceeded(_ viewName: String, viewInfoName: String) {
@@ -112,6 +119,108 @@ struct KakaoMapView: UIViewRepresentable {
         func authenticationSucceeded() {
             auth = true
             addViews()
+        }
+        
+        //Poi생성을 위한 LabelLayer 생성
+        func createLabelLayer(){
+            guard let mapView = controller?.getView("mapview") as? KakaoMap else {
+                return
+            }
+            let manager = mapView.getLabelManager()
+            let layerOption = LabelLayerOptions(
+                layerID: "PoiLayer",
+                competitionType: .none,
+                competitionUnit: .symbolFirst,
+                orderType: .rank,
+                zOrder: 9999
+            )
+            let _ = manager.addLabelLayer(option: layerOption)
+        }
+        
+        //Poi 표시 스타일 생성
+        func createPoiStyle(){
+            guard let mapView = controller?.getView("mapview") as? KakaoMap else {
+                return
+             }
+            let manager = mapView.getLabelManager()
+            //현재 위치 스타일
+            
+            let config = UIImage.SymbolConfiguration(
+                pointSize: 15,
+                weight: .regular,
+                scale: .default)
+            
+            let currentSymbol = UIImage(
+                systemName: "circle.fill",
+                withConfiguration: config
+            )?.withTintColor(.red, renderingMode: .alwaysOriginal)
+            
+            let currentIcon = PoiIconStyle(
+                symbol: currentSymbol,
+                anchorPoint: CGPoint(x: 0.5, y: 1.0)
+            )
+            let currentStyle = PoiStyle(styleID: "CurrentStyle", styles: [
+                PerLevelPoiStyle(iconStyle: currentIcon)
+            ])
+            manager.addPoiStyle(currentStyle)
+            
+            let selectedSymbol = UIImage(
+                systemName: "mappin.circle.fill",
+                withConfiguration: config
+            )?.withTintColor(.red, renderingMode: .alwaysOriginal)
+            
+            //선택된 위치 스타일
+            let selectedIcon = PoiIconStyle(
+                symbol: selectedSymbol,
+                anchorPoint: CGPoint(x: 0.5, y: 1.0)
+            )
+            let selectedStyle = PoiStyle(styleID: "SelectedStyle", styles: [
+                PerLevelPoiStyle(iconStyle: selectedIcon)
+            ])
+            manager.addPoiStyle(selectedStyle)
+        }
+        
+        func updatePois(current: Coordinate, selected: Coordinate?){
+            guard let mapView = controller?.getView("mapview") as? KakaoMap else {
+                return
+             }
+            let manager = mapView.getLabelManager()
+            guard let layer = manager.getLabelLayer(layerID: "PoiLayer") else { return }
+            
+            layer.removePois(poiIDs: ["CurrentPoiID", "SelectedPoiID"])
+            
+            var options: [PoiOptions] = []
+            var points: [MapPoint] = []
+            
+            let currentOption = PoiOptions(styleID: "CurrentStyle", poiID: "CurrentPoiID")
+            currentOption.rank = 100
+            options.append(currentOption)
+            points
+                .append(
+                    MapPoint(
+                        longitude: current.longitude,
+                        latitude: current.latitude
+                    )
+                )
+            
+            if let sel = selected{
+                let selectedOption = PoiOptions(
+                    styleID: "SelectedStyle",
+                    poiID: "SelectedPoiID"
+                )
+                selectedOption.rank = 101
+                options.append(selectedOption)
+                points
+                    .append(
+                        MapPoint(
+                            longitude: sel.longitude,
+                            latitude: sel.latitude
+                        )
+                    )
+            }
+            
+            let pois = layer.addPois(options: options, at: points)
+            pois?.forEach{$0.show()}
         }
         
         var controller: KMController?
