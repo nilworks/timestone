@@ -89,6 +89,12 @@ struct KakaoMapView: UIViewRepresentable {
             )
             let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition) //임시 좌표
             controller?.addView(mapviewInfo)
+        }
+        
+        func addViewSucceeded(_ viewName: String, viewInfoName: String) {
+            print("OK")
+            let view = controller?.getView("mapview")
+            view?.viewRect = container!.bounds
             createLabelLayer()
             createPoiStyle()
             updatePois(
@@ -96,12 +102,6 @@ struct KakaoMapView: UIViewRepresentable {
                 selected: nil,
                 showCurrent: showCurrent
             )
-        }
-        
-        func addViewSucceeded(_ viewName: String, viewInfoName: String) {
-            print("OK")
-            let view = controller?.getView("mapview")
-            view?.viewRect = container!.bounds
         }
         
         func containerDidResized(_ size: CGSize) {
