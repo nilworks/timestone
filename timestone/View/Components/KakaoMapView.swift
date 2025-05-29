@@ -26,7 +26,7 @@ struct KakaoMapView: UIViewRepresentable {
     /// configuration.
     func updateUIView(_ uiView: KMViewContainer, context: Self.Context) {
         if draw {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 if context.coordinator.controller?.isEnginePrepared == false {
                     context.coordinator.controller?.prepareEngine()
                 }
@@ -97,17 +97,17 @@ struct KakaoMapView: UIViewRepresentable {
             view?.viewRect = container!.bounds
             createLabelLayer()
             createPoiStyle()
-            updatePois(
-                current: currentCoordinate,
-                selected: nil,
-                showCurrent: showCurrent
-            )
         }
         
         func containerDidResized(_ size: CGSize) {
             let mapView: KakaoMap? = controller?.getView("mapview") as? KakaoMap
             mapView?.viewRect = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: size)
             updateCamera(to: self.currentCoordinate)
+            updatePois(
+                current: currentCoordinate,
+                selected: nil,
+                showCurrent: showCurrent
+            )
         }
         
         func updateCamera(to coordinate: Coordinate){

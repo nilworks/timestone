@@ -76,7 +76,9 @@ struct SearchLocationSheetView: View {
             }
         })//: TOOLBAR
         .onAppear {
-            viewModel.checkDeviceLocation()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                viewModel.checkDeviceLocation()
+            }
             kakaoMapDraw = true
         }
         .alert(
