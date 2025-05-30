@@ -102,12 +102,12 @@ struct KakaoMapView: UIViewRepresentable {
         func containerDidResized(_ size: CGSize) {
             let mapView: KakaoMap? = controller?.getView("mapview") as? KakaoMap
             mapView?.viewRect = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: size)
-            updateCamera(to: self.currentCoordinate)
             updatePois(
                 current: currentCoordinate,
                 selected: nil,
                 showCurrent: showCurrent
             )
+            updateCamera(to: self.currentCoordinate)
         }
         
         func updateCamera(to coordinate: Coordinate){

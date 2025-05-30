@@ -22,7 +22,7 @@ struct SearchLocationSheetView: View {
                 selectedCoordinate: $viewModel.selectedCoordinate, isActualCurrentLocation: $viewModel.isActualLocation
             )
             
-            VStack(alignment: .trailing){
+            VStack(alignment: .trailing, spacing: 0){
                 switch viewModel.viewState {
                 case .idle:
                     MapSearchBarView()
@@ -55,6 +55,19 @@ struct SearchLocationSheetView: View {
                     .background(.white)
                     .clipShape(Circle())
                     .padding(.horizontal, 15)
+                    
+                    VStack(spacing: 0){
+                        Text("00시 00구 00동 00번지")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .modifier(SearchBarStyle())
+                        
+                        Button("설정"){
+                            print("위치 저장")
+                        }
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .modifier(SearchBarStyle())
+                    }//: VSTACK
                     .padding(.bottom, 15)
                 }
             }//: VSTACK
