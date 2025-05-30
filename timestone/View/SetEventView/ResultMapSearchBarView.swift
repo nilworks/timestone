@@ -19,7 +19,7 @@ struct ResultMapSearchBarView: View {
                     .foregroundStyle(.neutral50)
             }
             
-            Text("여기는 장소 이름")
+            Text(viewModel.selectedCoordinate?.placeName ?? "-")
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }//: HSTACK
