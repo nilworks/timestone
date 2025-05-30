@@ -61,8 +61,8 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                 guard let currentPosition = response.documents.first else { return }
                 
                 self.selectedCoordinate = SelectedCoordinate(
-                    placeName: currentPosition.road_address.building_name,
-                    address: currentPosition.road_address.address_name,
+                    placeName: currentPosition.road_address?.building_name ?? currentPosition.address.address_name,
+                    address: currentPosition.road_address?.address_name ?? currentPosition.address.address_name,
                     coordinate: Coordinate(
                         latitude: Double(latitude)!,
                         longitude: Double(longitude)!

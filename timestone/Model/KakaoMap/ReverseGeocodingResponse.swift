@@ -18,7 +18,7 @@ struct ReverseMeta: Codable{
 
 struct AddressDocument: Codable{
     let address: Address
-    let road_address: RoadAddress
+    let road_address: RoadAddress? //도로명 주소는 없을 수도 있다.
 }
 
 struct Address: Codable{
