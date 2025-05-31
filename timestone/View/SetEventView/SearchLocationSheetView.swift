@@ -57,7 +57,7 @@ struct SearchLocationSheetView: View {
                     .padding(.horizontal, 15)
                     
                     VStack(spacing: 0){
-                        Text("00시 00구 00동 00번지")
+                        Text(viewModel.setCoordinate?.address ?? "-")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .modifier(SearchBarStyle())
                         

@@ -20,8 +20,9 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var viewState: ViewState = .idle
     @Published var locationSettingAlert: Bool = false
     @Published var currentCoordinate: Coordinate = LocationCacheManager.shared.load() //사용자의 현재 위치(최초는 캐시에 저장된 위치 불러오기)
-    @Published var selectedCoordinate: SelectedCoordinate? = nil//선택된(검색한) 위치 정보
+    @Published var selectedCoordinate: SelectedCoordinate? = nil//선택된(검색한) 위치 정보 -> 사용자가 검색한 장소의 poi를 보여주기 위한 용도
     @Published var isActualLocation: Bool = false //실제 현재 위치인지 검증하는 프로퍼티(캐시에 저장되어 있는 값을 가져온 경우는 false)
+    @Published var setCoordinate: SelectedCoordinate? = nil
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -52,6 +53,8 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     func fetchReverseGeocoding(longitude: String, latitude: String){
         Task{
             do{
+                guard let doubleLongitude = Double(longitude), let doubleLatitude = Double(latitude) else { return }
+                
                 let response: ReverseGeocodingResponse = try await NetworkManager.shared.CallbackRequest(
                     request: KakaoRequest
                         .reverseGeocoding(longitude: longitude,
@@ -60,14 +63,10 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                 )
                 guard let currentPosition = response.documents.first else { return }
                 
-                self.selectedCoordinate = SelectedCoordinate(
-                    placeName: currentPosition.road_address?.building_name ?? currentPosition.address.address_name,
+                self.setCoordinate = SelectedCoordinate(
+                    placeName: currentPosition.road_address?.building_name,
                     address: currentPosition.road_address?.address_name ?? currentPosition.address.address_name,
-                    coordinate: Coordinate(
-                        latitude: Double(latitude)!,
-                        longitude: Double(longitude)!
-                    )
-                )
+                    coordinate: Coordinate(latitude: doubleLatitude, longitude: doubleLongitude))
                 
             }catch{
                 print(error.localizedDescription)
@@ -167,6 +166,8 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                 address: address,
                 coordinate: Coordinate(latitude: latitude, longitude: longitude)
             )
+            
+            setCoordinate = selectedCoordinate
         }else{
             print("좌표 변환 실페: latitude=\(y), longitude=\(x)")
         }
