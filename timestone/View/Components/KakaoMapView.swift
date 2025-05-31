@@ -139,10 +139,8 @@ struct KakaoMapView: UIViewRepresentable {
             if poiID == "CurrentPoiID"{
                 setCoordinate = currentCoordinate
             }else if poiID == "SelectedPoiID"{
-                print("b")
                 setCoordinate = selectedCoordinate
             }
-            print(setCoordinate)
             updateCamera(to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
         }
         

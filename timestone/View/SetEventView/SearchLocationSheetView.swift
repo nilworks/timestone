@@ -22,40 +22,36 @@ struct SearchLocationSheetView: View {
                 selectedCoordinate: $viewModel.selectedCoordinate, isActualCurrentLocation: $viewModel.isActualLocation, setCoordinate: $viewModel.setCoordinate
             )
             
-            VStack(alignment: .trailing, spacing: 0){
+            VStack(alignment: .leading, spacing: 0){
                 switch viewModel.viewState {
                 case .idle:
                     MapSearchBarView()
                     
                     Spacer()
-                    
-                    Button {
-                        viewModel.checkDeviceLocation()
-                    } label: {
-                        Image(systemName: "dot.scope")
-                    }
-                    .padding(5)
-                    .background(.white)
-                    .clipShape(Circle())
-                    .padding(.horizontal, 15)
-                    .padding(.bottom, 15)
                 case .search:
                     LocationSearchView()
                 case .result:
                     ResultMapSearchBarView()
                     
                     Spacer()
-                    
-                    Button {
-                        viewModel.checkDeviceLocation()
-                    } label: {
-                        Image(systemName: "dot.scope")
+                }
+                
+                if viewModel.viewState != .search{
+                    VStack(alignment: .leading){
+                        Button {
+                            viewModel.checkDeviceLocation()
+                        } label: {
+                            Image(systemName: "dot.scope")
+                                .padding(10)
+                        }
+                        .background(.white)
+                        .clipShape(Circle())
+                        .padding(.horizontal, 15)
+                        .padding(.bottom, viewModel.viewState == .idle ? 15 : 0)
                     }
-                    .padding(5)
-                    .background(.white)
-                    .clipShape(Circle())
-                    .padding(.horizontal, 15)
-                    
+                }
+                
+                if viewModel.viewState == .result{
                     VStack(spacing: 0){
                         Text(viewModel.setCoordinate?.address ?? "-")
                             .frame(maxWidth: .infinity, alignment: .leading)
