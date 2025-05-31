@@ -10,7 +10,7 @@ import Foundation
 struct SelectedCoordinate{
     let placeName: String?
     let address: String
-    let coordinate: Coordinate
+    var coordinate: Coordinate
 }
 
 struct Coordinate{

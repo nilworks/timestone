@@ -23,14 +23,16 @@ final class LocationCacheManager{
         defaults.setValue(coordinate.longitude, forKey: keys.longitude)
     }
     
-    func load() -> Coordinate{
+    func load() -> SelectedCoordinate{
         let defaultCoordinate = Coordinate(latitude: 37.402001, longitude: 127.108678) //카카오 본사
         
         guard let latitude = defaults.value(forKey: keys.latitude) as? Double,
               let longitude = defaults.value(forKey: keys.longitude) as? Double else{
+            let defaultCoordinate = SelectedCoordinate(placeName: nil, address: "", coordinate: defaultCoordinate)
             return defaultCoordinate
         }
         
-        return Coordinate(latitude: latitude, longitude: longitude)
+        let currentCoordinate = SelectedCoordinate(placeName: nil, address: "", coordinate: Coordinate(latitude: latitude, longitude: longitude))
+        return currentCoordinate
     }
 }

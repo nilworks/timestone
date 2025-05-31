@@ -10,7 +10,7 @@ import KakaoMapsSDK
 
 struct KakaoMapView: UIViewRepresentable {
     @Binding var draw: Bool
-    @Binding var currentCoordinate: Coordinate //현재 위치
+    @Binding var currentCoordinate: SelectedCoordinate //현재 위치
     @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 선택한 위치
     @Binding var isActualCurrentLocation: Bool
     @Binding var setCoordinate: SelectedCoordinate? //사용자가 저장할 위치
@@ -38,10 +38,10 @@ struct KakaoMapView: UIViewRepresentable {
                 
                 context.coordinator
                     .updateCamera(
-                        to: setCoordinate?.coordinate ?? currentCoordinate)
+                        to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
                 context.coordinator
                     .updatePois(
-                        current: currentCoordinate,
+                        current: currentCoordinate.coordinate,
                         selected: selectedCoordinate?.coordinate,
                         showCurrent: isActualCurrentLocation)
             }
@@ -56,7 +56,10 @@ struct KakaoMapView: UIViewRepresentable {
         //선택된 위치가 있으면 해당 위치를 표시.
         //선택된 위치가 없으면 저장된 혹은 현재위치를 표시
         return KakaoMapCoordinator(
-            coordinate: selectedCoordinate?.coordinate ?? currentCoordinate, showCurrent: isActualCurrentLocation, setCoordinate: setCoordinate?.coordinate
+            coordinate: $currentCoordinate,
+            showCurrent: isActualCurrentLocation,
+            selectedCoordinate: $selectedCoordinate,
+            setCoordinate: $setCoordinate
         )
     }
     
@@ -69,12 +72,13 @@ struct KakaoMapView: UIViewRepresentable {
     }
     
     class KakaoMapCoordinator: NSObject, MapControllerDelegate, KakaoMapEventDelegate {
-        init(coordinate: Coordinate, showCurrent: Bool, setCoordinate: Coordinate?) {
+        init(coordinate: Binding<SelectedCoordinate>, showCurrent: Bool, selectedCoordinate: Binding<SelectedCoordinate?>, setCoordinate: Binding<SelectedCoordinate?>) {
             first = true
             auth = false
-            self.currentCoordinate = coordinate
+            self._currentCoordinate = coordinate
             self.showCurrent = showCurrent
-            self.setCoordinate = setCoordinate
+            self._selectedCoordinate = selectedCoordinate
+            self._setCoordinate = setCoordinate
             super.init()
         }
         
@@ -86,8 +90,8 @@ struct KakaoMapView: UIViewRepresentable {
 
         func addViews() {
             let defaultPosition: MapPoint = MapPoint(
-                longitude: currentCoordinate.longitude,
-                latitude: currentCoordinate.latitude
+                longitude: currentCoordinate.coordinate.longitude,
+                latitude: currentCoordinate.coordinate.latitude
             )
             let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition) //임시 좌표
             controller?.addView(mapviewInfo)
@@ -107,15 +111,14 @@ struct KakaoMapView: UIViewRepresentable {
             let mapView: KakaoMap? = controller?.getView("mapview") as? KakaoMap
             mapView?.viewRect = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: size)
             updatePois(
-                current: setCoordinate ?? currentCoordinate,
+                current: setCoordinate?.coordinate ?? currentCoordinate.coordinate,
                 selected: nil,
                 showCurrent: showCurrent
             )
-            updateCamera(to: self.currentCoordinate)
+            updateCamera(to: self.currentCoordinate.coordinate)
         }
         
         func updateCamera(to coordinate: Coordinate){
-            currentCoordinate = coordinate
             guard let mapView = controller?.getView("mapview") as? KakaoMap else{ return }
             let cameraUpdate = CameraUpdate.make(
                 target: MapPoint(
@@ -134,10 +137,13 @@ struct KakaoMapView: UIViewRepresentable {
         
         func poiDidTapped(kakaoMap: KakaoMap, layerID: String, poiID: String, position: MapPoint) {
             if poiID == "CurrentPoiID"{
-                print("현재 위치 Poi 클릭")
+                setCoordinate = currentCoordinate
             }else if poiID == "SelectedPoiID"{
-                print("장소 검색 위치 Poi 클릭")
+                print("b")
+                setCoordinate = selectedCoordinate
             }
+            print(setCoordinate)
+            updateCamera(to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
         }
         
         //Poi생성을 위한 LabelLayer 생성
@@ -255,8 +261,9 @@ struct KakaoMapView: UIViewRepresentable {
         var container: KMViewContainer?
         var first: Bool
         var auth: Bool
-        var currentCoordinate: Coordinate
-        var setCoordinate: Coordinate?
+        @Binding var currentCoordinate: SelectedCoordinate //사용자의 현재 위치
+        @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 검색으로 선택한 위치
+        @Binding var setCoordinate: SelectedCoordinate? //사용자가 저장할 위치
         private var showCurrent: Bool
     }
 }

@@ -19,7 +19,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var searchResultLocation: [Document] = []
     @Published var viewState: ViewState = .idle
     @Published var locationSettingAlert: Bool = false
-    @Published var currentCoordinate: Coordinate = LocationCacheManager.shared.load() //사용자의 현재 위치(최초는 캐시에 저장된 위치 불러오기)
+    @Published var currentCoordinate: SelectedCoordinate = LocationCacheManager.shared.load() //사용자의 현재 위치(최초는 캐시에 저장된 위치 불러오기)
     @Published var selectedCoordinate: SelectedCoordinate? = nil//선택된(검색한) 위치 정보 -> 사용자가 검색한 장소의 poi를 보여주기 위한 용도
     @Published var isActualLocation: Bool = false //실제 현재 위치인지 검증하는 프로퍼티(캐시에 저장되어 있는 값을 가져온 경우는 false)
     @Published var setCoordinate: SelectedCoordinate? = nil
@@ -63,10 +63,19 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                 )
                 guard let currentPosition = response.documents.first else { return }
                 
-                self.setCoordinate = SelectedCoordinate(
+                let selectedPosition = SelectedCoordinate(
                     placeName: currentPosition.road_address?.building_name,
                     address: currentPosition.road_address?.address_name ?? currentPosition.address.address_name,
-                    coordinate: Coordinate(latitude: doubleLatitude, longitude: doubleLongitude))
+                    coordinate: Coordinate(
+                        latitude: doubleLatitude,
+                        longitude: doubleLongitude)
+                )
+                
+                self.currentCoordinate = selectedPosition
+                LocationCacheManager.shared.save(coordinate: Coordinate(latitude: doubleLatitude, longitude: doubleLongitude))
+                self.isActualLocation = true
+                
+                self.setCoordinate = selectedPosition
                 
             }catch{
                 print(error.localizedDescription)
@@ -129,12 +138,6 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
             latitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude
         )
-        
-        DispatchQueue.main.async {
-            self.currentCoordinate = coordinate
-            LocationCacheManager.shared.save(coordinate: coordinate)
-            self.isActualLocation = true
-        }
         
         DispatchQueue.main.async{
             self.fetchReverseGeocoding(
