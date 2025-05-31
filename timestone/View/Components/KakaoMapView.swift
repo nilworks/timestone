@@ -68,7 +68,7 @@ struct KakaoMapView: UIViewRepresentable {
         coordinator.controller = nil
     }
     
-    class KakaoMapCoordinator: NSObject, MapControllerDelegate {
+    class KakaoMapCoordinator: NSObject, MapControllerDelegate, KakaoMapEventDelegate {
         init(coordinate: Coordinate, showCurrent: Bool, setCoordinate: Coordinate?) {
             first = true
             auth = false
@@ -83,7 +83,7 @@ struct KakaoMapView: UIViewRepresentable {
             controller = KMController(viewContainer: view)
             controller?.delegate = self
         }
-        
+
         func addViews() {
             let defaultPosition: MapPoint = MapPoint(
                 longitude: currentCoordinate.longitude,
@@ -95,8 +95,10 @@ struct KakaoMapView: UIViewRepresentable {
         
         func addViewSucceeded(_ viewName: String, viewInfoName: String) {
             print("OK")
-            let view = controller?.getView("mapview")
-            view?.viewRect = container!.bounds
+            guard let mapView = controller?.getView("mapview") as? KakaoMap else { return }
+            mapView.viewRect = container!.bounds
+            mapView.eventDelegate = self
+            
             createLabelLayer()
             createPoiStyle()
         }
@@ -128,6 +130,14 @@ struct KakaoMapView: UIViewRepresentable {
         func authenticationSucceeded() {
             auth = true
             addViews()
+        }
+        
+        func poiDidTapped(kakaoMap: KakaoMap, layerID: String, poiID: String, position: MapPoint) {
+            if poiID == "CurrentPoiID"{
+                print("현재 위치 Poi 클릭")
+            }else if poiID == "SelectedPoiID"{
+                print("장소 검색 위치 Poi 클릭")
+            }
         }
         
         //Poi생성을 위한 LabelLayer 생성
@@ -208,6 +218,7 @@ struct KakaoMapView: UIViewRepresentable {
             if showCurrent{
                 let currentOption = PoiOptions(styleID: "CurrentStyle", poiID: "CurrentPoiID")
                 currentOption.rank = 100
+                currentOption.clickable = true
                 options.append(currentOption)
                 points
                     .append(
@@ -224,6 +235,7 @@ struct KakaoMapView: UIViewRepresentable {
                     poiID: "SelectedPoiID"
                 )
                 selectedOption.rank = 101
+                selectedOption.clickable = true
                 options.append(selectedOption)
                 points
                     .append(
