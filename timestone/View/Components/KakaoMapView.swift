@@ -13,6 +13,7 @@ struct KakaoMapView: UIViewRepresentable {
     @Binding var currentCoordinate: Coordinate //현재 위치
     @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 선택한 위치
     @Binding var isActualCurrentLocation: Bool
+    @Binding var setCoordinate: SelectedCoordinate? //사용자가 저장할 위치
     
     func makeUIView(context: Self.Context) -> KMViewContainer {
         //need to correct view size
@@ -37,7 +38,7 @@ struct KakaoMapView: UIViewRepresentable {
                 
                 context.coordinator
                     .updateCamera(
-                        to: selectedCoordinate?.coordinate ?? currentCoordinate)
+                        to: setCoordinate?.coordinate ?? currentCoordinate)
                 context.coordinator
                     .updatePois(
                         current: currentCoordinate,
@@ -55,7 +56,7 @@ struct KakaoMapView: UIViewRepresentable {
         //선택된 위치가 있으면 해당 위치를 표시.
         //선택된 위치가 없으면 저장된 혹은 현재위치를 표시
         return KakaoMapCoordinator(
-            coordinate: selectedCoordinate?.coordinate ?? currentCoordinate, showCurrent: isActualCurrentLocation
+            coordinate: selectedCoordinate?.coordinate ?? currentCoordinate, showCurrent: isActualCurrentLocation, setCoordinate: setCoordinate?.coordinate
         )
     }
     
@@ -68,11 +69,12 @@ struct KakaoMapView: UIViewRepresentable {
     }
     
     class KakaoMapCoordinator: NSObject, MapControllerDelegate {
-        init(coordinate: Coordinate, showCurrent: Bool) {
+        init(coordinate: Coordinate, showCurrent: Bool, setCoordinate: Coordinate?) {
             first = true
             auth = false
             self.currentCoordinate = coordinate
             self.showCurrent = showCurrent
+            self.setCoordinate = setCoordinate
             super.init()
         }
         
@@ -103,7 +105,7 @@ struct KakaoMapView: UIViewRepresentable {
             let mapView: KakaoMap? = controller?.getView("mapview") as? KakaoMap
             mapView?.viewRect = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: size)
             updatePois(
-                current: currentCoordinate,
+                current: setCoordinate ?? currentCoordinate,
                 selected: nil,
                 showCurrent: showCurrent
             )
@@ -242,6 +244,7 @@ struct KakaoMapView: UIViewRepresentable {
         var first: Bool
         var auth: Bool
         var currentCoordinate: Coordinate
+        var setCoordinate: Coordinate?
         private var showCurrent: Bool
     }
 }
