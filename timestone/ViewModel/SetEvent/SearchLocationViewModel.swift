@@ -23,6 +23,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var selectedCoordinate: SelectedCoordinate? = nil//선택된(검색한) 위치 정보 -> 사용자가 검색한 장소의 poi를 보여주기 위한 용도
     @Published var isActualLocation: Bool = false //실제 현재 위치인지 검증하는 프로퍼티(캐시에 저장되어 있는 값을 가져온 경우는 false)
     @Published var setCoordinate: SelectedCoordinate? = nil
+    var allowAuthorization: Bool = false
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -119,6 +120,11 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     
     //MARK: - 사용자의 권한상태가 변경될 때
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        guard allowAuthorization else {
+            print("권한 요청이 차단됨(아직 허용 안 됨)")
+            return
+        }
+        
         checkDeviceLocation()
         
         let status = manager.authorizationStatus
@@ -127,6 +133,11 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                 self.isActualLocation = false
             }
         }
+    }
+    
+    func startLocationFlw(){
+        self.allowAuthorization = true
+        checkDeviceLocation()
     }
     
     func locationManager(

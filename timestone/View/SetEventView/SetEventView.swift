@@ -28,6 +28,7 @@ struct SetEventView: View {
     @StateObject private var viewModel = AddScheduleViewModel()
     @StateObject private var imagePickerViewModel = ImagePickerViewModel()
     @StateObject private var datePickerViewModel = CustomDatePickerViewModel()
+    @StateObject private var searchLocationViewModel = SearchLocationViewModel()
     
     @State private var scheduleTitle: String = ""
     
@@ -412,6 +413,7 @@ struct SetEventView: View {
         .fullScreenCover(isPresented: $showSearchLocation) {
             NavigationStack{
                 SearchLocationSheetView()
+                    .environmentObject(searchLocationViewModel)
             }
         }
     }

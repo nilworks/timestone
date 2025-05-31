@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchLocationSheetView: View {
     
-    @StateObject private var viewModel: SearchLocationViewModel = SearchLocationViewModel()
+    @EnvironmentObject private var viewModel: SearchLocationViewModel
     @State private var isSearching: Bool = false
     @State private var kakaoMapDraw: Bool = false
     @Environment(\.dismiss) private var dismiss
@@ -86,7 +86,8 @@ struct SearchLocationSheetView: View {
         })//: TOOLBAR
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
-                viewModel.checkDeviceLocation()
+//                viewModel.checkDeviceLocation()
+                viewModel.startLocationFlw()
             }
             kakaoMapDraw = true
         }

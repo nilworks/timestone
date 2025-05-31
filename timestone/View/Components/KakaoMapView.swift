@@ -111,11 +111,11 @@ struct KakaoMapView: UIViewRepresentable {
             let mapView: KakaoMap? = controller?.getView("mapview") as? KakaoMap
             mapView?.viewRect = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: size)
             updatePois(
-                current: setCoordinate?.coordinate ?? currentCoordinate.coordinate,
-                selected: nil,
+                current: currentCoordinate.coordinate,
+                selected: selectedCoordinate?.coordinate,
                 showCurrent: showCurrent
             )
-            updateCamera(to: self.currentCoordinate.coordinate)
+            updateCamera(to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
         }
         
         func updateCamera(to coordinate: Coordinate){
