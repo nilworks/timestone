@@ -139,6 +139,11 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     }
     
     func startLocationFlw(){
+        if setCoordinate == nil{
+            viewState = .idle
+        }else{
+            viewState = .result
+        }
         self.allowAuthorization = true
         checkDeviceLocation()
     }
