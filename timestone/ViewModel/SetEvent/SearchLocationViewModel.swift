@@ -24,6 +24,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var isActualLocation: Bool = false //실제 현재 위치인지 검증하는 프로퍼티(캐시에 저장되어 있는 값을 가져온 경우는 false)
     @Published var setCoordinate: SelectedCoordinate? = nil
     var allowAuthorization: Bool = false
+    @Published var isSelectedCurrentLocationBtn: Bool = false
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -76,8 +77,10 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                 LocationCacheManager.shared.save(coordinate: Coordinate(latitude: doubleLatitude, longitude: doubleLongitude))
                 self.isActualLocation = true
                 
-                self.setCoordinate = selectedPosition
-                
+                if isSelectedCurrentLocationBtn{
+                    self.setCoordinate = selectedPosition
+                    self.isSelectedCurrentLocationBtn = false
+                }
             }catch{
                 print(error.localizedDescription)
             }

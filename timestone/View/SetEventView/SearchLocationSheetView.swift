@@ -39,6 +39,7 @@ struct SearchLocationSheetView: View {
                 if viewModel.viewState != .search{
                     VStack(alignment: .leading){
                         Button {
+                            viewModel.isSelectedCurrentLocationBtn = true
                             viewModel.checkDeviceLocation()
                         } label: {
                             Image(systemName: "dot.scope")
@@ -86,7 +87,6 @@ struct SearchLocationSheetView: View {
         })//: TOOLBAR
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
-//                viewModel.checkDeviceLocation()
                 viewModel.startLocationFlw()
             }
             kakaoMapDraw = true
