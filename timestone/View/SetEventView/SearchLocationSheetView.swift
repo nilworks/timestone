@@ -41,7 +41,6 @@ struct SearchLocationSheetView: View {
                         Button {
                             viewModel.isSelectedCurrentLocationBtn = true
                             viewModel.checkDeviceLocation()
-                            viewModel.viewState = .result
                         } label: {
                             Image(systemName: "dot.scope")
                                 .padding(10)

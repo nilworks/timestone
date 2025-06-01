@@ -77,9 +77,11 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                 LocationCacheManager.shared.save(coordinate: Coordinate(latitude: doubleLatitude, longitude: doubleLongitude))
                 self.isActualLocation = true
                 
+                //현재 위치 아이콘 버튼을 클릭했지만 권한이 꺼져있다면 이동하면 안됨.
                 if isSelectedCurrentLocationBtn{
                     self.setCoordinate = selectedPosition
                     self.isSelectedCurrentLocationBtn = false
+                    viewState = .result
                 }
             }catch{
                 print(error.localizedDescription)
@@ -95,6 +97,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
             guard CLLocationManager.locationServicesEnabled() else{
                 await MainActor.run {
                     self.locationSettingAlert = true
+                    self.isSelectedCurrentLocationBtn = false
                 }
                 return
             }
@@ -113,6 +116,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         case .restricted, .denied:
             DispatchQueue.main.async {
                 self.locationSettingAlert = true
+                self.isSelectedCurrentLocationBtn = false
             }
         case .authorizedWhenInUse, .authorizedAlways:
             locationManager.startUpdatingLocation()
