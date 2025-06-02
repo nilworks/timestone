@@ -12,6 +12,7 @@ struct SearchLocationSheetView: View {
     @EnvironmentObject private var viewModel: SearchLocationViewModel
     @State private var isSearching: Bool = false
     @State private var kakaoMapDraw: Bool = false
+    @State private var showToast: Bool = false
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -68,6 +69,18 @@ struct SearchLocationSheetView: View {
                     .padding(.bottom, 15)
                 }
             }//: VSTACK
+            .overlay(alignment: .bottom) {
+                if showToast{
+                    Text("위치 사용 설정을 켜주세요")
+                        .font(.subTitleMedium)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(.neutral80)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .padding(.bottom, 15)
+                }
+            }
         }//: ZSTACK
         .background(.neutral90)
         .navigationTitle("위치")
@@ -95,7 +108,14 @@ struct SearchLocationSheetView: View {
             "위치 서비스 사용",
             isPresented: $viewModel.locationSettingAlert) {
                 Button("취소", role: .cancel) {
-                    
+                    withAnimation(.easeIn(duration: 0.1)) {
+                        showToast = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.8){
+                        withAnimation(.easeIn(duration: 0.2)) {
+                            showToast = false
+                        }
+                    }
                 }
                 
                 Button("설정으로 이동", role: .destructive){
