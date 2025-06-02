@@ -2,7 +2,11 @@
 //  KakaoMapView.swift
 //  timestone
 //
+<<<<<<< HEAD
+//  Created by 이상민 on 2/20/25.
+=======
 //  Created by 이상민 on 3/29/25.
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
 //
 
 import SwiftUI
@@ -10,10 +14,13 @@ import KakaoMapsSDK
 
 struct KakaoMapView: UIViewRepresentable {
     @Binding var draw: Bool
+<<<<<<< HEAD
+=======
     @Binding var currentCoordinate: SelectedCoordinate //현재 위치
     @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 선택한 위치
     @Binding var isActualCurrentLocation: Bool
     @Binding var setCoordinate: SelectedCoordinate? //사용자가 저장할 위치
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
     
     func makeUIView(context: Self.Context) -> KMViewContainer {
         //need to correct view size
@@ -22,7 +29,11 @@ struct KakaoMapView: UIViewRepresentable {
         
         return view
     }
+<<<<<<< HEAD
+
+=======
     
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
     /// Updates the presented `UIView` (and coordinator) to the latest
     /// configuration.
     func updateUIView(_ uiView: KMViewContainer, context: Self.Context) {
@@ -36,6 +47,8 @@ struct KakaoMapView: UIViewRepresentable {
                     context.coordinator.controller?.activateEngine()
                 }
                 
+<<<<<<< HEAD
+=======
                 context.coordinator
                     .updateCamera(
                         to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
@@ -44,6 +57,7 @@ struct KakaoMapView: UIViewRepresentable {
                         current: currentCoordinate.coordinate,
                         selected: selectedCoordinate?.coordinate,
                         showCurrent: isActualCurrentLocation)
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
             }
         }
         else {
@@ -53,6 +67,11 @@ struct KakaoMapView: UIViewRepresentable {
     }
     
     func makeCoordinator() -> KakaoMapCoordinator {
+<<<<<<< HEAD
+        return KakaoMapCoordinator()
+    }
+
+=======
         //선택된 위치가 있으면 해당 위치를 표시.
         //선택된 위치가 없으면 저장된 혹은 현재위치를 표시
         return KakaoMapCoordinator(
@@ -63,10 +82,19 @@ struct KakaoMapView: UIViewRepresentable {
         )
     }
     
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
     /// Cleans up the presented `UIView` (and coordinator) in
     /// anticipation of their removal.
     static func dismantleUIView(_ uiView: KMViewContainer, coordinator: KakaoMapCoordinator) {
         coordinator.controller?.resetEngine()
+<<<<<<< HEAD
+    }
+    
+    class KakaoMapCoordinator: NSObject, MapControllerDelegate {
+        override init() {
+            first = true
+            auth = false
+=======
         coordinator.controller?.delegate = nil
         coordinator.controller = nil
     }
@@ -79,6 +107,7 @@ struct KakaoMapView: UIViewRepresentable {
             self.showCurrent = showCurrent
             self._selectedCoordinate = selectedCoordinate
             self._setCoordinate = setCoordinate
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
             super.init()
         }
         
@@ -87,6 +116,15 @@ struct KakaoMapView: UIViewRepresentable {
             controller = KMController(viewContainer: view)
             controller?.delegate = self
         }
+<<<<<<< HEAD
+        
+        func addViews() {
+            let defaultPosition: MapPoint = MapPoint(longitude: 127.0499, latitude: 37.65421)
+            let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition)
+            createLabelLayer()
+            createPoiStyle()
+            createPoi()
+=======
 
         func addViews() {
             let defaultPosition: MapPoint = MapPoint(
@@ -94,22 +132,35 @@ struct KakaoMapView: UIViewRepresentable {
                 latitude: currentCoordinate.coordinate.latitude
             )
             let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition) //임시 좌표
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
             controller?.addView(mapviewInfo)
         }
         
         func addViewSucceeded(_ viewName: String, viewInfoName: String) {
             print("OK")
+<<<<<<< HEAD
+            let view = controller?.getView("mapview")
+            view?.viewRect = container!.bounds
+=======
             guard let mapView = controller?.getView("mapview") as? KakaoMap else { return }
             mapView.viewRect = container!.bounds
             mapView.eventDelegate = self
             
             createLabelLayer()
             createPoiStyle()
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
         }
         
         func containerDidResized(_ size: CGSize) {
             let mapView: KakaoMap? = controller?.getView("mapview") as? KakaoMap
             mapView?.viewRect = CGRect(origin: CGPoint(x: 0.0, y: 0.0), size: size)
+<<<<<<< HEAD
+            if first {
+                let cameraUpdate: CameraUpdate = CameraUpdate.make(target: MapPoint(longitude: 127.0499, latitude: 37.65421), mapView: mapView!)
+                mapView?.moveCamera(cameraUpdate)
+                first = false
+            }
+=======
             updatePois(
                 current: currentCoordinate.coordinate,
                 selected: selectedCoordinate?.coordinate,
@@ -128,6 +179,7 @@ struct KakaoMapView: UIViewRepresentable {
                 mapView: mapView
             )
             mapView.moveCamera(cameraUpdate)
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
         }
         
         func authenticationSucceeded() {
@@ -135,6 +187,35 @@ struct KakaoMapView: UIViewRepresentable {
             addViews()
         }
         
+<<<<<<< HEAD
+        func createLabelLayer(){
+            let view = controller?.getView("mapview") as? KakaoMap
+            let manager = view?.getLabelManager()
+            let layerOption = LabelLayerOptions(layerID: "PoiLayer", competitionType: .none, competitionUnit: .poi, orderType: .rank, zOrder: 10001)
+            let _ = manager?.addLabelLayer(option: layerOption)
+        }
+        
+        func createPoiStyle(){
+            let view = controller?.getView("mapview") as? KakaoMap
+            let manager = view?.getLabelManager()
+            let iconStyle = PoiIconStyle(symbol: UIImage(resource: .pinRed), anchorPoint: CGPoint(x: 0, y: 0))
+            let perLevelStyle = PerLevelPoiStyle(iconStyle: iconStyle, level: 0)
+            let poiStyle = PoiStyle(styleID: "customStyle", styles: [perLevelStyle])
+            manager?.addPoiStyle(poiStyle)
+        }
+        
+        func createPoi(){
+            let view = controller?.getView("mapview") as? KakaoMap
+            let manger = view?.getLabelManager()
+            let layer = manger?.getLabelLayer(layerID: "PoiLayer")
+            let poiOption = PoiOptions(styleID: "customStyle")
+            poiOption.rank = 0
+            
+            let poi = layer?.addPoi(option: poiOption, at: MapPoint(longitude: 127.0499, latitude: 37.65421))
+            poi?.show()
+        }
+        
+=======
         func poiDidTapped(kakaoMap: KakaoMap, layerID: String, poiID: String, position: MapPoint) {
             if poiID == "CurrentPoiID"{
                 setCoordinate = currentCoordinate
@@ -255,13 +336,17 @@ struct KakaoMapView: UIViewRepresentable {
         }
         
         //속성 추가
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
         var controller: KMController?
         var container: KMViewContainer?
         var first: Bool
         var auth: Bool
+<<<<<<< HEAD
+=======
         @Binding var currentCoordinate: SelectedCoordinate //사용자의 현재 위치
         @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 검색으로 선택한 위치
         @Binding var setCoordinate: SelectedCoordinate? //사용자가 저장할 위치
         private var showCurrent: Bool
+>>>>>>> 4355cdd63eb58986ef4f310a8399e007d3b94bcf
     }
 }

@@ -15,7 +15,7 @@ struct timestoneApp: App {
         WindowGroup {
             ContentView()
                 .onAppear {
-                    SDKInitializer.InitSDK(appKey: APIKey.KAKAO_APP_KEY)
+                    SDKInitializer.InitSDK(appKey: Bundle.main.infoDictionary?["KAKAO_APP_KEY"] as! String)
                 }
         }
     }

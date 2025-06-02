@@ -1,4 +1,4 @@
-//
+
 //  Event.swift
 //  timestone
 //
