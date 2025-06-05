@@ -73,7 +73,6 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                         longitude: doubleLongitude)
                 )
                 
-                self.currentCoordinate = selectedPosition
                 LocationCacheManager.shared.save(coordinate: Coordinate(latitude: doubleLatitude, longitude: doubleLongitude))
                 self.isActualLocation = true
                 
@@ -160,6 +159,12 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         let coordinate = Coordinate(
             latitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude
+        )
+        
+        currentCoordinate = SelectedCoordinate(
+            placeName: currentCoordinate.placeName,
+            address: currentCoordinate.address,
+            coordinate: coordinate
         )
         
         DispatchQueue.main.async{
