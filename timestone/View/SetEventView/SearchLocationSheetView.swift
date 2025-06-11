@@ -99,11 +99,15 @@ struct SearchLocationSheetView: View {
             }
         })//: TOOLBAR
         .onAppear {
+            viewModel.startMonitoring()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
                 viewModel.startLocationFlw()
             }
             kakaoMapDraw = true
         }
+        .onDisappear(perform: {
+            viewModel.stopMonitoring()
+        })
         .alert(
             "위치 서비스 사용",
             isPresented: $viewModel.locationSettingAlert) {
