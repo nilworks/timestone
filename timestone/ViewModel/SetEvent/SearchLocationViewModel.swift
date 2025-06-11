@@ -87,9 +87,6 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                 
                 self.currentCoordinate = selectedPosition
                 
-                LocationCacheManager.shared.save(coordinate: Coordinate(latitude: doubleLatitude, longitude: doubleLongitude))
-                self.isActualLocation = true
-                
                 //현재 위치 아이콘 버튼을 클릭했지만 권한이 꺼져있다면 이동하면 안됨.
                 if isSelectedCurrentLocationBtn{
                     self.setCoordinate = selectedPosition
@@ -180,6 +177,8 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
             address: currentCoordinate.address,
             coordinate: coordinate
         )
+        LocationCacheManager.shared.save(coordinate: Coordinate(latitude: coordinate.latitude, longitude: coordinate.longitude))
+        self.isActualLocation = true
         
         DispatchQueue.main.async{
             self.fetchReverseGeocoding(
