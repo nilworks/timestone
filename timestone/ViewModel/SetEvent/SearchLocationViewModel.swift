@@ -85,6 +85,8 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                         longitude: doubleLongitude)
                 )
                 
+                self.currentCoordinate = selectedPosition
+                
                 LocationCacheManager.shared.save(coordinate: Coordinate(latitude: doubleLatitude, longitude: doubleLongitude))
                 self.isActualLocation = true
                 
