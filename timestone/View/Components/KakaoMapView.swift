@@ -138,10 +138,11 @@ struct KakaoMapView: UIViewRepresentable {
         func poiDidTapped(kakaoMap: KakaoMap, layerID: String, poiID: String, position: MapPoint) {
             if poiID == "CurrentPoiID"{
                 setCoordinate = currentCoordinate
+                updateCamera(to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
             }else if poiID == "SelectedPoiID"{
                 setCoordinate = selectedCoordinate
+                updateCamera(to: setCoordinate?.coordinate ?? selectedCoordinate?.coordinate ?? currentCoordinate.coordinate)
             }
-            updateCamera(to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
         }
         
         //Poi생성을 위한 LabelLayer 생성
