@@ -7,12 +7,18 @@
 
 import Foundation
 import CoreLocation
+import Network
 
 class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate{
     enum ViewState {
         case idle
         case search
         case result
+    }
+    
+    enum NetworkStatus{
+        case connected
+        case disconnected
     }
     
     @Published var searchLocationText: String = ""
@@ -25,6 +31,12 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var setCoordinate: SelectedCoordinate? = nil
     var allowAuthorization: Bool = false
     @Published var isSelectedCurrentLocationBtn: Bool = false
+    @Published var showNoSearchResultView: Bool = false
+    
+    //MARK: - NetworkMonitor
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "NetworkMonitor")
+    @Published var currentStatus: NetworkStatus = .disconnected
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -203,5 +215,27 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
             print("좌표 변환 실페: latitude=\(y), longitude=\(x)")
         }
         viewState = .idle
+    }
+    
+    //MARK: - NWPathMonitor
+    
+    func startMonitoring(){
+        monitor.pathUpdateHandler = { path in
+            if path.status == .satisfied{
+                DispatchQueue.main.async {
+                    self.currentStatus = .connected
+                    self.showNoSearchResultView = false
+                }
+            }else{
+                DispatchQueue.main.async {
+                    self.currentStatus = .disconnected
+                }
+            }
+        }
+        monitor.start(queue: queue)
+    }
+    
+    func stopMonitoring(){
+        monitor.cancel()
     }
 }
