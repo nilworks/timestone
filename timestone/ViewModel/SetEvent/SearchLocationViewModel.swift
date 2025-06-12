@@ -215,7 +215,6 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         }else{
             print("좌표 변환 실페: latitude=\(y), longitude=\(x)")
         }
-        viewState = .idle
     }
     
     //MARK: - NWPathMonitor

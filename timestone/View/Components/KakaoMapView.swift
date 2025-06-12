@@ -57,7 +57,7 @@ struct KakaoMapView: UIViewRepresentable {
         //선택된 위치가 없으면 저장된 혹은 현재위치를 표시
         return KakaoMapCoordinator(
             coordinate: $currentCoordinate,
-            showCurrent: isActualCurrentLocation,
+            showCurrent: $isActualCurrentLocation,
             selectedCoordinate: $selectedCoordinate,
             setCoordinate: $setCoordinate
         )
@@ -72,11 +72,11 @@ struct KakaoMapView: UIViewRepresentable {
     }
     
     class KakaoMapCoordinator: NSObject, MapControllerDelegate, KakaoMapEventDelegate {
-        init(coordinate: Binding<SelectedCoordinate>, showCurrent: Bool, selectedCoordinate: Binding<SelectedCoordinate?>, setCoordinate: Binding<SelectedCoordinate?>) {
+        init(coordinate: Binding<SelectedCoordinate>, showCurrent: Binding<Bool>, selectedCoordinate: Binding<SelectedCoordinate?>, setCoordinate: Binding<SelectedCoordinate?>) {
             first = true
             auth = false
             self._currentCoordinate = coordinate
-            self.showCurrent = showCurrent
+            self._showCurrent = showCurrent
             self._selectedCoordinate = selectedCoordinate
             self._setCoordinate = setCoordinate
             super.init()
@@ -263,6 +263,6 @@ struct KakaoMapView: UIViewRepresentable {
         @Binding var currentCoordinate: SelectedCoordinate //사용자의 현재 위치
         @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 검색으로 선택한 위치
         @Binding var setCoordinate: SelectedCoordinate? //사용자가 저장할 위치
-        private var showCurrent: Bool
+        @Binding var showCurrent: Bool
     }
 }
