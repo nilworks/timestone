@@ -215,44 +215,51 @@ struct KakaoMapView: UIViewRepresentable {
             let manager = mapView.getLabelManager()
             guard let layer = manager.getLabelLayer(layerID: "PoiLayer") else { return }
             
-            layer.removePois(poiIDs: ["CurrentPoiID", "SelectedPoiID"])
-            
-            var options: [PoiOptions] = []
-            var points: [MapPoint] = []
-            
             if showCurrent{
-                let currentOption = PoiOptions(styleID: "CurrentStyle", poiID: "CurrentPoiID")
-                currentOption.rank = 100
-                currentOption.clickable = true
-                options.append(currentOption)
-                points
-                    .append(
-                        MapPoint(
-                            longitude: current.longitude,
-                            latitude: current.latitude
-                        )
-                    )
+                let currentPoint = MapPoint(
+                    longitude: current.longitude,
+                    latitude: current.latitude
+                )
+                
+                if currentPoi == nil{
+                    let currentOption = PoiOptions(styleID: "CurrentStyle", poiID: "CurrentPoiID")
+                    currentOption.rank = 100
+                    currentOption.clickable = true
+                    let poi = layer.addPoi(option: currentOption, at: currentPoint)
+                    currentPoi = poi
+                }else{
+                    currentPoi?
+                        .moveAt(currentPoint, duration: 1)
+                }
+                currentPoi?.show()
+            }else{
+                currentPoi?.hide()
             }
             
             if let sel = selected{
-                let selectedOption = PoiOptions(
-                    styleID: "SelectedStyle",
-                    poiID: "SelectedPoiID"
+                let selectedPoint = MapPoint(
+                    longitude: sel.longitude,
+                    latitude: sel.latitude
                 )
-                selectedOption.rank = 101
-                selectedOption.clickable = true
-                options.append(selectedOption)
-                points
-                    .append(
-                        MapPoint(
-                            longitude: sel.longitude,
-                            latitude: sel.latitude
-                        )
+                if selectedPoi == nil{
+                    let selectedOption = PoiOptions(
+                        styleID: "SelectedStyle",
+                        poiID: "SelectedPoiID"
                     )
+                    selectedOption.rank = 101
+                    selectedOption.clickable = true
+                    let poi = layer.addPoi(
+                        option: selectedOption,
+                        at: selectedPoint
+                    )
+                    selectedPoi = poi
+                }else{
+                    selectedPoi?.moveAt(selectedPoint, duration: 1)
+                }
+                selectedPoi?.show()
+            }else{
+                selectedPoi?.hide()
             }
-            
-            let pois = layer.addPois(options: options, at: points)
-            pois?.forEach{$0.show()}
         }
         
         //속성 추가
@@ -260,6 +267,8 @@ struct KakaoMapView: UIViewRepresentable {
         var container: KMViewContainer?
         var first: Bool
         var auth: Bool
+        var currentPoi: Poi?
+        var selectedPoi: Poi?
         @Binding var currentCoordinate: SelectedCoordinate //사용자의 현재 위치
         @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 검색으로 선택한 위치
         @Binding var setCoordinate: SelectedCoordinate? //사용자가 저장할 위치
