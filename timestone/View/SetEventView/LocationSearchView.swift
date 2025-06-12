@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LocationSearchView: View {
     @EnvironmentObject private var viewModel: SearchLocationViewModel
+    @FocusState private var searchTextFocusState: Bool
     var body: some View {
         VStack{
             HStack{
@@ -34,6 +35,7 @@ struct LocationSearchView: View {
                             viewModel.showNoSearchResultView = true
                         }
                     }
+                    .focused($searchTextFocusState)
                     .keyboardType(.webSearch)
                 
                 if !viewModel.searchLocationText.isEmpty{
@@ -90,6 +92,9 @@ struct LocationSearchView: View {
             Spacer()
         }//: VSTACK
         .background(.neutral90)
+        .onAppear{
+            self.searchTextFocusState = true
+        }
     }
 }
 

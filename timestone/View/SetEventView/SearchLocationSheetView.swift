@@ -78,7 +78,7 @@ struct SearchLocationSheetView: View {
                         .padding(.vertical, 5)
                         .background(.neutral80)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .padding(.bottom, 15)
+                        .padding(.bottom, 10)
                 }
             }
         }//: ZSTACK
