@@ -85,8 +85,8 @@ struct DetailEventView: View {
                     .foregroundStyle(.neutral60)
                     .padding(.bottom, 5)
                 
-                KakaoMapView(draw: $draw)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                KakaoMapView(draw: $draw)
+//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 Text("사진")
                     .font(.subBodyRegular)

@@ -10,7 +10,7 @@ import Combine
 
 class HolidayViewModel: ObservableObject {
     let baseURL = "https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo"
-    let privateKey: String = Bundle.main.object(forInfoDictionaryKey: "HolidayKey") as? String ?? ""
+    let privateKey: String = Bundle.main.infoDictionary?["HolidayKey"]! as! String
     
     @Published var holidays: [Holiday] = []
     
@@ -24,7 +24,7 @@ class HolidayViewModel: ObservableObject {
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
-                print("에러 발생: \(error.localizedDescription)")
+                print("에러 발생ㅇ: \(error.localizedDescription)")
                 return
             }
             
