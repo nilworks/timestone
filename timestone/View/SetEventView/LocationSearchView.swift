@@ -24,9 +24,7 @@ struct LocationSearchView: View {
                 TextField("위치 입력", text: $viewModel.searchLocationText)
                     .foregroundStyle(.white)
                     .onChange(of: viewModel.searchLocationText) { newValue in
-                        if viewModel.currentStatus == .connected{
-                            viewModel.fetchSearchLocation()
-                        }
+                        viewModel.fetchSearchLocation()
                     }
                     .onSubmit {
                         if viewModel.currentStatus == .connected{

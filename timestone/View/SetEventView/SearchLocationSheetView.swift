@@ -55,7 +55,7 @@ struct SearchLocationSheetView: View {
                 
                 if viewModel.viewState == .result{
                     VStack(spacing: 0){
-                        Text(viewModel.setCoordinate?.address ?? "-")
+                        Text(viewModel.setCoordinate?.address ?? "위치 정보를 가져올 수 없습니다.")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .modifier(SearchBarStyle())
                         
@@ -101,12 +101,19 @@ struct SearchLocationSheetView: View {
         .onAppear {
             viewModel.startMonitoring()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
-                viewModel.startLocationFlw()
+                viewModel.startLocationFlow()
             }
             kakaoMapDraw = true
         }
         .onDisappear(perform: {
             viewModel.stopMonitoring()
+        })
+        .alert(isPresented: $viewModel.showErrorAlert, error: viewModel.showErrorType, actions: {_ in 
+            Button("확인"){}
+        }, message: { error in
+            Text(viewModel.showError?.localizedDescription ?? "")
+            Text(error.localizedDescription)
+                .foregroundStyle(.red)
         })
         .alert(
             "위치 서비스 사용",
