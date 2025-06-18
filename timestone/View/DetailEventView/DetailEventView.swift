@@ -1,0 +1,122 @@
+//
+//  showDetailEventView.swift
+//  timestone
+//
+//  Created by 이상민 on 12/30/24.
+//
+
+import SwiftUI
+
+struct DetailEventView: View {
+    @EnvironmentObject var eventVM: EventViewModel
+    
+    let dateFormatManager = DateFormatManager.shared
+    
+    //    @Environment(\.openURL) private var openURL
+    @State var draw: Bool = false
+    
+    var event: Event
+    var eventDate: Date
+    
+    var body: some View {
+        VStack{
+            Text(dateFormatManager.yearFormat(date: eventDate))
+                .font(.caption)
+                .foregroundStyle(.neutral70)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 5)
+            
+            HStack{
+                Text(dateFormatManager.dailyViewTitleFormat(date: eventDate))
+                    .font(.captionLight)
+                    .foregroundStyle(.neutral60)
+                
+                Spacer()
+                
+                Button {
+                    // TODO: 일정 추가 UI로 이동
+                } label: {
+                    Image(systemName: "plus.app")
+                        .foregroundStyle(.primary100)
+                }
+            }//: HSTACK
+            .padding(.bottom, 30)
+            
+            // TODO: ViewBuilder로 빼면 효과적일 것 같음, 혹은 컴포넌트 뷰 생성
+            VStack(alignment: .leading){
+                Text(event.title ?? "title is nil.")
+                    .font(.subTitleBold)
+                    .foregroundStyle(.white)
+                    .padding(.bottom, 5)
+                
+                HStack{
+                    Text("\(eventVM.getTimeToString(textDate: event.startTime)) ~ \(eventVM.getTimeToString(textDate: event.endTime))")
+                        .font(.subBodyRegular)
+                        .foregroundStyle(.neutral60)
+                    
+                    Image(systemName: "clock")
+                        .foregroundStyle(.neutral60)
+                }//: HSTACK
+                .padding(.bottom, 25)
+                
+                // TODO: 타이틀, 콘텐츠 반복 뷰 재사용 고려
+                // TODO: 속성은 동일하니 ViewBuilder로 처리해도 상관없을 것 같다
+                Text("메모")
+                    .font(.subBodyRegular)
+                    .foregroundStyle(.neutral60)
+                    .padding(.bottom, 5)
+                
+                Text(event.notes ?? "notes is nil.")
+                    .font(.subBodyRegular)
+                    .foregroundStyle(.white)
+                    .padding(.bottom, 20)
+                
+                Text("링크")
+                    .font(.subBodyRegular)
+                    .foregroundStyle(.neutral60)
+                    .padding(.bottom, 5)
+                
+                Link(event.url?.absoluteString ?? "URL is nil.", destination: event.url ?? URL(string: "www.naver.com")!)
+                    .font(.subBodyRegular)
+                    .padding(.bottom, 20)
+                
+                Text("장소")
+                    .font(.subBodyRegular)
+                    .foregroundStyle(.neutral60)
+                    .padding(.bottom, 5)
+                
+//                KakaoMapView(draw: $draw)
+//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                
+                Text("사진")
+                    .font(.subBodyRegular)
+                    .foregroundStyle(.neutral60)
+                    .padding(.bottom, 5)
+                
+                Image(systemName: "clock")
+                    .resizable()
+                    .foregroundStyle(.neutral60)
+                    .frame(width: 331, height: 125)
+                    .padding(.bottom, 20)
+            }//: VSTACK
+            .padding(.leading, 20)
+            .overlay(alignment: .leading, content: {
+                Rectangle()
+                    .frame(width: 2)
+                    .foregroundStyle(.primary100)
+                    .offset(x: -1)
+            })
+        }//: VSTACK
+        .padding(.horizontal, 20)
+        .background(.black)
+        .onAppear(perform: {
+            self.draw = true
+        }).onDisappear(perform: {
+            self.draw = false
+        })
+    }
+}
+
+//#Preview {
+//    DetailEventView()
+//}
