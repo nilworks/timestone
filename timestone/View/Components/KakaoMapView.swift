@@ -125,7 +125,7 @@ struct KakaoMapView: UIViewRepresentable {
                     longitude: coordinate.longitude,
                     latitude: coordinate.latitude
                 ),
-                mapView: mapView,
+                mapView: mapView
             )
             
 //            mapView.moveCamera(cameraUpdate)
