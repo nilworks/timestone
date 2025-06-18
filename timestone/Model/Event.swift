@@ -1,4 +1,4 @@
-//
+
 //  Event.swift
 //  timestone
 //
@@ -121,5 +121,4 @@ struct EventInfo {
             images: ["hiking.jpg"]
         )
     ]
-
 }
