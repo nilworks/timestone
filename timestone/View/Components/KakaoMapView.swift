@@ -125,9 +125,16 @@ struct KakaoMapView: UIViewRepresentable {
                     longitude: coordinate.longitude,
                     latitude: coordinate.latitude
                 ),
-                mapView: mapView
+                mapView: mapView,
             )
-            mapView.moveCamera(cameraUpdate)
+            
+//            mapView.moveCamera(cameraUpdate)
+            let options = CameraAnimationOptions(
+                autoElevation: false,
+                consecutive: false,
+                durationInMillis: 500
+            )
+            mapView.animateCamera(cameraUpdate: cameraUpdate, options: options)
         }
         
         func authenticationSucceeded() {
