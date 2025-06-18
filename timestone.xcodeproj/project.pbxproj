@@ -18,6 +18,7 @@
 		BF6E11A72D13FADA007C0CDD /* Exceptions for "timestone" folder in "timestone" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Debug.xcconfig,
 				Info.plist,
 			);
 			target = 793AEEF12D13EC2D0089B065 /* timestone */;
@@ -97,7 +98,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					793AEEF12D13EC2D0089B065 = {
 						CreatedOnToolsVersion = 16.2;

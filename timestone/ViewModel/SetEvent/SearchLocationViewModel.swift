@@ -7,12 +7,18 @@
 
 import Foundation
 import CoreLocation
+import Network
 
 class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate{
     enum ViewState {
         case idle
         case search
         case result
+    }
+    
+    enum NetworkStatus{
+        case connected
+        case disconnected
     }
     
     @Published var searchLocationText: String = ""
@@ -25,6 +31,15 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var setCoordinate: SelectedCoordinate? = nil
     var allowAuthorization: Bool = false
     @Published var isSelectedCurrentLocationBtn: Bool = false
+    @Published var showNoSearchResultView: Bool = false
+    @Published var showErrorAlert: Bool = false
+    @Published var showErrorType: NetworkErrorType? = nil
+    @Published var showError: NetworkError? = nil
+    
+    //MARK: - NetworkMonitor
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "NetworkMonitor")
+    @Published var currentStatus: NetworkStatus = .disconnected
     
     //MARK: - 위치 매니저 생성: 위치에 관련된 대부분을 담당
     lazy var locationManager = CLLocationManager()
@@ -45,8 +60,14 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                             .placeSearch(query: self.searchLocationText)
                     )
                 searchResultLocation = response.documents
-            }catch{
-                print(error.localizedDescription)
+            }
+            catch let error as URLError{
+                if error.code == .notConnectedToInternet{
+                    return
+                }
+            }catch let error as NetworkError{
+                self.showErrorAlert = true
+                self.showError = error
             }
         }
     }
@@ -74,8 +95,6 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                 )
                 
                 self.currentCoordinate = selectedPosition
-                LocationCacheManager.shared.save(coordinate: Coordinate(latitude: doubleLatitude, longitude: doubleLongitude))
-                self.isActualLocation = true
                 
                 //현재 위치 아이콘 버튼을 클릭했지만 권한이 꺼져있다면 이동하면 안됨.
                 if isSelectedCurrentLocationBtn{
@@ -83,8 +102,25 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                     self.isSelectedCurrentLocationBtn = false
                     viewState = .result
                 }
-            }catch{
-                print(error.localizedDescription)
+            }catch let error as URLError{
+                //네트워크 연결이 안 되어 있을 때
+                print("네트워크 에러")
+                if error.code == .notConnectedToInternet{
+                    if isSelectedCurrentLocationBtn{ //현재위치 아이콘을 클릭햇을 때
+                        self.setCoordinate = nil
+                        viewState = .result
+                    }
+                }
+            }
+            catch let error as NetworkError{
+                print("네트워크 커스텀 에러")
+                //처음 접근 시 네트워크 접근을 시도해서 alert 발생할 수 있으므로
+                //현재 위치를 알기위해 버튼을 클릭했을 때만 alert나오게 수정
+                if self.isSelectedCurrentLocationBtn{
+                    self.showErrorAlert = true
+                    self.showErrorType = .location
+                    self.showError = error
+                }
             }
         }
     }
@@ -142,7 +178,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         }
     }
     
-    func startLocationFlw(){
+    func startLocationFlow(){
         if setCoordinate == nil{
             viewState = .idle
         }else{
@@ -157,10 +193,31 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         didUpdateLocations locations: [CLLocation]
     ) {
         guard let location = locations.last else { return }
+    
         let coordinate = Coordinate(
-            latitude: location.coordinate.latitude,
-            longitude: location.coordinate.longitude
+            latitude: round((1000000 * location.coordinate.latitude)) / 1000000,
+            longitude: round((1000000 * location.coordinate.longitude)) / 1000000
         )
+
+        self.isActualLocation = true
+        //얻은 좌표와 저장된 현재 위치 좌표가 같고, 이전 좌표의 해당하는 주소가 들어가 있다면 API 호출을 할 필요가 없다
+        if coordinate.latitude == currentCoordinate.coordinate.latitude &&
+            coordinate.longitude == currentCoordinate.coordinate.longitude &&
+            currentCoordinate.address.isEmpty == false{
+            if isSelectedCurrentLocationBtn{
+                setCoordinate = currentCoordinate
+                viewState = .result
+            }
+            locationManager.stopUpdatingLocation()
+            return
+        }
+
+        currentCoordinate = SelectedCoordinate(
+            placeName: nil,
+            address: "",
+            coordinate: coordinate
+        )
+        LocationCacheManager.shared.save(coordinate: Coordinate(latitude: coordinate.latitude, longitude: coordinate.longitude))
         
         DispatchQueue.main.async{
             self.fetchReverseGeocoding(
@@ -197,6 +254,27 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
         }else{
             print("좌표 변환 실페: latitude=\(y), longitude=\(x)")
         }
-        viewState = .idle
+    }
+    
+    //MARK: - NWPathMonitor
+    
+    func startMonitoring(){
+        monitor.pathUpdateHandler = { path in
+            if path.status == .satisfied{
+                DispatchQueue.main.async {
+                    self.currentStatus = .connected
+                    self.showNoSearchResultView = false
+                }
+            }else{
+                DispatchQueue.main.async {
+                    self.currentStatus = .disconnected
+                }
+            }
+        }
+        monitor.start(queue: queue)
+    }
+    
+    func stopMonitoring(){
+        monitor.cancel()
     }
 }

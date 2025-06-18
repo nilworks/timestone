@@ -7,6 +7,20 @@
 
 import Foundation
 
+enum NetworkErrorType: LocalizedError{
+    case location
+    case search
+    
+    var errorDescription: String?{
+        switch self{
+        case .location:
+            return "현재 위치 정보 가져오기 실패"
+        case .search:
+            return "검색 결과 가져오기 실패"
+        }
+    }
+}
+
 enum NetworkError: Error, LocalizedError{
     case invalidURL
     case invalidResponseType
