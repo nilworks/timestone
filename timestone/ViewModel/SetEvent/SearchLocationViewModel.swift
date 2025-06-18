@@ -66,203 +66,215 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
                     return
                 }
             }catch let error as NetworkError{
+                self.showErrorAlert = true
+                self.showError = error
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchReverseGeocoding(longitude: String, latitude: String){
+        Task{
+            do{
+                guard let doubleLongitude = Double(longitude), let doubleLatitude = Double(latitude) else { return }
+                
+                let response: ReverseGeocodingResponse = try await NetworkManager.shared.CallbackRequest(
+                    request: KakaoRequest
+                        .reverseGeocoding(longitude: longitude,
+                                          latitude: latitude
+                                         )
+                )
+                guard let currentPosition = response.documents.first else { return }
+                
+                let selectedPosition = SelectedCoordinate(
+                    placeName: currentPosition.road_address?.building_name,
+                    address: currentPosition.road_address?.address_name ?? currentPosition.address.address_name,
+                    coordinate: Coordinate(
+                        latitude: doubleLatitude,
+                        longitude: doubleLongitude)
+                )
+                
+                self.currentCoordinate = selectedPosition
+                
+                //현재 위치 아이콘 버튼을 클릭했지만 권한이 꺼져있다면 이동하면 안됨.
+                if isSelectedCurrentLocationBtn{
+                    self.setCoordinate = selectedPosition
+                    self.isSelectedCurrentLocationBtn = false
+                    viewState = .result
+                }
+            }catch let error as URLError{
+                //네트워크 연결이 안 되어 있을 때
+                print("네트워크 에러")
+                if error.code == .notConnectedToInternet{
+                    if isSelectedCurrentLocationBtn{ //현재위치 아이콘을 클릭햇을 때
+                        self.setCoordinate = nil
+                        viewState = .result
+                    }
+                }
+            }
+            catch let error as NetworkError{
+                print("네트워크 커스텀 에러")
+                //처음 접근 시 네트워크 접근을 시도해서 alert 발생할 수 있으므로
+                //현재 위치를 알기위해 버튼을 클릭했을 때만 alert나오게 수정
+                if self.isSelectedCurrentLocationBtn{
                     self.showErrorAlert = true
+                    self.showErrorType = .location
                     self.showError = error
                 }
             }
         }
-        
-        @MainActor
-        func fetchReverseGeocoding(longitude: String, latitude: String){
-            Task{
-                do{
-                    guard let doubleLongitude = Double(longitude), let doubleLatitude = Double(latitude) else { return }
-                    
-                    let response: ReverseGeocodingResponse = try await NetworkManager.shared.CallbackRequest(
-                        request: KakaoRequest
-                            .reverseGeocoding(longitude: longitude,
-                                              latitude: latitude
-                                             )
-                    )
-                    guard let currentPosition = response.documents.first else { return }
-                    
-                    let selectedPosition = SelectedCoordinate(
-                        placeName: currentPosition.road_address?.building_name,
-                        address: currentPosition.road_address?.address_name ?? currentPosition.address.address_name,
-                        coordinate: Coordinate(
-                            latitude: doubleLatitude,
-                            longitude: doubleLongitude)
-                    )
-                    
-                    self.currentCoordinate = selectedPosition
-                    
-                    //현재 위치 아이콘 버튼을 클릭했지만 권한이 꺼져있다면 이동하면 안됨.
-                    if isSelectedCurrentLocationBtn{
-                        self.setCoordinate = selectedPosition
-                        self.isSelectedCurrentLocationBtn = false
-                        viewState = .result
-                    }
-                }catch let error as URLError{
-                    //네트워크 연결이 안 되어 있을 때
-                    print("네트워크 에러")
-                    if error.code == .notConnectedToInternet{
-                        if isSelectedCurrentLocationBtn{ //현재위치 아이콘을 클릭햇을 때
-                            self.setCoordinate = nil
-                            viewState = .result
-                        }
-                    }
-                }
-                catch let error as NetworkError{
-                    print("네트워크 커스텀 에러")
-                    //처음 접근 시 네트워크 접근을 시도해서 alert 발생할 수 있으므로
-                    //현재 위치를 알기위해 버튼을 클릭했을 때만 alert나오게 수정
-                    if self.isSelectedCurrentLocationBtn{
-                        self.showErrorAlert = true
-                        self.showErrorType = .location
-                        self.showError = error
-                    }
-                }
-            }
-        }
-        
-        //MARK: - 기기의 위치 서비스 -> 허용
-        func checkDeviceLocation(){
-            print(#function)
-            Task.detached { [weak self] in
-                guard let self = self else { return }
-                guard CLLocationManager.locationServicesEnabled() else{
-                    await MainActor.run {
-                        self.locationSettingAlert = true
-                        self.isSelectedCurrentLocationBtn = false
-                    }
-                    return
-                }
-                
-                self.checkCurrentLocation()
-            }
-        }
-        
-        //MARK: - 현재 사용자의 위치 권한 상태 확인
-        func checkCurrentLocation(){
-            let status = locationManager.authorizationStatus
-            
-            switch status{
-            case .notDetermined:
-                locationManager.requestWhenInUseAuthorization()
-            case .restricted, .denied:
-                DispatchQueue.main.async {
+    }
+    
+    //MARK: - 기기의 위치 서비스 -> 허용
+    func checkDeviceLocation(){
+        print(#function)
+        Task.detached { [weak self] in
+            guard let self = self else { return }
+            guard CLLocationManager.locationServicesEnabled() else{
+                await MainActor.run {
                     self.locationSettingAlert = true
                     self.isSelectedCurrentLocationBtn = false
                 }
-            case .authorizedWhenInUse, .authorizedAlways:
-                locationManager.startUpdatingLocation()
-            @unknown default:
-                print("오류 발생")
-            }
-        }
-        
-        //MARK: - 사용자의 권한상태가 변경될 때
-        func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-            guard allowAuthorization else {
-                print("권한 요청이 차단됨(아직 허용 안 됨)")
                 return
             }
             
-            checkDeviceLocation()
-            
-            let status = manager.authorizationStatus
-            if status == .denied || status == .restricted{
-                DispatchQueue.main.async {
-                    self.isActualLocation = false
-                }
+            self.checkCurrentLocation()
+        }
+    }
+    
+    //MARK: - 현재 사용자의 위치 권한 상태 확인
+    func checkCurrentLocation(){
+        let status = locationManager.authorizationStatus
+        
+        switch status{
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .restricted, .denied:
+            DispatchQueue.main.async {
+                self.locationSettingAlert = true
+                self.isSelectedCurrentLocationBtn = false
             }
+        case .authorizedWhenInUse, .authorizedAlways:
+            locationManager.startUpdatingLocation()
+        @unknown default:
+            print("오류 발생")
+        }
+    }
+    
+    //MARK: - 사용자의 권한상태가 변경될 때
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        guard allowAuthorization else {
+            print("권한 요청이 차단됨(아직 허용 안 됨)")
+            return
         }
         
-        func startLocationFlow(){
-            if setCoordinate == nil{
-                viewState = .idle
-            }else{
-                viewState = .result
-            }
-            self.allowAuthorization = true
-            checkDeviceLocation()
-        }
+        checkDeviceLocation()
         
-        func locationManager(
-            _ manager: CLLocationManager,
-            didUpdateLocations locations: [CLLocation]
-        ) {
-            guard let location = locations.last else { return }
-            let coordinate = Coordinate(
-                latitude: location.coordinate.latitude,
-                longitude: location.coordinate.longitude
-            )
-            
-            self.isActualLocation = true
-            
-            currentCoordinate = SelectedCoordinate(
-                placeName: currentCoordinate.placeName,
-                address: currentCoordinate.address,
-                coordinate: coordinate
-            )
-            LocationCacheManager.shared.save(coordinate: Coordinate(latitude: coordinate.latitude, longitude: coordinate.longitude))
-            
-            DispatchQueue.main.async{
-                self.fetchReverseGeocoding(
-                    longitude: String(coordinate.longitude),
-                    latitude: String(coordinate.latitude)
-                )
-            }
-            
-            locationManager.stopUpdatingLocation()
-        }
-        
-        //MARK: - 사용자의 위치를 성공적으로 가지고 오지 못한 경우
-        //ex) 사용자가 허용 안함 / 자녀 보호 기능
-        func locationManager(
-            _ manager: CLLocationManager,
-            didFailWithError error: any Error
-        ) {
-            print(error.localizedDescription)
+        let status = manager.authorizationStatus
+        if status == .denied || status == .restricted{
             DispatchQueue.main.async {
                 self.isActualLocation = false
             }
         }
-        
-        //MARK: - 검색 결과 자표로 위치 업데이트 함수
-        func updateCurrentCoordinate(placeName: String, address: String, _ y: String, _ x: String){
-            if let latitude = Double(y), let longitude = Double(x) {
-                selectedCoordinate = SelectedCoordinate(
-                    placeName: placeName,
-                    address: address,
-                    coordinate: Coordinate(latitude: latitude, longitude: longitude)
-                )
-                
-                setCoordinate = selectedCoordinate
-            }else{
-                print("좌표 변환 실페: latitude=\(y), longitude=\(x)")
+    }
+    
+    func startLocationFlow(){
+        if setCoordinate == nil{
+            viewState = .idle
+        }else{
+            viewState = .result
+        }
+        self.allowAuthorization = true
+        checkDeviceLocation()
+    }
+    
+    func locationManager(
+        _ manager: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
+        guard let location = locations.last else { return }
+    
+        let coordinate = Coordinate(
+            latitude: round((1000000 * location.coordinate.latitude)) / 1000000,
+            longitude: round((1000000 * location.coordinate.longitude)) / 1000000
+        )
+
+        self.isActualLocation = true
+        //얻은 좌표와 저장된 현재 위치 좌표가 같고, 이전 좌표의 해당하는 주소가 들어가 있다면 API 호출을 할 필요가 없다
+        if coordinate.latitude == currentCoordinate.coordinate.latitude &&
+            coordinate.longitude == currentCoordinate.coordinate.longitude &&
+            currentCoordinate.address.isEmpty == false{
+            if isSelectedCurrentLocationBtn{
+                setCoordinate = currentCoordinate
+                viewState = .result
             }
+            locationManager.stopUpdatingLocation()
+            return
+        }
+
+        currentCoordinate = SelectedCoordinate(
+            placeName: nil,
+            address: "",
+            coordinate: coordinate
+        )
+        LocationCacheManager.shared.save(coordinate: Coordinate(latitude: coordinate.latitude, longitude: coordinate.longitude))
+        
+        DispatchQueue.main.async{
+            self.fetchReverseGeocoding(
+                longitude: String(coordinate.longitude),
+                latitude: String(coordinate.latitude)
+            )
         }
         
-        //MARK: - NWPathMonitor
-        
-        func startMonitoring(){
-            monitor.pathUpdateHandler = { path in
-                if path.status == .satisfied{
-                    DispatchQueue.main.async {
-                        self.currentStatus = .connected
-                        self.showNoSearchResultView = false
-                    }
-                }else{
-                    DispatchQueue.main.async {
-                        self.currentStatus = .disconnected
-                    }
-                }
-            }
-            monitor.start(queue: queue)
-        }
-        
-        func stopMonitoring(){
-            monitor.cancel()
+        locationManager.stopUpdatingLocation()
+    }
+    
+    //MARK: - 사용자의 위치를 성공적으로 가지고 오지 못한 경우
+    //ex) 사용자가 허용 안함 / 자녀 보호 기능
+    func locationManager(
+        _ manager: CLLocationManager,
+        didFailWithError error: any Error
+    ) {
+        print(error.localizedDescription)
+        DispatchQueue.main.async {
+            self.isActualLocation = false
         }
     }
+    
+    //MARK: - 검색 결과 자표로 위치 업데이트 함수
+    func updateCurrentCoordinate(placeName: String, address: String, _ y: String, _ x: String){
+        if let latitude = Double(y), let longitude = Double(x) {
+            selectedCoordinate = SelectedCoordinate(
+                placeName: placeName,
+                address: address,
+                coordinate: Coordinate(latitude: latitude, longitude: longitude)
+            )
+            
+            setCoordinate = selectedCoordinate
+        }else{
+            print("좌표 변환 실페: latitude=\(y), longitude=\(x)")
+        }
+    }
+    
+    //MARK: - NWPathMonitor
+    
+    func startMonitoring(){
+        monitor.pathUpdateHandler = { path in
+            if path.status == .satisfied{
+                DispatchQueue.main.async {
+                    self.currentStatus = .connected
+                    self.showNoSearchResultView = false
+                }
+            }else{
+                DispatchQueue.main.async {
+                    self.currentStatus = .disconnected
+                }
+            }
+        }
+        monitor.start(queue: queue)
+    }
+    
+    func stopMonitoring(){
+        monitor.cancel()
+    }
+}
