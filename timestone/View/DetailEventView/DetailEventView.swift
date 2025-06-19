@@ -8,18 +8,26 @@
 import SwiftUI
 
 struct DetailEventView: View {
+    @EnvironmentObject var eventVM: EventViewModel
+    
+    let dateFormatManager = DateFormatManager.shared
+    
     //    @Environment(\.openURL) private var openURL
     @State var draw: Bool = false
+    
+    var event: Event
+    var eventDate: Date
+    
     var body: some View {
         VStack{
-            Text("2024년")
+            Text(dateFormatManager.yearFormat(date: eventDate))
                 .font(.caption)
                 .foregroundStyle(.neutral70)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 5)
             
             HStack{
-                Text("12월 16일 화요일")
+                Text(dateFormatManager.dailyViewTitleFormat(date: eventDate))
                     .font(.captionLight)
                     .foregroundStyle(.neutral60)
                 
@@ -36,13 +44,13 @@ struct DetailEventView: View {
             
             // TODO: ViewBuilder로 빼면 효과적일 것 같음, 혹은 컴포넌트 뷰 생성
             VStack(alignment: .leading){
-                Text("회의를 합시다")
+                Text(event.title ?? "title is nil.")
                     .font(.subTitleBold)
                     .foregroundStyle(.white)
                     .padding(.bottom, 5)
                 
                 HStack{
-                    Text("오후 1:00 ~ 오후 2:00")
+                    Text("\(eventVM.getTimeToString(textDate: event.startTime)) ~ \(eventVM.getTimeToString(textDate: event.endTime))")
                         .font(.subBodyRegular)
                         .foregroundStyle(.neutral60)
                     
@@ -58,7 +66,7 @@ struct DetailEventView: View {
                     .foregroundStyle(.neutral60)
                     .padding(.bottom, 5)
                 
-                Text("오늘도 뚠뚠 즐거운 뚠뚠 회의를 뚠뚠 합시다 뚠뚠")
+                Text(event.notes ?? "notes is nil.")
                     .font(.subBodyRegular)
                     .foregroundStyle(.white)
                     .padding(.bottom, 20)
@@ -68,7 +76,7 @@ struct DetailEventView: View {
                     .foregroundStyle(.neutral60)
                     .padding(.bottom, 5)
                 
-                Link("www.naver.com", destination: URL(string: "www.naver.com")!)
+                Link(event.url?.absoluteString ?? "URL is nil.", destination: event.url ?? URL(string: "www.naver.com")!)
                     .font(.subBodyRegular)
                     .padding(.bottom, 20)
                 
@@ -77,8 +85,8 @@ struct DetailEventView: View {
                     .foregroundStyle(.neutral60)
                     .padding(.bottom, 5)
                 
-                KakaoMapView(draw: $draw)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                KakaoMapView(draw: $draw)
+//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 Text("사진")
                     .font(.subBodyRegular)
@@ -109,6 +117,6 @@ struct DetailEventView: View {
     }
 }
 
-#Preview {
-    DetailEventView()
-}
+//#Preview {
+//    DetailEventView()
+//}
