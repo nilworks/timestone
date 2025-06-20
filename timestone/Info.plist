@@ -2,36 +2,33 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>HolidayKey</key>
-    <string>$(HOLIDAY_KEY)</string>
-    <key>KAKAO_APP_KEY</key>
-    <string>$(KAKAO_APP_KEY)</string>
-    <key>KAKAO_LOCAL_API_KEY</key>
-    <string>$(KAKAO_LOCAL_API_KEY)</string>
-
-    <key>UIAppFonts</key>
-    <array>
-        <string>Pretendard-Bold.ttf</string>
-        <string>Pretendard-Medium.ttf</string>
-        <string>Pretendard-Regular.ttf</string>
-        <string>Pretendard-Light.ttf</string>
-    </array>
-
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSExceptionDomains</key>
-        <dict>
-            <key>apis.data.go.kr</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                <true/>
-                <key>NSExceptionRequiresForwardSecrecy</key>
-                <false/>
-            </dict>
-        </dict>
-    </dict>
-
+	<key>HolidayKey</key>
+	<string>$(HOLIDAY_KEY)</string>
+	<key>KAKAO_APP_KEY</key>
+	<string>$(KAKAO_APP_KEY)</string>
+	<key>KAKAO_LOCAL_API_KEY</key>
+	<string>$(KAKAO_LOCAL_API_KEY)</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>apis.data.go.kr</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Pretendard-Bold.ttf</string>
+		<string>Pretendard-Medium.ttf</string>
+		<string>Pretendard-Regular.ttf</string>
+		<string>Pretendard-Light.ttf</string>
+	</array>
 </dict>
 </plist>

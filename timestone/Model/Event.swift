@@ -23,8 +23,8 @@ struct EventInfo {
         Event(
             title: "아침 요가",
             alarm: true,
-            startTime: "2025-04-02 06:30:00",
-            endTime: "2025-04-02 07:30:00",
+            startTime: "2025-04-12 06:30:00",
+            endTime: "2025-04-12 07:30:00",
             notes: "Start your day with some relaxing yoga.",
             url: URL(string: "https://yoga.com/morning-session"),
             location: "Yoga Center, 123 Wellness St.",
@@ -33,8 +33,8 @@ struct EventInfo {
         Event(
             title: "점심 요가",
             alarm: true,
-            startTime: "2025-04-02 12:30:00",
-            endTime: "2025-04-02 13:30:00",
+            startTime: "2025-04-15 12:30:00",
+            endTime: "2025-04-15 13:30:00",
             notes: "Midday yoga for relaxation.",
             url: URL(string: "https://yoga.com/lunch-session"),
             location: "Yoga Center, 123 Wellness St.",
