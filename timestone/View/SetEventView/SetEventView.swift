@@ -358,12 +358,7 @@ struct SetEventView: View {
                                             .onTapGesture {
                                                 showImagePicker = true
                                                 print("현재 저장된 이미지: \(imagePickerViewModel.selectedAssetIDs)")
-                                                checkPhotoLibraryPermission()
-                                            }
-                                            .fullScreenCover(isPresented: $showImagePicker) {
-//                                                MultiImagePicker(selectedImages: $imagePickerViewModel.selectedImages,
-//                                                                 selectedAssetIDs: $imagePickerViewModel.selectedAssetIDs)
-                                                ImagePickerView()
+                                                imagePickerViewModel.checkPHotoLibraryPermission()
                                             }
                                         }
                                         
@@ -417,44 +412,15 @@ struct SetEventView: View {
                     .environmentObject(searchLocationViewModel)
             }
         }
+        .fullScreenCover(isPresented: $showImagePicker) {
+            ImagePickerView()
+        }
     }
     
     // 사진 정렬
     private func dynamicColumns() -> [GridItem] {
         let count = imagePickerViewModel.selectedImages.count
         return Array(repeating: GridItem(.flexible(), spacing: 10), count: max(count, 1))
-    }
-    
-    // 사진 접근 권한 허용 팝업
-    func checkPhotoLibraryPermission() {
-        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-        
-        switch status {
-        case .notDetermined:
-            // 권한 요청
-            PHPhotoLibrary.requestAuthorization(for: .readWrite) { newStatus in
-                DispatchQueue.main.async {
-                    if newStatus == .authorized || newStatus == .limited {
-                        print("사진 접근 권한 허용됨")
-                        self.showImagePicker = true // 권한 허용 시 시트를 표시
-                    } else {
-                        print("사진 접근 권한 거부됨")
-                    }
-                }
-            }
-        case .authorized, .limited:
-            // 이미 권한 허용됨
-            print("사진 접근 권한이 이미 허용됨")
-            self.showImagePicker = true // 권한이 이미 허용된 경우 시트를 표시
-        case .denied, .restricted:
-            // 권한 거부 또는 제한
-            print("사진 접근 권한이 거부됨 - 설정에서 변경 필요")
-            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
-            }
-        @unknown default:
-            print("알 수 없는 권한 상태")
-        }
     }
 }
 
