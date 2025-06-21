@@ -412,9 +412,23 @@ struct SetEventView: View {
                     .environmentObject(searchLocationViewModel)
             }
         }
-        .fullScreenCover(isPresented: $showImagePicker) {
+        .fullScreenCover(isPresented: $imagePickerViewModel.showAllAlbum, content: {
+            MultiImagePicker()
+        })
+        .fullScreenCover(isPresented: $imagePickerViewModel.showLimitedAlbum) {
             ImagePickerView()
         }
+        .alert(
+            "사진 접근 권한이 없습니다.",
+            isPresented: $imagePickerViewModel.showDeniedAlert) {
+                Button("설정으로 이동", role: .destructive){
+                    if let url = URL(string: UIApplication.openSettingsURLString){
+                        UIApplication.shared.open(url)
+                    }
+                }
+            } message:{
+                Text("이미지 선택을 위해 설정으로 이동하여 권한 설정을 해주세요")
+            }
     }
     
     // 사진 정렬
