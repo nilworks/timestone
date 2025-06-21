@@ -9,8 +9,9 @@ import SwiftUI
 
 struct ImagePickerView: View {
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var photoLibraryObserver = PhotoLibraryObserver()
+    @EnvironmentObject private var imagePickerViewModel: ImagePickerViewModel
 
-    private let dimension = UIScreen.main.bounds.width / 3 - 2
     private let gridItems = [GridItem(.flexible(), spacing: 2),
                              GridItem(.flexible(), spacing: 2),
                              GridItem(.flexible(), spacing: 2)]
@@ -62,14 +63,9 @@ struct ImagePickerView: View {
                         .foregroundStyle(.white)
                         
                         LazyVGrid(columns: gridItems, spacing: 2) {
-                            ForEach(0..<10, id: \.self) { asset in
-                                ZStack{
-                                    Rectangle()
-                                        .fill(Color.gray)
-                                    Text("\(asset)")
-                                        .foregroundStyle(.white)
-                                }
-                                .frame(width: dimension, height: dimension)
+                            ForEach(photoLibraryObserver.assets, id: \.localIdentifier) { asset in
+                                PhotoThumbnailView(asset: asset)
+                                    .environmentObject(imagePickerViewModel)
                             }//: LOOP
                         }//: LazyVGrid
                     }//: VSTACK

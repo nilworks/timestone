@@ -417,6 +417,7 @@ struct SetEventView: View {
         })
         .fullScreenCover(isPresented: $imagePickerViewModel.showLimitedAlbum) {
             ImagePickerView()
+                .environmentObject(imagePickerViewModel)
         }
         .alert(
             "사진 접근 권한이 없습니다.",
