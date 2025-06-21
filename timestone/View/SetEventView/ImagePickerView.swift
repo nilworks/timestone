@@ -11,7 +11,7 @@ struct ImagePickerView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var photoLibraryObserver = PhotoLibraryObserver()
     @EnvironmentObject private var imagePickerViewModel: ImagePickerViewModel
-
+    
     private let gridItems = [GridItem(.flexible(), spacing: 2),
                              GridItem(.flexible(), spacing: 2),
                              GridItem(.flexible(), spacing: 2)]
@@ -64,8 +64,20 @@ struct ImagePickerView: View {
                         
                         LazyVGrid(columns: gridItems, spacing: 2) {
                             ForEach(photoLibraryObserver.assets, id: \.localIdentifier) { asset in
-                                PhotoThumbnailView(asset: asset)
-                                    .environmentObject(imagePickerViewModel)
+                                Button {
+                                    imagePickerViewModel
+                                        .preselectAssetUpdate(asset: asset)
+                                } label: {
+                                    PhotoThumbnailView(asset: asset)
+                                        .opacity(
+                                            imagePickerViewModel.selectedAssetIDs
+                                                .contains(
+                                                    asset.localIdentifier
+                                                ) ? 0.5 : 1.0
+                                        )
+                                       .environmentObject(imagePickerViewModel)
+                                }
+
                             }//: LOOP
                         }//: LazyVGrid
                     }//: VSTACK
