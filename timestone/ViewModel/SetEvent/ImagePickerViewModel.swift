@@ -48,4 +48,22 @@ class ImagePickerViewModel: ObservableObject {
             print("새로운 권한 상태가 추가되었습니다.")
         }
     }
+    
+    //MARK: - assets를 이용하여 이미지 썸네일 나오게 하기
+    func loadThumbnail(asset: PHAsset, completion: @escaping (UIImage?) -> Void){
+        let imageManager = PHImageManager.default()
+        let options = PHImageRequestOptions()
+        options.isSynchronous = true
+        options.resizeMode = .fast
+        options.deliveryMode = .highQualityFormat
+        
+        imageManager
+            .requestImage(
+                for: asset,
+                targetSize: CGSize(width: 300, height: 300),
+                contentMode: .aspectFill,
+                options: options) { result, _ in
+                    completion(result)
+                }
+    }
 }
