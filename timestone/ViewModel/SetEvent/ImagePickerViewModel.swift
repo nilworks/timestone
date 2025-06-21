@@ -66,4 +66,18 @@ class ImagePickerViewModel: ObservableObject {
                     completion(result)
                 }
     }
+    
+    //MARK: - 선택한 asset이 이미 선택되어있는지 / 아닌지 확인하여 업데이트 해주는 함수
+    //viewmodel에서 currentIndex 처리할 필요없이 @escaping을 이용해서 View에서 처리할 수 있게하면 여러 뷰에서도 사용가능할 것 같다
+    func preselectAssetUpdate(asset: PHAsset){
+        //identifier 매개변수는 사용자가 선택한 asset의 identifier를 의미한다.
+        let identifier = asset.localIdentifier
+        
+        //만약에 이미 선택되어 있는거면 해제를 하기 위해서 다시 누른 것이므로 배열에서 제거
+        if let index = selectedAssetIDs.firstIndex(where: { $0 == identifier}){
+            selectedAssetIDs.remove(at: index)
+        }else{ //이미 선택되어 있는게 아니라면 선택됨으로 변경
+            selectedAssetIDs.append(identifier)
+        }
+    }
 }
