@@ -360,9 +360,10 @@ struct SetEventView: View {
                                                 print("현재 저장된 이미지: \(imagePickerViewModel.selectedAssetIDs)")
                                                 checkPhotoLibraryPermission()
                                             }
-                                            .sheet(isPresented: $showImagePicker) {
-                                                MultiImagePicker(selectedImages: $imagePickerViewModel.selectedImages,
-                                                                 selectedAssetIDs: $imagePickerViewModel.selectedAssetIDs)
+                                            .fullScreenCover(isPresented: $showImagePicker) {
+//                                                MultiImagePicker(selectedImages: $imagePickerViewModel.selectedImages,
+//                                                                 selectedAssetIDs: $imagePickerViewModel.selectedAssetIDs)
+                                                ImagePickerView()
                                             }
                                         }
                                         
