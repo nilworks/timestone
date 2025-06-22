@@ -75,9 +75,19 @@ struct ImagePickerView: View {
                                                     asset.localIdentifier
                                                 ) ? 0.5 : 1.0
                                         )
-                                       .environmentObject(imagePickerViewModel)
+                                        .overlay(
+                                            alignment: .bottomTrailing,
+                                            content: {
+                                                if imagePickerViewModel.selectedAssetIDs.contains(asset.localIdentifier){
+                                                    Image(systemName: "checkmark.circle")
+                                                        .foregroundStyle(.white)
+                                                        .background(.blue)
+                                                        .clipShape(Circle())
+                                                        .padding(5)
+                                                }
+                                            })
+                                        .environmentObject(imagePickerViewModel)
                                 }
-
                             }//: LOOP
                         }//: LazyVGrid
                     }//: VSTACK
