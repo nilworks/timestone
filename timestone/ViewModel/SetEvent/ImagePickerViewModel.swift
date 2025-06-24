@@ -92,4 +92,10 @@ class ImagePickerViewModel: ObservableObject {
         
             PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: presentedVC)
     }
+    
+    //MARK: - 사진 편집기를 열고 x버튼을 눌렀을 떄
+    func resetImagePicker(){
+        self.selectedAssets.removeAll()
+        self.selectedIdentifiers.removeAll()
+    }
 }

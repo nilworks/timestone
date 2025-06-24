@@ -99,6 +99,7 @@ struct ImagePickerView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
+                        imagePickerViewModel.resetImagePicker()
                         dismiss()
                     } label: {
                         Image(systemName: "xmark")
