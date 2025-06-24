@@ -364,7 +364,8 @@ struct SetEventView: View {
                                         HStack {
                                             LazyVGrid(columns: dynamicColumns(), spacing: 10) {
                                                 ForEach(imagePickerViewModel.selectedAssets, id: \.self) { asset in
-                                                    PhotoThumbnailView(asset: asset)
+                                                    PhotoThumbnailView(asset: asset, dimension: 100)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 4))
                                                         .environmentObject(imagePickerViewModel)
                                                 }
                                             }

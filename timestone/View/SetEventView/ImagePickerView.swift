@@ -16,6 +16,8 @@ struct ImagePickerView: View {
                              GridItem(.flexible(), spacing: 2),
                              GridItem(.flexible(), spacing: 2)]
     
+    private let dimension = UIScreen.main.bounds.width / 3 - 2
+    
     var body: some View {
         NavigationView{
             NavigationStack{
@@ -68,7 +70,7 @@ struct ImagePickerView: View {
                                     imagePickerViewModel
                                         .preselectAssetUpdate(asset: asset)
                                 } label: {
-                                    PhotoThumbnailView(asset: asset)
+                                    PhotoThumbnailView(asset: asset, dimension: dimension)
                                         .opacity(
                                             imagePickerViewModel.selectedIdentifiers
                                                 .contains(

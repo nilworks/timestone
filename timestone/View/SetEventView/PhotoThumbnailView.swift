@@ -10,11 +10,10 @@ import PhotosUI
 
 struct PhotoThumbnailView: View {
     let asset: PHAsset
+    let dimension: CGFloat
     
     @State private var image: UIImage? = nil
     @EnvironmentObject private var imagePickerViewModel: ImagePickerViewModel
-    
-    private let dimension = UIScreen.main.bounds.width / 3 - 2
     
     var body: some View {
         if let image = image{
