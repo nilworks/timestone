@@ -365,12 +365,9 @@ struct SetEventView: View {
                                         // 추가된 이미지
                                         HStack {
                                             LazyVGrid(columns: dynamicColumns(), spacing: 10) {
-                                                ForEach(imagePickerViewModel.selectedImages, id: \.self) { image in
-                                                    Image(uiImage: image)
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: 100, height: 100)
-                                                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                                                ForEach(imagePickerViewModel.selectedImages, id: \.self) { asset in
+                                                    PhotoThumbnailView(asset: asset)
+                                                        .environmentObject(imagePickerViewModel)
                                                 }
                                             }
                                         }
