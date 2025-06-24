@@ -43,8 +43,6 @@ struct SetEventView: View {
     
     @State var addLocation: String = ""
     
-    @State private var selectedImages: [UIImage] = []
-    @State private var selectedAssetIDs: [String] = []
     @State private var showImagePicker = false
     
     @State private var selectedButtonPosition: CGPoint = .zero
@@ -348,7 +346,7 @@ struct SetEventView: View {
                                                 Image(systemName: "plus")
                                                     .foregroundStyle(.white)
                                                     .padding(.bottom, 2)
-                                                Text("\(imagePickerViewModel.selectedImages.count)/10")
+                                                Text("\(imagePickerViewModel.selectedAssets.count)/10")
                                                     .foregroundStyle(.white)
                                                     .font(.subCaptionLight)
                                             }
@@ -357,7 +355,7 @@ struct SetEventView: View {
                                             .cornerRadius(4)
                                             .onTapGesture {
                                                 showImagePicker = true
-                                                print("현재 저장된 이미지: \(imagePickerViewModel.selectedAssetIDs)")
+                                                print("현재 저장된 이미지: \(imagePickerViewModel.selectedIdentifiers)")
                                                 imagePickerViewModel.checkPHotoLibraryPermission()
                                             }
                                         }
@@ -365,7 +363,7 @@ struct SetEventView: View {
                                         // 추가된 이미지
                                         HStack {
                                             LazyVGrid(columns: dynamicColumns(), spacing: 10) {
-                                                ForEach(imagePickerViewModel.selectedImages, id: \.self) { asset in
+                                                ForEach(imagePickerViewModel.selectedAssets, id: \.self) { asset in
                                                     PhotoThumbnailView(asset: asset)
                                                         .environmentObject(imagePickerViewModel)
                                                 }
@@ -431,7 +429,7 @@ struct SetEventView: View {
     
     // 사진 정렬
     private func dynamicColumns() -> [GridItem] {
-        let count = imagePickerViewModel.selectedImages.count
+        let count = imagePickerViewModel.selectedAssets.count
         return Array(repeating: GridItem(.flexible(), spacing: 10), count: max(count, 1))
     }
 }

@@ -70,7 +70,7 @@ struct ImagePickerView: View {
                                 } label: {
                                     PhotoThumbnailView(asset: asset)
                                         .opacity(
-                                            imagePickerViewModel.selectedAssetIDs
+                                            imagePickerViewModel.selectedIdentifiers
                                                 .contains(
                                                     asset.localIdentifier
                                                 ) ? 0.5 : 1.0
@@ -78,7 +78,7 @@ struct ImagePickerView: View {
                                         .overlay(
                                             alignment: .bottomTrailing,
                                             content: {
-                                                if imagePickerViewModel.selectedAssetIDs.contains(asset.localIdentifier){
+                                                if imagePickerViewModel.selectedIdentifiers.contains(asset.localIdentifier){
                                                     Image(systemName: "checkmark.circle")
                                                         .foregroundStyle(.white)
                                                         .background(.blue)
