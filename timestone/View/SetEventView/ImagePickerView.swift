@@ -12,8 +12,6 @@ struct ImagePickerView: View {
     @StateObject private var photoLibraryObserver = PhotoLibraryObserver()
     @EnvironmentObject private var imagePickerViewModel: ImagePickerViewModel
     
-    @State private var showMultiImagePicker: Bool = false
-    
     private let gridItems = [GridItem(.flexible(), spacing: 2),
                              GridItem(.flexible(), spacing: 2),
                              GridItem(.flexible(), spacing: 2)]
@@ -25,7 +23,7 @@ struct ImagePickerView: View {
                     VStack(spacing: 0) {
                         //더 많은 사진 선택으로 이동
                         Button {
-                            self.showMultiImagePicker = true
+                            imagePickerViewModel.presentLimitedImagePicker()
                         } label: {
                             HStack{
                                 Image(systemName: "camera")
@@ -118,9 +116,6 @@ struct ImagePickerView: View {
                 }
             }//: TOOLBAR
         }//: NAVIGATIONVIEW
-        .sheet(isPresented: $showMultiImagePicker) {
-            MultiImagePicker()
-        }
     }
 }
 

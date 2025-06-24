@@ -80,4 +80,14 @@ class ImagePickerViewModel: ObservableObject {
             selectedAssetIDs.append(identifier)
         }
     }
+    
+    //MARK: - 제한된 접근에 사용할 이미지 추가 및 삭제하는 편집기 열기
+    func presentLimitedImagePicker(){
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first,
+              let rootViewController = window.rootViewController,
+              let presentedVC = rootViewController.presentedViewController else { return }
+        
+            PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: presentedVC)
+    }
 }
