@@ -111,7 +111,7 @@ struct ImagePickerView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        // TODO: 선택한 이미지 목록에 저장하기
+                        dismiss()
                     } label: {
                         Text("완료")
                             .foregroundStyle(.white)
