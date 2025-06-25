@@ -13,7 +13,7 @@ class ImagePickerViewModel: ObservableObject {
     @Published var showLimitedAlbum: Bool = false //사진 권한이 제한된 접근 변수
     @Published var showDeniedAlert: Bool = false //사진 권한이 거부일 때 alert 요철 변수
     @Published var selectedAssets: [PHAsset] = [] // 선택된 이미지를 저장하는 배열
-    @Published var selectedIdentifiers: Set<String> = [] //선택된 이미지들의 Identifier를 저장하는 배열
+    @Published var selectedIdentifiers: [String] = [] //선택된 이미지들의 Identifier를 저장하는 배열
     
     //MARK: - 권한 요청 함수
     func checkPHotoLibraryPermission(){
@@ -74,12 +74,12 @@ class ImagePickerViewModel: ObservableObject {
         let identifier = asset.localIdentifier
         
         //만약에 이미 선택되어 있는거면 해제를 하기 위해서 다시 누른 것이므로 배열에서 제거
-        if let index = selectedAssets.firstIndex(where: { $0.localIdentifier == identifier}){
+        if let index = selectedIdentifiers.firstIndex( where: { $0 == identifier }){
             selectedAssets.remove(at: index)
-            selectedIdentifiers.remove(identifier)
+            selectedIdentifiers.remove(at: index)
         }else{ //이미 선택되어 있는게 아니라면 선택됨으로 변경
             selectedAssets.append(asset)
-            selectedIdentifiers.insert(identifier)
+            selectedIdentifiers.append(identifier)
         }
     }
     

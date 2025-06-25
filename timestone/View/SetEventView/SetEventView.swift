@@ -408,8 +408,13 @@ struct SetEventView: View {
                     .environmentObject(searchLocationViewModel)
             }
         }
-        .fullScreenCover(isPresented: $imagePickerViewModel.showAllAlbum, content: {
-            MultiImagePicker()
+        .fullScreenCover(
+isPresented: $imagePickerViewModel.showAllAlbum,
+content: {
+    MultiImagePicker(
+        selectedIdentifiers: $imagePickerViewModel.selectedIdentifiers,
+        selectedAssets: $imagePickerViewModel.selectedAssets
+    )
         })
         .fullScreenCover(isPresented: $imagePickerViewModel.showLimitedAlbum) {
             ImagePickerView()
