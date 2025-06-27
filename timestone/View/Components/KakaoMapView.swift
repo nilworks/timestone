@@ -14,6 +14,8 @@ struct KakaoMapView: UIViewRepresentable {
     @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 선택한 위치
     @Binding var isActualCurrentLocation: Bool
     @Binding var setCoordinate: SelectedCoordinate? //사용자가 저장할 위치
+    @Binding var snapshot: UIImage?
+    @Binding var showSnapshot: Bool
     
     func makeUIView(context: Self.Context) -> KMViewContainer {
         //need to correct view size
@@ -44,6 +46,13 @@ struct KakaoMapView: UIViewRepresentable {
                         current: currentCoordinate.coordinate,
                         selected: selectedCoordinate?.coordinate,
                         showCurrent: isActualCurrentLocation)
+                
+                if showSnapshot{
+                    context.coordinator.captureSnapshot()
+                    DispatchQueue.main.async {
+                        showSnapshot = false
+                    }
+                }
             }
         }
         else {
@@ -59,7 +68,8 @@ struct KakaoMapView: UIViewRepresentable {
             coordinate: $currentCoordinate,
             showCurrent: $isActualCurrentLocation,
             selectedCoordinate: $selectedCoordinate,
-            setCoordinate: $setCoordinate
+            setCoordinate: $setCoordinate,
+            snapshot: $snapshot
         )
     }
     
@@ -72,13 +82,20 @@ struct KakaoMapView: UIViewRepresentable {
     }
     
     class KakaoMapCoordinator: NSObject, MapControllerDelegate, KakaoMapEventDelegate {
-        init(coordinate: Binding<SelectedCoordinate>, showCurrent: Binding<Bool>, selectedCoordinate: Binding<SelectedCoordinate?>, setCoordinate: Binding<SelectedCoordinate?>) {
+        init(
+            coordinate: Binding<SelectedCoordinate>,
+            showCurrent: Binding<Bool>,
+            selectedCoordinate: Binding<SelectedCoordinate?>,
+            setCoordinate: Binding<SelectedCoordinate?>,
+            snapshot: Binding<UIImage?>
+        ) {
             first = true
             auth = false
             self._currentCoordinate = coordinate
             self._showCurrent = showCurrent
             self._selectedCoordinate = selectedCoordinate
             self._setCoordinate = setCoordinate
+            self._snapshot = snapshot
             super.init()
         }
         
@@ -87,7 +104,7 @@ struct KakaoMapView: UIViewRepresentable {
             controller = KMController(viewContainer: view)
             controller?.delegate = self
         }
-
+        
         func addViews() {
             let defaultPosition: MapPoint = MapPoint(
                 longitude: currentCoordinate.coordinate.longitude,
@@ -128,11 +145,11 @@ struct KakaoMapView: UIViewRepresentable {
                 mapView: mapView
             )
             
-//            mapView.moveCamera(cameraUpdate)
+            //            mapView.moveCamera(cameraUpdate)
             let options = CameraAnimationOptions(
                 autoElevation: false,
                 consecutive: false,
-                durationInMillis: 500
+                durationInMillis: 300
             )
             mapView.animateCamera(cameraUpdate: cameraUpdate, options: options)
         }
@@ -208,6 +225,21 @@ struct KakaoMapView: UIViewRepresentable {
                 PerLevelPoiStyle(iconStyle: selectedIcon)
             ])
             manager.addPoiStyle(selectedStyle)
+            
+            let setSymbol = UIImage(
+                systemName: "mappin.circle.fill",
+                withConfiguration: config
+            )?.withTintColor(.red, renderingMode: .alwaysOriginal)
+            
+            //선택된 위치 스타일
+            let setIcon = PoiIconStyle(
+                symbol: setSymbol,
+                anchorPoint: CGPoint(x: 0.5, y: 1.0)
+            )
+            let setStyle = PoiStyle(styleID: "setStyle", styles: [
+                PerLevelPoiStyle(iconStyle: setIcon)
+            ])
+            manager.addPoiStyle(setStyle)
         }
         
         // 2. 업데이트 시에도 레이어 준비 상태 체크
@@ -269,6 +301,55 @@ struct KakaoMapView: UIViewRepresentable {
             }
         }
         
+        //MARK: - 카카오맵을 스냅샷 하는 코드
+        func captureSnapshot() {
+            guard let view = container,
+                  let mapView = controller?.getView("mapview") as? KakaoMap,
+                  let setCoordinate = setCoordinate?.coordinate else { return }
+            
+            let manager = mapView.getLabelManager()
+            guard let layer = manager.getLabelLayer(layerID: "PoiLayer") else { return }
+            
+            currentPoi?.hide()
+            selectedPoi?.hide()
+            
+            let setPoint = MapPoint(
+                longitude: setCoordinate.longitude,
+                latitude: setCoordinate.latitude
+            )
+            
+            let setOption = PoiOptions(
+                styleID: "setStyle",
+                poiID: "setPoiID"
+            )
+            setOption.rank = 101
+            
+            if setPoi == nil{
+                let poi = layer.addPoi(option: setOption, at: setPoint)
+                setPoi = poi
+            }
+            
+            setPoi?.show()
+            
+            self.updateCamera(to: setCoordinate)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let renderer = UIGraphicsImageRenderer(bounds: view.bounds)
+                let image = renderer.image { ctx in
+                    view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
+                }
+                self.snapshot = image
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    layer.removePoi(poiID: "setPoiID")
+                    self.setPoi = nil
+                    
+                    self.currentPoi?.show()
+                    self.selectedPoi?.show()
+                }
+            }
+        }
+        
         //속성 추가
         var controller: KMController?
         var container: KMViewContainer?
@@ -276,9 +357,11 @@ struct KakaoMapView: UIViewRepresentable {
         var auth: Bool
         var currentPoi: Poi?
         var selectedPoi: Poi?
+        var setPoi: Poi?
         @Binding var currentCoordinate: SelectedCoordinate //사용자의 현재 위치
         @Binding var selectedCoordinate: SelectedCoordinate? //사용자가 검색으로 선택한 위치
         @Binding var setCoordinate: SelectedCoordinate? //사용자가 저장할 위치
         @Binding var showCurrent: Bool
+        @Binding var snapshot: UIImage?
     }
 }

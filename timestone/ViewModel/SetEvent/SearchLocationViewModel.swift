@@ -8,6 +8,7 @@
 import Foundation
 import CoreLocation
 import Network
+import UIKit
 
 class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate{
     enum ViewState {
@@ -35,6 +36,8 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var showErrorAlert: Bool = false
     @Published var showErrorType: NetworkErrorType? = nil
     @Published var showError: NetworkError? = nil
+    @Published var kakaomapSnapshot: UIImage?
+    @Published var showKakaomapSnapshot: Bool = false
     
     //MARK: - NetworkMonitor
     private let monitor = NWPathMonitor()

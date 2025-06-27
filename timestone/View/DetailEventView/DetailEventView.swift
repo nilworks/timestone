@@ -14,11 +14,6 @@ struct DetailEventView: View {
     
     //    @Environment(\.openURL) private var openURL
     @State var draw: Bool = false
-    @State private var currentCoordinate: SelectedCoordinate = SelectedCoordinate(
-        placeName: nil,
-        address: "",
-        coordinate: Coordinate(latitude: 37.59929, longitude: 127.034612)
-    )
     
     var event: Event
     var eventDate: Date
@@ -91,17 +86,11 @@ struct DetailEventView: View {
                         .foregroundStyle(.neutral60)
                         .padding(.bottom, 5)
                     
-                    KakaoMapView(
-                        draw: $draw,
-                        currentCoordinate: $currentCoordinate,
-                        selectedCoordinate: .constant(nil),
-                        isActualCurrentLocation: .constant(true),
-                        setCoordinate: .constant(nil)
-                    )
+                    Rectangle()
+                        .background(Color.gray)
                     .frame(maxWidth: .infinity, minHeight: 125  , maxHeight: .infinity)
                     .overlay {
-                        Color.clear
-                            .contentShape(Rectangle())
+                        Text("장소가 존재하지 않습니다.")
                     }
                     
                     Text("사진")

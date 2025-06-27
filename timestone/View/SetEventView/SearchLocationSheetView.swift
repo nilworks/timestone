@@ -20,7 +20,11 @@ struct SearchLocationSheetView: View {
             KakaoMapView(
                 draw: $kakaoMapDraw,
                 currentCoordinate: $viewModel.currentCoordinate,
-                selectedCoordinate: $viewModel.selectedCoordinate, isActualCurrentLocation: $viewModel.isActualLocation, setCoordinate: $viewModel.setCoordinate
+                selectedCoordinate: $viewModel.selectedCoordinate,
+                isActualCurrentLocation: $viewModel.isActualLocation,
+                setCoordinate: $viewModel.setCoordinate,
+                snapshot: $viewModel.kakaomapSnapshot,
+                showSnapshot: $viewModel.showKakaomapSnapshot
             )
             
             VStack(alignment: .leading, spacing: 0){
@@ -60,6 +64,7 @@ struct SearchLocationSheetView: View {
                             .modifier(SearchBarStyle())
                         
                         Button("설정"){
+                            viewModel.showKakaomapSnapshot = true
                             print("위치 저장")
                         }
                         .foregroundStyle(.white)
@@ -67,6 +72,11 @@ struct SearchLocationSheetView: View {
                         .modifier(SearchBarStyle())
                     }//: VSTACK
                     .padding(.bottom, 15)
+                    .onChange(of: viewModel.kakaomapSnapshot) { newValue in
+                        if newValue != nil{
+                            dismiss()
+                        }
+                    }
                 }
             }//: VSTACK
             .overlay(alignment: .bottom) {

@@ -287,29 +287,40 @@ struct SetEventView: View {
                         }
                         
                         // 지도 콘텐츠
-
-                            Button(action: {
-                                self.showSearchLocation.toggle()
-                            }) {
-                                HStack {
-                                    Text("위치 추가")
-                                        .font(.subBodyRegular)
-                                        .foregroundStyle(.neutral60)
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: "chevron.right")
-                                        .foregroundStyle(.white)
-                                }
-                                .padding([.leading, .trailing], 10)
+                        Button(action: {
+                            self.showSearchLocation.toggle()
+                        }) {
+                            HStack {
+                                Text(searchLocationViewModel.setCoordinate?.address ?? "위치 추가")
+                                    .font(.subBodyRegular)
+                                    .foregroundStyle(
+                                        searchLocationViewModel.setCoordinate?.address != nil ? .white : Color.neutral60)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .foregroundStyle(.white)
                             }
-                            .frame(height: 40)
-                            .background(.neutral80)
-                            .cornerRadius(4)
-
+                            .padding([.leading, .trailing], 10)
+                        }
+                        .frame(height: 40)
+                        .background(.neutral80)
+                        .cornerRadius(4)
+                        
                     }
                     .padding([.leading, .trailing], 20)
                     .padding(.top, 15)
+                    
+                    if let snapshot = searchLocationViewModel.kakaomapSnapshot{
+                        Image(uiImage: snapshot)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 200)
+                            .clipped()
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .allowsHitTesting(false)
+                            .padding([.leading, .trailing], 20)
+                    }
                     
                     Divider()
                         .frame(height: 0.4) // 높이 값을 사용해서 Divider 두께 조절
@@ -382,7 +393,6 @@ struct SetEventView: View {
                     } // 사진
                     .padding([.leading, .trailing], 20)
                     .padding(.top, 15)
-                    
                 } // VStack
                 .padding(.bottom, 130)
             } // ScrollView
@@ -409,13 +419,13 @@ struct SetEventView: View {
             }
         }
         .fullScreenCover(
-isPresented: $imagePickerViewModel.showAllAlbum,
-content: {
-    MultiImagePicker(
-        selectedIdentifiers: $imagePickerViewModel.selectedIdentifiers,
-        selectedAssets: $imagePickerViewModel.selectedAssets
-    )
-        })
+            isPresented: $imagePickerViewModel.showAllAlbum,
+            content: {
+                MultiImagePicker(
+                    selectedIdentifiers: $imagePickerViewModel.selectedIdentifiers,
+                    selectedAssets: $imagePickerViewModel.selectedAssets
+                )
+            })
         .fullScreenCover(isPresented: $imagePickerViewModel.showLimitedAlbum) {
             ImagePickerView()
                 .environmentObject(imagePickerViewModel)
