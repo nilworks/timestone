@@ -208,6 +208,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
             coordinate.longitude == currentCoordinate.coordinate.longitude &&
             currentCoordinate.address.isEmpty == false{
             if isSelectedCurrentLocationBtn{
+                isSelectedCurrentLocationBtn = false
                 setCoordinate = currentCoordinate
                 viewState = .result
             }
