@@ -65,6 +65,7 @@ struct SearchLocationSheetView: View {
                         
                         Button("설정"){
                             viewModel.showKakaomapSnapshot = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {dismiss()}
                             print("위치 저장")
                         }
                         .foregroundStyle(.white)
@@ -72,11 +73,6 @@ struct SearchLocationSheetView: View {
                         .modifier(SearchBarStyle())
                     }//: VSTACK
                     .padding(.bottom, 15)
-                    .onChange(of: viewModel.kakaomapSnapshot) { newValue in
-                        if newValue != nil{
-                            dismiss()
-                        }
-                    }
                 }
             }//: VSTACK
             .overlay(alignment: .bottom) {

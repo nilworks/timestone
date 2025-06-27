@@ -8,8 +8,6 @@
 	<string>$(KAKAO_APP_KEY)</string>
 	<key>KAKAO_LOCAL_API_KEY</key>
 	<string>$(KAKAO_LOCAL_API_KEY)</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>&quot;timestone 앱에서 사진을 추가하기 위해 갤러리에 접근을 허용 하시겠습니까?&quot;</string>
 	<key>NSAppTransportSecurity</key>
 	<dict/>
 	<key>UIAppFonts</key>

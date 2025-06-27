@@ -39,13 +39,13 @@ struct KakaoMapView: UIViewRepresentable {
                 }
                 
                 context.coordinator
-                    .updateCamera(
-                        to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
-                context.coordinator
                     .updatePois(
                         current: currentCoordinate.coordinate,
                         selected: selectedCoordinate?.coordinate,
                         showCurrent: isActualCurrentLocation)
+                context.coordinator
+                    .updateCamera(
+                        to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
                 
                 if showSnapshot{
                     context.coordinator.captureSnapshot()
@@ -122,6 +122,11 @@ struct KakaoMapView: UIViewRepresentable {
             
             createLabelLayer()
             createPoiStyle()
+            updatePois(
+                current: currentCoordinate.coordinate,
+                selected: selectedCoordinate?.coordinate,
+                showCurrent: showCurrent
+            )
         }
         
         func containerDidResized(_ size: CGSize) {
@@ -329,9 +334,9 @@ struct KakaoMapView: UIViewRepresentable {
                 setPoi = poi
             }
             
-            setPoi?.show()
-            
             self.updateCamera(to: setCoordinate)
+            
+            setPoi?.show()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 let renderer = UIGraphicsImageRenderer(bounds: view.bounds)
@@ -340,13 +345,12 @@ struct KakaoMapView: UIViewRepresentable {
                 }
                 self.snapshot = image
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                     layer.removePoi(poiID: "setPoiID")
                     self.setPoi = nil
-                    
-                    self.currentPoi?.show()
-                    self.selectedPoi?.show()
                 }
+                self.currentPoi?.show()
+                self.selectedPoi?.show()
             }
         }
         
