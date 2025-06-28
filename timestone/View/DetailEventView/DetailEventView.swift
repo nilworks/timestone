@@ -12,8 +12,9 @@ struct DetailEventView: View {
     
     let dateFormatManager = DateFormatManager.shared
     
-    //    @Environment(\.openURL) private var openURL
+    @Environment(\.openURL) private var openURL
     @State var draw: Bool = false
+    @State private var tempCoordinate = Coordinate(latitude: 37.653234, longitude: 127.047778) //사용자가 저장한 좌표
     
     var event: Event
     var eventDate: Date
@@ -87,11 +88,16 @@ struct DetailEventView: View {
                         .padding(.bottom, 5)
                     
                     Rectangle()
-                        .background(Color.gray)
-                    .frame(maxWidth: .infinity, minHeight: 125  , maxHeight: .infinity)
-                    .overlay {
-                        Text("장소가 존재하지 않습니다.")
-                    }
+                        .fill(Color.gray)
+                        .frame(height: 125)
+                        .frame(maxWidth: .infinity)
+                        .overlay {
+                            Text("장소가 존재하지 않습니다.")
+                        }
+                        .onTapGesture {
+                            opdenKakaomapScheme()
+                        }
+                    
                     
                     Text("사진")
                         .font(.subBodyRegular)
@@ -116,12 +122,23 @@ struct DetailEventView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 20)
         .background(.black)
-            
+        
         .onAppear(perform: {
             self.draw = true
         }).onDisappear(perform: {
             self.draw = false
         })
+    }
+    
+    private func opdenKakaomapScheme(){
+        //카카오맵을 실행하고 지정된 좌표 중심으로 지도를 보여주고 마커를 표시합니다.
+        guard let kakaoMapURL = URL(string: "kakaomap://look?p=\(tempCoordinate.latitude),\(tempCoordinate.longitude)"),
+              let appStoreURL = URL(string: "https://apps.apple.com/kr/app/id304608425") else { return}
+        if UIApplication.shared.canOpenURL(kakaoMapURL){
+            openURL(kakaoMapURL)
+        }else{
+            openURL(appStoreURL)
+        }
     }
 }
 
