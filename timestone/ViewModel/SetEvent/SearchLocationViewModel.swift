@@ -205,8 +205,10 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
 
         self.isActualLocation = true
         //얻은 좌표와 저장된 현재 위치 좌표가 같고, 이전 좌표의 해당하는 주소가 들어가 있다면 API 호출을 할 필요가 없다
-        if coordinate.latitude == currentCoordinate.coordinate.latitude &&
-            coordinate.longitude == currentCoordinate.coordinate.longitude &&
+        let latitudeDiff = abs(coordinate.latitude - currentCoordinate.coordinate.latitude)
+        let longitudeDiff = abs(coordinate.longitude - currentCoordinate.coordinate.longitude)
+        if latitudeDiff < 0.0001 &&
+            longitudeDiff < 0.0001 &&
             currentCoordinate.address.isEmpty == false{
             if isSelectedCurrentLocationBtn{
                 isSelectedCurrentLocationBtn = false
