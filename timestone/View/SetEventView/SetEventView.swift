@@ -291,7 +291,9 @@ struct SetEventView: View {
                             self.showSearchLocation.toggle()
                         }) {
                             HStack {
-                                Text(searchLocationViewModel.setCoordinate?.address ?? "위치 추가")
+                                Text(
+                                    (searchLocationViewModel.setCoordinate?.address ?? "위치 추가") + (searchLocationViewModel.setCoordinate?.placeName != nil ? "(\(searchLocationViewModel.setCoordinate!.placeName!))" : "")
+                                )
                                     .font(.subBodyRegular)
                                     .foregroundStyle(
                                         searchLocationViewModel.setCoordinate?.address != nil ? .white : Color.neutral60)
