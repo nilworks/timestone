@@ -107,9 +107,9 @@ struct SearchLocationSheetView: View {
         .onAppear {
             viewModel.startMonitoring()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
-                viewModel.startLocationFlow()
-                kakaoMapDraw = true
+                viewModel.startLocationFlow()  
             }
+            kakaoMapDraw = true
         }
         .onDisappear(perform: {
             viewModel.stopMonitoring()
