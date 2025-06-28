@@ -14,6 +14,7 @@ struct SearchLocationSheetView: View {
     @State private var kakaoMapDraw: Bool = false
     @State private var showToast: Bool = false
     @Environment(\.dismiss) private var dismiss
+    @State private var setBtnState: Bool = false //위치 설정 버튼 동작이 완료될 때까지 비활성화 시키기 위한 위치 설정 버튼 상태 변수
     
     var body: some View {
         ZStack{
@@ -66,9 +67,14 @@ struct SearchLocationSheetView: View {
                         Button("설정"){
                             viewModel.showKakaomapSnapshot = true
                             viewModel.pickCoordinate = viewModel.setCoordinate
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {dismiss()}
+                            setBtnState = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                dismiss()
+                                setBtnState = false
+                            }
                             print("위치 저장")
                         }
+                        .disabled(setBtnState)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .modifier(SearchBarStyle())
