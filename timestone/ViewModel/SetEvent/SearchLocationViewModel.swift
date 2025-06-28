@@ -30,6 +30,7 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var selectedCoordinate: SelectedCoordinate? = nil//선택된(검색한) 위치 정보 -> 사용자가 검색한 장소의 poi를 보여주기 위한 용도
     @Published var isActualLocation: Bool = false //실제 현재 위치인지 검증하는 프로퍼티(캐시에 저장되어 있는 값을 가져온 경우는 false)
     @Published var setCoordinate: SelectedCoordinate? = nil
+    @Published var pickCoordinate: SelectedCoordinate? = nil
     var allowAuthorization: Bool = false
     @Published var isSelectedCurrentLocationBtn: Bool = false
     @Published var showNoSearchResultView: Bool = false

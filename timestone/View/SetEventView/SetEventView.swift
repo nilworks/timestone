@@ -292,7 +292,9 @@ struct SetEventView: View {
                         }) {
                             HStack {
                                 Text(
-                                    (searchLocationViewModel.setCoordinate?.address ?? "위치 추가") + (searchLocationViewModel.setCoordinate?.placeName != nil ? "(\(searchLocationViewModel.setCoordinate!.placeName!))" : "")
+                                    (searchLocationViewModel.pickCoordinate?.address ?? "위치 추가") + (
+                                        searchLocationViewModel.pickCoordinate?.placeName != nil ? "(\(searchLocationViewModel.pickCoordinate!.placeName!))" : ""
+                                    )
                                 )
                                     .font(.subBodyRegular)
                                     .foregroundStyle(

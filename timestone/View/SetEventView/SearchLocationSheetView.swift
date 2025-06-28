@@ -65,6 +65,7 @@ struct SearchLocationSheetView: View {
                         
                         Button("설정"){
                             viewModel.showKakaomapSnapshot = true
+                            viewModel.pickCoordinate = viewModel.setCoordinate
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {dismiss()}
                             print("위치 저장")
                         }
