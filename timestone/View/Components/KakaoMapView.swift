@@ -127,6 +127,8 @@ struct KakaoMapView: UIViewRepresentable {
                 selected: selectedCoordinate?.coordinate,
                 showCurrent: showCurrent
             )
+            updateCamera(to: setCoordinate?.coordinate ?? currentCoordinate.coordinate)
+
         }
         
         func containerDidResized(_ size: CGSize) {
