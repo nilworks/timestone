@@ -35,6 +35,8 @@ struct CalendarGrid: View {
                             let isToday: Bool = manager.basicDateString(date: Date()) == manager.basicDateString(date: prevDate)
                             CalendarCellView(showDailyView: $showDailyView, cellDate: prevDate, isSixRowMonth: isSixRowMonth, currentMonthDay: false, isToday: isToday)
                                 .frame(height: cellHeight)
+                                .id(prevDate)
+                            
                         }
                     }
                     
@@ -45,6 +47,7 @@ struct CalendarGrid: View {
                         
                         CalendarCellView(showDailyView: $showDailyView, cellDate: currentDate, isSixRowMonth: isSixRowMonth, currentMonthDay: true, isToday: isToday)
                             .frame(height: cellHeight)
+                            .id(currentDate)
                     }
                     
                     // 현재 달의 날짜들을 전부 채웠는데 cell이 35개(5행)보다 적은지 많은지 구분
@@ -58,6 +61,7 @@ struct CalendarGrid: View {
                         
                         CalendarCellView(showDailyView: $showDailyView, cellDate: nextDate, isSixRowMonth: isSixRowMonth, currentMonthDay: false, isToday: isToday)
                             .frame(height: cellHeight)
+                            .id(nextDate)
                     }
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
@@ -83,4 +87,3 @@ struct CalendarGrid: View {
         .environmentObject(HolidayViewModel())
         .environmentObject(EventViewModel())
 }
-

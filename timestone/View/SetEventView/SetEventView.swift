@@ -43,8 +43,6 @@ struct SetEventView: View {
     
     @State var addLocation: String = ""
     
-    @State private var selectedImages: [UIImage] = []
-    @State private var selectedAssetIDs: [String] = []
     @State private var showImagePicker = false
     
     @State private var selectedButtonPosition: CGPoint = .zero
@@ -289,29 +287,44 @@ struct SetEventView: View {
                         }
                         
                         // 지도 콘텐츠
-
-                            Button(action: {
-                                self.showSearchLocation.toggle()
-                            }) {
-                                HStack {
-                                    Text("위치 추가")
-                                        .font(.subBodyRegular)
-                                        .foregroundStyle(.neutral60)
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: "chevron.right")
-                                        .foregroundStyle(.white)
-                                }
-                                .padding([.leading, .trailing], 10)
+                        Button(action: {
+                            self.showSearchLocation.toggle()
+                        }) {
+                            HStack {
+                                Text(
+                                    (searchLocationViewModel.pickCoordinate?.address ?? "위치 추가") + (
+                                        searchLocationViewModel.pickCoordinate?.placeName != nil ? "(\(searchLocationViewModel.pickCoordinate!.placeName!))" : ""
+                                    )
+                                )
+                                    .font(.subBodyRegular)
+                                    .foregroundStyle(
+                                        searchLocationViewModel.setCoordinate?.address != nil ? .white : Color.neutral60)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .foregroundStyle(.white)
                             }
-                            .frame(height: 40)
-                            .background(.neutral80)
-                            .cornerRadius(4)
-
+                            .padding([.leading, .trailing], 10)
+                        }
+                        .frame(height: 40)
+                        .background(.neutral80)
+                        .cornerRadius(4)
+                        
                     }
                     .padding([.leading, .trailing], 20)
                     .padding(.top, 15)
+                    
+                    if let snapshot = searchLocationViewModel.kakaomapSnapshot{
+                        Image(uiImage: snapshot)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 200)
+                            .clipped()
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .allowsHitTesting(false)
+                            .padding([.leading, .trailing], 20)
+                    }
                     
                     Divider()
                         .frame(height: 0.4) // 높이 값을 사용해서 Divider 두께 조절
@@ -348,7 +361,7 @@ struct SetEventView: View {
                                                 Image(systemName: "plus")
                                                     .foregroundStyle(.white)
                                                     .padding(.bottom, 2)
-                                                Text("\(imagePickerViewModel.selectedImages.count)/10")
+                                                Text("\(imagePickerViewModel.selectedAssets.count)/10")
                                                     .foregroundStyle(.white)
                                                     .font(.subCaptionLight)
                                             }
@@ -357,24 +370,18 @@ struct SetEventView: View {
                                             .cornerRadius(4)
                                             .onTapGesture {
                                                 showImagePicker = true
-                                                print("현재 저장된 이미지: \(imagePickerViewModel.selectedAssetIDs)")
-                                                checkPhotoLibraryPermission()
-                                            }
-                                            .sheet(isPresented: $showImagePicker) {
-                                                MultiImagePicker(selectedImages: $imagePickerViewModel.selectedImages,
-                                                                 selectedAssetIDs: $imagePickerViewModel.selectedAssetIDs)
+                                                print("현재 저장된 이미지: \(imagePickerViewModel.selectedIdentifiers)")
+                                                imagePickerViewModel.checkPHotoLibraryPermission()
                                             }
                                         }
                                         
                                         // 추가된 이미지
                                         HStack {
                                             LazyVGrid(columns: dynamicColumns(), spacing: 10) {
-                                                ForEach(imagePickerViewModel.selectedImages, id: \.self) { image in
-                                                    Image(uiImage: image)
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: 100, height: 100)
+                                                ForEach(imagePickerViewModel.selectedAssets, id: \.self) { asset in
+                                                    PhotoThumbnailView(asset: asset, dimension: 100)
                                                         .clipShape(RoundedRectangle(cornerRadius: 4))
+                                                        .environmentObject(imagePickerViewModel)
                                                 }
                                             }
                                         }
@@ -390,7 +397,6 @@ struct SetEventView: View {
                     } // 사진
                     .padding([.leading, .trailing], 20)
                     .padding(.top, 15)
-                    
                 } // VStack
                 .padding(.bottom, 130)
             } // ScrollView
@@ -416,44 +422,35 @@ struct SetEventView: View {
                     .environmentObject(searchLocationViewModel)
             }
         }
+        .fullScreenCover(
+            isPresented: $imagePickerViewModel.showAllAlbum,
+            content: {
+                MultiImagePicker(
+                    selectedIdentifiers: $imagePickerViewModel.selectedIdentifiers,
+                    selectedAssets: $imagePickerViewModel.selectedAssets
+                )
+            })
+        .fullScreenCover(isPresented: $imagePickerViewModel.showLimitedAlbum) {
+            ImagePickerView()
+                .environmentObject(imagePickerViewModel)
+        }
+        .alert(
+            "사진 접근 권한이 없습니다.",
+            isPresented: $imagePickerViewModel.showDeniedAlert) {
+                Button("설정으로 이동", role: .destructive){
+                    if let url = URL(string: UIApplication.openSettingsURLString){
+                        UIApplication.shared.open(url)
+                    }
+                }
+            } message:{
+                Text("이미지 선택을 위해 설정으로 이동하여 권한 설정을 해주세요")
+            }
     }
     
     // 사진 정렬
     private func dynamicColumns() -> [GridItem] {
-        let count = imagePickerViewModel.selectedImages.count
+        let count = imagePickerViewModel.selectedAssets.count
         return Array(repeating: GridItem(.flexible(), spacing: 10), count: max(count, 1))
-    }
-    
-    // 사진 접근 권한 허용 팝업
-    func checkPhotoLibraryPermission() {
-        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-        
-        switch status {
-        case .notDetermined:
-            // 권한 요청
-            PHPhotoLibrary.requestAuthorization(for: .readWrite) { newStatus in
-                DispatchQueue.main.async {
-                    if newStatus == .authorized || newStatus == .limited {
-                        print("사진 접근 권한 허용됨")
-                        self.showImagePicker = true // 권한 허용 시 시트를 표시
-                    } else {
-                        print("사진 접근 권한 거부됨")
-                    }
-                }
-            }
-        case .authorized, .limited:
-            // 이미 권한 허용됨
-            print("사진 접근 권한이 이미 허용됨")
-            self.showImagePicker = true // 권한이 이미 허용된 경우 시트를 표시
-        case .denied, .restricted:
-            // 권한 거부 또는 제한
-            print("사진 접근 권한이 거부됨 - 설정에서 변경 필요")
-            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
-            }
-        @unknown default:
-            print("알 수 없는 권한 상태")
-        }
     }
 }
 

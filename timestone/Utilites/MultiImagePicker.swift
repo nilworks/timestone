@@ -10,8 +10,8 @@ import PhotosUI
 import Photos
 
 struct MultiImagePicker: UIViewControllerRepresentable {
-    @Binding var selectedImages: [UIImage] // 선택된 이미지 배열
-    @Binding var selectedAssetIDs: [String] // 선택된 이미지 ID 배열
+    @Binding var selectedIdentifiers: [String]
+    @Binding var selectedAssets: [PHAsset]
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
         let photoLibrary = PHPhotoLibrary.shared()
@@ -19,21 +19,18 @@ struct MultiImagePicker: UIViewControllerRepresentable {
 
         config.filter = .images // 이미지 필터링
         config.selectionLimit = 10 // 최대 선택 가능 이미지 수
-        
-        // 이전에 선택된 에셋 ID를 preselectedAssetIdentifiers에 설정
-        config.preselectedAssetIdentifiers = selectedAssetIDs
+        config.preselectedAssetIdentifiers = Array(selectedIdentifiers) //사용자가 선택한 이미지 체크 표시
         
         let picker = PHPickerViewController(configuration: config)
         picker.delegate = context.coordinator
-        
         return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {
     }
     
     func makeCoordinator() -> Coordinator {
         return Coordinator(self)
+    }
+    
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {
     }
     
     
@@ -44,44 +41,38 @@ struct MultiImagePicker: UIViewControllerRepresentable {
             self.parent = parent
         }
         
-        func fetchImage(for assetID: String, completion: @escaping (UIImage?) -> Void) {
-            let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [assetID], options: nil) // 에셋ID 사용해 사진앱에서 이미지 찾기
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            picker.dismiss(animated: true)
             
-            guard let asset = fetchResult.firstObject else { // 이미지 찾으면 가져오기
-                completion(nil) // 해당 ID의 이미지가 없을 경우 nil 반환
-                return
-            }
-
-            let imageManager = PHImageManager.default() // 이미지 가져오는 도구를 변수에 담아 사용할 준비하기
-            let options = PHImageRequestOptions()
-            options.isSynchronous = false // 비동기적으로 이미지 요청
-            
-            // 위에서 준비한 도구 사용해서 이미지를 양식에 맞게 불러오기
-            imageManager.requestImage(for: asset,
-                                      targetSize: CGSize(width: 500, height: 500),
-                                      contentMode: .aspectFit,
-                                      options: options) { image, _ in
-                completion(image)
-            }
+            updateSelectedAssets(results: results)
         }
         
-        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            parent.selectedImages.removeAll() // 선택된 이미지 초기화(미리보기 화면)
-            parent.selectedAssetIDs = results.compactMap { $0.assetIdentifier }
+        //MARK: - 사진 권한이 전체 허용일 때 선택한 사진을 저장하는 함수
+        func updateSelectedAssets(results: [PHPickerResult]){
+            let identifiers = results.compactMap(\.assetIdentifier)
             
-            for assetID in parent.selectedAssetIDs {
-                    fetchImage(for: assetID) { image in
-                        if let image = image {
-                            DispatchQueue.main.async {
-                                self.parent.selectedImages.append(image) // 선택된 이미지 배열에 추가
-                            }
-                        }
-                    }
+            //새로 선택된 항목들에 대한 처리
+            let newIdentifiers = identifiers.filter{ !parent.selectedIdentifiers.contains($0) }
+            parent.selectedIdentifiers.append(contentsOf: newIdentifiers)
+            
+            //선택 해제된 항목들에 대한 처리
+            let removedIdentifiers = parent.selectedIdentifiers.filter{ !identifiers.contains($0) }
+            for identifier in removedIdentifiers {
+                if let index = parent.selectedIdentifiers.firstIndex( of: identifier ){
+                    parent.selectedIdentifiers.remove(at: index)
                 }
-
-                print("Updated Asset IDs: \(parent.selectedAssetIDs)")
-                picker.dismiss(animated: true) // 선택 후 picker 닫기
             }
+            
+            let fetchResult = PHAsset.fetchAssets(
+                withLocalIdentifiers: parent.selectedIdentifiers,
+                options: nil
+            )
+            
+            let indexSet = IndexSet(0..<fetchResult.count)
+            let assets = fetchResult.objects(at: indexSet)
+            
+            parent.selectedAssets = assets
+        }
     }
 }
 

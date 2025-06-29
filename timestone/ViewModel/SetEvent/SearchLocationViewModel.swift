@@ -8,6 +8,7 @@
 import Foundation
 import CoreLocation
 import Network
+import UIKit
 
 class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate{
     enum ViewState {
@@ -29,12 +30,15 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
     @Published var selectedCoordinate: SelectedCoordinate? = nil//선택된(검색한) 위치 정보 -> 사용자가 검색한 장소의 poi를 보여주기 위한 용도
     @Published var isActualLocation: Bool = false //실제 현재 위치인지 검증하는 프로퍼티(캐시에 저장되어 있는 값을 가져온 경우는 false)
     @Published var setCoordinate: SelectedCoordinate? = nil
+    @Published var pickCoordinate: SelectedCoordinate? = nil
     var allowAuthorization: Bool = false
     @Published var isSelectedCurrentLocationBtn: Bool = false
     @Published var showNoSearchResultView: Bool = false
     @Published var showErrorAlert: Bool = false
     @Published var showErrorType: NetworkErrorType? = nil
     @Published var showError: NetworkError? = nil
+    @Published var kakaomapSnapshot: UIImage?
+    @Published var showKakaomapSnapshot: Bool = false
     
     //MARK: - NetworkMonitor
     private let monitor = NWPathMonitor()
@@ -201,10 +205,13 @@ class SearchLocationViewModel: NSObject, ObservableObject, CLLocationManagerDele
 
         self.isActualLocation = true
         //얻은 좌표와 저장된 현재 위치 좌표가 같고, 이전 좌표의 해당하는 주소가 들어가 있다면 API 호출을 할 필요가 없다
-        if coordinate.latitude == currentCoordinate.coordinate.latitude &&
-            coordinate.longitude == currentCoordinate.coordinate.longitude &&
+        let latitudeDiff = abs(coordinate.latitude - currentCoordinate.coordinate.latitude)
+        let longitudeDiff = abs(coordinate.longitude - currentCoordinate.coordinate.longitude)
+        if latitudeDiff < 0.0001 &&
+            longitudeDiff < 0.0001 &&
             currentCoordinate.address.isEmpty == false{
             if isSelectedCurrentLocationBtn{
+                isSelectedCurrentLocationBtn = false
                 setCoordinate = currentCoordinate
                 viewState = .result
             }
