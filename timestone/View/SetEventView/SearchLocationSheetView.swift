@@ -14,13 +14,18 @@ struct SearchLocationSheetView: View {
     @State private var kakaoMapDraw: Bool = false
     @State private var showToast: Bool = false
     @Environment(\.dismiss) private var dismiss
+    @State private var setBtnState: Bool = false //위치 설정 버튼 동작이 완료될 때까지 비활성화 시키기 위한 위치 설정 버튼 상태 변수
     
     var body: some View {
         ZStack{
             KakaoMapView(
                 draw: $kakaoMapDraw,
                 currentCoordinate: $viewModel.currentCoordinate,
-                selectedCoordinate: $viewModel.selectedCoordinate, isActualCurrentLocation: $viewModel.isActualLocation, setCoordinate: $viewModel.setCoordinate
+                selectedCoordinate: $viewModel.selectedCoordinate,
+                isActualCurrentLocation: $viewModel.isActualLocation,
+                setCoordinate: $viewModel.setCoordinate,
+                snapshot: $viewModel.kakaomapSnapshot,
+                showSnapshot: $viewModel.showKakaomapSnapshot
             )
             
             VStack(alignment: .leading, spacing: 0){
@@ -60,8 +65,16 @@ struct SearchLocationSheetView: View {
                             .modifier(SearchBarStyle())
                         
                         Button("설정"){
+                            viewModel.showKakaomapSnapshot = true
+                            viewModel.pickCoordinate = viewModel.setCoordinate
+                            setBtnState = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                dismiss()
+                                setBtnState = false
+                            }
                             print("위치 저장")
                         }
+                        .disabled(setBtnState)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .modifier(SearchBarStyle())
@@ -101,9 +114,9 @@ struct SearchLocationSheetView: View {
         .onAppear {
             viewModel.startMonitoring()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
-                viewModel.startLocationFlow()
-                kakaoMapDraw = true
+                viewModel.startLocationFlow()  
             }
+            kakaoMapDraw = true
         }
         .onDisappear(perform: {
             viewModel.stopMonitoring()

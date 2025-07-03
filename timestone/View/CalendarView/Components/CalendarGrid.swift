@@ -87,4 +87,3 @@ struct CalendarGrid: View {
         .environmentObject(HolidayViewModel())
         .environmentObject(EventViewModel())
 }
-
