@@ -9,26 +9,11 @@
 	<key>KAKAO_LOCAL_API_KEY</key>
 	<string>$(KAKAO_LOCAL_API_KEY)</string>
 	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>apis.data.go.kr</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSExceptionRequiresForwardSecrecy</key>
-				<false/>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
-		</dict>
-	</dict>
+	<dict/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaomap</string>
 	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pretendard-Bold.ttf</string>
@@ -36,5 +21,21 @@
 		<string>Pretendard-Regular.ttf</string>
 		<string>Pretendard-Light.ttf</string>
 	</array>
+    
+    <key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSExceptionDomains</key>
+            <dict>
+                <key>apis.data.go.kr</key>
+                <dict>
+                    <key>NSIncludesSubdomains</key>
+                    <true/>
+                    <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                    <true/>
+                    <key>NSExceptionRequiresForwardSecrecy</key>
+                    <false/>
+                </dict>
+            </dict>
+        </dict>
 </dict>
 </plist>
