@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import RealmSwift
 
 
 struct ContentView: View {
@@ -30,6 +30,9 @@ struct ContentView: View {
                     Image(systemName: "gear")
                     Text("설정")
                 }
+        }
+        .onAppear{
+            debugPrint(Realm.Configuration.defaultConfiguration.fileURL ?? "")
         }
     }
     
