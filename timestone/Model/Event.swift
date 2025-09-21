@@ -23,7 +23,7 @@ struct EventInfo {
         Event(
             title: "아침 요가",
             alarm: true,
-            startTime: "2025-04-02 06:30:00",
+            startTime: "2025-08-12 06:30:00",
             endTime: "2025-04-02 07:30:00",
             notes: "Start your day with some relaxing yoga.",
             url: URL(string: "https://yoga.com/morning-session"),
@@ -33,7 +33,7 @@ struct EventInfo {
         Event(
             title: "점심 요가",
             alarm: true,
-            startTime: "2025-04-02 12:30:00",
+            startTime: "2025-08-06 12:30:00",
             endTime: "2025-04-02 13:30:00",
             notes: "Midday yoga for relaxation.",
             url: URL(string: "https://yoga.com/lunch-session"),
@@ -43,7 +43,7 @@ struct EventInfo {
         Event(
             title: "저녁 요가",
             alarm: true,
-            startTime: "2025-04-02 18:30:00",
+            startTime: "2025-08-07 18:30:00",
             endTime: "2025-04-02 19:30:00",
             notes: "Unwind with evening yoga.",
             url: URL(string: "https://yoga.com/evening-session"),
@@ -53,7 +53,7 @@ struct EventInfo {
         Event(
             title: "Team Meeting",
             alarm: true,
-            startTime: "2025-04-05 10:00:00",
+            startTime: "2025-08-05 10:00:00",
             endTime: "2025-04-05 11:00:00",
             notes: "Weekly team sync-up to discuss ongoing projects.",
             url: URL(string: "https://zoom.com/meeting123"),
@@ -63,7 +63,7 @@ struct EventInfo {
         Event(
             title: "Project Deadline",
             alarm: true,
-            startTime: "2025-04-07 17:00:00",
+            startTime: "2025-08-07 17:00:00",
             endTime: "2025-04-07 17:00:00",
             notes: "Submit all project files to the client.",
             url: nil,
@@ -73,7 +73,7 @@ struct EventInfo {
         Event(
             title: "요리 수업",
             alarm: false,
-            startTime: "2025-04-08 19:00:00",
+            startTime: "2025-08-08 19:00:00",
             endTime: "2025-04-08 21:00:00",
             notes: "Learn to cook Italian cuisine.",
             url: URL(string: "https://cookingclass.com/register"),
@@ -83,7 +83,7 @@ struct EventInfo {
         Event(
             title: "Conference Call",
             alarm: true,
-            startTime: "2025-04-09 14:00:00",
+            startTime: "2025-08-09 14:00:00",
             endTime: "2025-04-09 15:00:00",
             notes: "Discuss partnership opportunities.",
             url: URL(string: "https://conference.com/call456"),
@@ -93,7 +93,7 @@ struct EventInfo {
         Event(
             title: "Movie Night",
             alarm: false,
-            startTime: "2025-04-09 20:00:00",
+            startTime: "2025-08-09 20:00:00",
             endTime: "2025-04-09 22:30:00",
             notes: "Watch the latest blockbuster movie.",
             url: nil,
@@ -103,7 +103,7 @@ struct EventInfo {
         Event(
             title: "Birthday Party",
             alarm: false,
-            startTime: "2025-04-10 18:00:00",
+            startTime: "2025-08-10 18:00:00",
             endTime: "2025-04-10 21:00:00",
             notes: "Celebrate John's 30th birthday.",
             url: nil,
@@ -113,7 +113,7 @@ struct EventInfo {
         Event(
             title: "Hiking Trip",
             alarm: true,
-            startTime: "2025-04-11 07:00:00",
+            startTime: "2025-08-11 07:00:00",
             endTime: "2025-04-11 12:00:00",
             notes: "Explore the scenic mountain trails.",
             url: URL(string: "https://hikingclub.com/event789"),

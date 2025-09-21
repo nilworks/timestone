@@ -9,13 +9,13 @@ import Foundation
 import Combine
 
 class HolidayViewModel: ObservableObject {
-    let baseURL = "https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo"
+    let baseURL = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo"
     let privateKey: String = Bundle.main.infoDictionary?["HolidayKey"]! as! String
     
     @Published var holidays: [Holiday] = []
     
     func load(year: Int) {
-        let urlString = "\(baseURL)?ServiceKey=\(privateKey)&solYear=\(year)&numOfRows=50"
+        let urlString = "\(baseURL)?serviceKey=\(privateKey)&solYear=\(year)&numOfRows=50"
         
         guard let url = URL(string: urlString) else {
             print("잘못된 URL입니다.")
